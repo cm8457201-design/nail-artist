@@ -981,3 +981,18 @@ button, input, select, textarea {
         grid-template-columns: 1fr;
     }
 }
+/* =========================================================
+   MOBILE SIDEBAR OVERLAY
+   El overlay del menú móvil no debe desenfocar el panel
+   ========================================================= */
+
+#sidebar-overlay {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(18, 7, 16, 0.35);
+}
+
+#sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
