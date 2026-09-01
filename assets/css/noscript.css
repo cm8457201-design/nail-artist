@@ -1,0 +1,48 @@
+
+/*boton carrito bonito*/
+button{
+    background:#e9b818;
+    border:none;
+    padding:8px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+/* animación carrito */
+@keyframes pop {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.pop {
+    animation: pop 0.3s ease;
+}
+
+/* notificación */
+#noti {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #111;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 10px;
+    display: none;
+}
+
+/* Carousel */
+
+	.carousel {
+		overflow-x: auto;
+	}
+
+/* Header */
+
+	body.homepage.is-preload #header:after {
+		opacity: 0;
+	}

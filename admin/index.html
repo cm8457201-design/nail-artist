@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — NailArtist Studio Panel Admin</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Estilos del Administrador -->
+    <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+
+<div class="admin-container">
+
+    <!-- Overlay para móvil -->
+    <div id="sidebar-overlay" class="modal-overlay"></div>
+
+    <!-- Barra Lateral (Sidebar) -->
+    <aside id="admin-sidebar" class="admin-sidebar">
+        <div class="sidebar-header">z
+            <a href="index.html" class="sidebar-logo">
+                <svg class="logo-spiral-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 8 C26.8 8 8 26.8 8 50 C8 73.2 26.8 92 50 92 C73.2 92 92 73.2 92 50 C92 31.5 80 16 62.5 11.5 C41.5 6.1 20.8 18.2 15.4 39.2 C10 60.2 22.1 80.9 43.1 86.3 C64.1 91.7 84.8 79.6 90.2 58.6 C94.5 41.8 84.5 24.5 67.7 20.2 C52.5 16.3 36.8 24.8 32.9 40 C29 55.2 37.5 70.9 52.7 74.8 C66.5 78.3 80.5 70 83.2 56 C85.5 44 77.5 32.5 65.5 30.2 C54.5 28.1 44 35.5 41.9 46.5 C40 56.5 47 65.5 57 67.4 C65.5 69 73 63 74.5 54.5" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+                </svg>
+                <div class="auth-brand-text">
+                    <span class="brand-top">NAILS</span>
+                    <span class="brand-bottom">ARTIST</span>
+                </div>
+            </a>
+            <span class="sidebar-badge">👑 PANEL ADMIN</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Principal</div>
+            <ul class="nav-list">
+                <li>
+                    <a href="index.html" class="nav-link active">
+                        <span class="nav-icon"></span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="nav-section-title">Gestión de Negocio</div>
+            <ul class="nav-list">
+                <li>
+                    <a href="citas.html" class="nav-link">
+                        <span class="nav-icon"></span>
+                        <span>Citas & Reservas</span>
+                        <span id="badge-citas-pendientes" class="nav-badge" style="display:none;">0</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="servicios.html" class="nav-link">
+                        <span class="nav-icon"></span>
+                        <span>Servicios & Precios</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="usuarios.html" class="nav-link">
+                        <span class="nav-icon"></span>
+                        <span>Usuarios & Roles</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="nav-section-title">Interacción & Feedback</div>
+            <ul class="nav-list">
+                <li>
+                    <a href="resenas.html" class="nav-link">
+                        <span class="nav-icon"></span>
+                        <span>Reseñas & Opiniones</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="mensajes.html" class="nav-link">
+                        <span class="nav-icon"></span>
+                        <span>Mensajes de Contacto</span>
+                        <span id="badge-mensajes" class="nav-badge" style="display:none;">0</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="nav-section-title">Enlaces Directos</div>
+            <ul class="nav-list">
+                <li>
+                    <a href="/index.html" target="_blank" class="nav-link">
+                        <span class="nav-icon"></span>
+                        <span>Ver Sitio Web</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" onclick="cerrarSesionAdmin()" class="nav-link" style="color: #ff4d79;">
+                        <span class="nav-icon"></span>
+                        <span>Cerrar Sesión</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        
+        <!-- Header Superior -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button id="mobile-sidebar-toggle" class="mobile-toggle-btn" aria-label="Abrir Menú">☰</button>
+                <div class="page-title-wrap">
+                    <h1 class="page-heading">Panel de Control & Métricas</h1>
+                    <span class="breadcrumb" id="welcome-heading-name">Bienvenido al Panel Administrador 👑</span>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <div class="user-profile">
+                    <div class="user-avatar" id="admin-user-avatar">A</div>
+                    <div class="user-info">
+                        <span class="user-name" id="admin-user-name">Administrador</span>
+                        <span class="user-role" id="admin-user-email">admin@gmail.com</span>
+                    </div>
+                    <button class="logout-btn" onclick="cerrarSesionAdmin()" title="Cerrar Sesión">✕</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Grid de Métricas Principales (KPI Cards) -->
+        <div class="stats-grid">
+            
+            <!-- Total Usuarios -->
+            <div class="stat-card">
+                <div class="stat-icon pink"></div>
+                <div class="stat-data">
+                    <span class="stat-label">Total Usuarios</span>
+                    <span class="stat-value" id="kpi-total-usuarios">0</span>
+                    <span class="stat-sub" id="kpi-sub-usuarios"> 0 Clientes &nbsp;|&nbsp; 👑 0 Admins</span>
+                </div>
+            </div>
+
+            <!-- Manicuristas Activas -->
+            <div class="stat-card">
+                <div class="stat-icon purple"></div>
+                <div class="stat-data">
+                    <span class="stat-label">Manicuristas</span>
+                    <span class="stat-value" id="kpi-manicuristas">0</span>
+                    <span class="stat-sub">Especialistas de Estudio</span>
+                </div>
+            </div>
+
+            <!-- Servicios en Catálogo -->
+            <div class="stat-card">
+                <div class="stat-icon gold"></div>
+                <div class="stat-data">
+                    <span class="stat-label">Servicios Activos</span>
+                    <span class="stat-value" id="kpi-servicios">0</span>
+                    <span class="stat-sub">Catálogo NailArtist</span>
+                </div>
+            </div>
+
+            <!-- Citas Totales -->
+            <div class="stat-card">
+                <div class="stat-icon green"></div>
+                <div class="stat-data">
+                    <span class="stat-label">Citas & Reservas</span>
+                    <span class="stat-value" id="kpi-citas">0</span>
+                    <span class="stat-sub" id="kpi-sub-citas"> 0 Pendientes &nbsp;|&nbsp; ✅ 0 Completadas</span>
+                </div>
+            </div>
+
+            <!-- Ingresos Estimados -->
+            <div class="stat-card">
+                <div class="stat-icon gold"></div>
+                <div class="stat-data">
+                    <span class="stat-label">Ingresos Registrados</span>
+                    <span class="stat-value" id="kpi-ingresos">Bs. 0</span>
+                    <span class="stat-sub">Citas Confirmadas & Completadas</span>
+                </div>
+            </div>
+
+            <!-- Calificación Promedio -->
+            <div class="stat-card">
+                <div class="stat-icon pink"></div>
+                <div class="stat-data">
+                    <span class="stat-label">Calificación Promedio</span>
+                    <span class="stat-value" id="kpi-rating">5.0 / 5.0</span>
+                    <span class="stat-sub" id="kpi-sub-rating">Reseñas públicas</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Layout de 2 Columnas para Tablas Resumen -->
+        <div class="dashboard-grid-2">
+
+            <!-- Citas Recientes -->
+            <div class="admin-card">
+                <div class="card-header">
+                    <h3 class="card-title"> Últimas Citas Agendadas</h3>
+                    <a href="citas.html" class="btn-link">Ver Todas →</a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Cliente</th>
+                                    <th>Fecha & Hora</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-ultimas-citas">
+                                <tr><td colspan="5" style="text-align:center; padding: 20px;">Cargando citas...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reseñas Recientes -->
+            <div class="admin-card">
+                <div class="card-header">
+                    <h3 class="card-title"> Últimas Reseñas de Clientas</h3>
+                    <a href="resenas.html" class="btn-link">Moderar →</a>
+                </div>
+                <div class="card-body">
+                    <div id="lista-ultimas-resenas">
+                        <p style="text-align:center; padding: 20px; color: var(--text-muted);">Cargando opiniones...</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+</div>
+
+<script src="assets/js/admin.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const res = await apiAdminRequest('/api/admin/dashboard', {}, 'GET');
+        if (res.success && res.data) {
+            const { kpis, ultimasCitas, ultimosMensajes, ultimasResenas } = res.data;
+
+            // KPIs
+            document.getElementById('kpi-total-usuarios').innerText = kpis.totalUsuarios;
+            document.getElementById('kpi-sub-usuarios').innerHTML = ` ${kpis.totalClientes} Clientes VIP &nbsp;|&nbsp; 👑 ${kpis.totalAdmins} Admins`;
+            document.getElementById('kpi-manicuristas').innerText = kpis.totalManicuristas;
+            document.getElementById('kpi-servicios').innerText = kpis.totalServicios;
+            document.getElementById('kpi-citas').innerText = kpis.totalCitas;
+            document.getElementById('kpi-sub-citas').innerHTML = `⏳ ${kpis.citasPendientes} Pendientes &nbsp;|&nbsp; ✅ ${kpis.citasCompletadas} Completadas`;
+            document.getElementById('kpi-ingresos').innerText = `Bs. ${kpis.ingresosTotalesBs.toLocaleString('es-BO', { minimumFractionDigits: 2 })}`;
+            document.getElementById('kpi-rating').innerText = `⭐ ${kpis.promedioCalificacion} / 5.0`;
+            document.getElementById('kpi-sub-rating').innerText = `${kpis.totalResenas} valoraciones registradas`;
+
+            // Badges
+            if (kpis.citasPendientes > 0) {
+                const b = document.getElementById('badge-citas-pendientes');
+                if (b) { b.innerText = kpis.citasPendientes; b.style.display = 'inline-block'; }
+            }
+            if (kpis.mensajesNoLeidos > 0) {
+                const m = document.getElementById('badge-mensajes');
+                if (m) { m.innerText = kpis.mensajesNoLeidos; m.style.display = 'inline-block'; }
+            }
+
+            // Render Citas Recientes
+            const tbodyCitas = document.getElementById('tabla-ultimas-citas');
+            if (ultimasCitas && ultimasCitas.length > 0) {
+                tbodyCitas.innerHTML = ultimasCitas.map(c => {
+                    let stBadge = 'badge-pendiente';
+                    if (c.estado === 'Confirmada') stBadge = 'badge-confirmada';
+                    if (c.estado === 'Completada') stBadge = 'badge-activo';
+                    if (c.estado === 'Cancelada') stBadge = 'badge-bloqueado';
+
+                    return `
+                        <tr>
+                            <td><strong style="color:var(--pink-vivid);">${c.codigo_reserva}</strong></td>
+                            <td>
+                                <div><strong>${c.cliente_nombre} ${c.cliente_apellido || ''}</strong></div>
+                                <div style="font-size:0.8rem; color:var(--text-muted);">📱 ${c.cliente_telefono || 'Sin tel'}</div>
+                            </td>
+                            <td>${c.fecha_cita} <br><small style="color:var(--text-muted);">${c.hora_cita}</small></td>
+                            <td><strong>Bs. ${c.total_final_bs}</strong></td>
+                            <td><span class="badge ${stBadge}">${c.estado}</span></td>
+                        </tr>
+                    `;
+                }).join('');
+            } else {
+                tbodyCitas.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px; color:var(--text-muted);">No hay citas registradas aún.</td></tr>';
+            }
+
+            // Render Reseñas Recientes
+            const divResenas = document.getElementById('lista-ultimas-resenas');
+            if (ultimasResenas && ultimasResenas.length > 0) {
+                divResenas.innerHTML = ultimasResenas.map(r => {
+                    const stars = '⭐'.repeat(r.calificacion);
+                    return `
+                        <div style="padding: 12px 14px; margin-bottom: 10px; background: var(--bg-surface-soft); border-radius: 12px; border: 1px solid var(--border-soft);">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                                <strong>${r.usuario_nombre} ${r.usuario_apellido || ''}</strong>
+                                <span>${stars}</span>
+                            </div>
+                            <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:4px;">Servicio: <em>${r.servicio_nombre || 'General'}</em></div>
+                            <p style="font-size:0.9rem; margin:0;">"${r.comentario}"</p>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                divResenas.innerHTML = '<p style="text-align:center; padding:20px; color:var(--text-muted);">No hay reseñas registradas aún.</p>';
+            }
+        }
+    } catch (err) {
+        console.error('Error al cargar datos del dashboard:', err);
+    }
+});
+</script>
+</body>
+</html>

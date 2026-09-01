@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Iniciar Sesión — NailArtist Studio</title>
+	<meta name="description" content="Accede a tu cuenta de NailArtist Studio o regístrate en Nails VIP Club para disfrutar de 15% de descuento en tus citas de uñas acrílicas y nail art." />
+
+	<!-- Google Fonts: Playfair Display & Plus Jakarta Sans -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+	<style>
+		:root {
+			--pink-vivid: #e11d48;
+			--pink-bright: #db2777;
+			--pink-soft: #f472b6;
+			--pink-light: #fdf2f8;
+			--pink-nude: #fce7f3;
+			--pink-border: #fbcfe8;
+			--purple-deep: #170914;
+			--purple-card: #240e1b;
+			--purple-subtle: #3a152d;
+			--gold-accent: #f59e0b;
+			--gold-light: #fef08a;
+			--gold-gradient: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #d97706 100%);
+			--pink-gradient: linear-gradient(135deg, #e11d48 0%, #db2777 50%, #f43f5e 100%);
+			--card-gradient: linear-gradient(145deg, rgba(255, 255, 255, 0.96) 0%, rgba(253, 242, 248, 0.94) 100%);
+			--text-main: #240e1b;
+			--text-muted: #835874;
+			--font-title: 'Playfair Display', Georgia, serif;
+			--font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+			--radius-lg: 24px;
+			--radius-md: 14px;
+			--radius-sm: 10px;
+			--shadow-soft: 0 20px 40px -15px rgba(225, 29, 72, 0.18), 0 0 0 1px rgba(251, 207, 232, 0.6);
+			--shadow-floating: 0 25px 60px -15px rgba(23, 9, 20, 0.25);
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: var(--font-body);
+			background: radial-gradient(circle at 10% 20%, #ffe4e6 0%, #fce7f3 40%, #fae8ff 80%, #fdf4ff 100%);
+			min-height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 24px 16px;
+			color: var(--text-main);
+			position: relative;
+			overflow-x: hidden;
+		}
+
+		/* Partículas / Círculos de fondo con resplandor */
+		.bg-glow-1 {
+			position: fixed;
+			width: 480px;
+			height: 480px;
+			border-radius: 50%;
+			background: radial-gradient(circle, rgba(225, 29, 72, 0.15) 0%, rgba(219, 39, 119, 0) 70%);
+			top: -120px;
+			right: -120px;
+			z-index: 0;
+			pointer-events: none;
+			animation: pulseGlow 10s ease-in-out infinite alternate;
+		}
+
+		.bg-glow-2 {
+			position: fixed;
+			width: 520px;
+			height: 520px;
+			border-radius: 50%;
+			background: radial-gradient(circle, rgba(245, 158, 11, 0.12) 0%, rgba(225, 29, 72, 0) 70%);
+			bottom: -150px;
+			left: -120px;
+			z-index: 0;
+			pointer-events: none;
+			animation: pulseGlow 12s ease-in-out infinite alternate-reverse;
+		}
+
+		@keyframes pulseGlow {
+			0% { transform: scale(1) translate(0, 0); opacity: 0.7; }
+			100% { transform: scale(1.15) translate(30px, 20px); opacity: 1; }
+		}
+
+		/* Contenedor Principal del Login (Split Screen Layout) */
+		.login-master-container {
+			position: relative;
+			z-index: 1;
+			width: 100%;
+			max-width: 1040px;
+			background: rgba(255, 255, 255, 0.88);
+			backdrop-filter: blur(20px);
+			-webkit-backdrop-filter: blur(20px);
+			border: 1px solid rgba(255, 255, 255, 0.8);
+			border-radius: var(--radius-lg);
+			box-shadow: var(--shadow-floating);
+			display: grid;
+			grid-template-columns: 1.05fr 1.15fr;
+			overflow: hidden;
+			animation: fadeInScale 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+		}
+
+		@keyframes fadeInScale {
+			0% {
+				opacity: 0;
+				transform: translateY(25px) scale(0.98);
+			}
+			100% {
+				opacity: 1;
+				transform: translateY(0) scale(1);
+			}
+		}
+
+		/* ========================================================================= */
+		/* PANEL IZQUIERDO: VISUAL ART & BRANDING                                    */
+		/* ========================================================================= */
+		.visual-panel {
+			position: relative;
+			background: var(--purple-deep);
+			color: #ffffff;
+			padding: 48px 40px;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			overflow: hidden;
+		}
+
+		.visual-bg-image {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			opacity: 0.38;
+			filter: saturate(1.2) contrast(1.1);
+			transform: scale(1.03);
+			transition: transform 8s ease, opacity 0.5s ease;
+		}
+
+		.visual-panel:hover .visual-bg-image {
+			transform: scale(1.08);
+			opacity: 0.45;
+		}
+
+		.visual-overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(180deg, rgba(23, 9, 20, 0.4) 0%, rgba(36, 14, 27, 0.85) 65%, rgba(23, 9, 20, 0.98) 100%);
+			z-index: 1;
+		}
+
+		.visual-content {
+			position: relative;
+			z-index: 2;
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			justify-content: space-between;
+		}
+
+		.brand-header-link {
+			display: inline-flex;
+			align-items: center;
+			gap: 12px;
+			text-decoration: none;
+			color: #ffffff;
+			transition: transform 0.3s ease;
+		}
+
+		.brand-header-link:hover {
+			transform: translateX(4px);
+		}
+
+		.brand-logo-icon {
+			width: 44px;
+			height: 44px;
+			stroke: #f472b6;
+			filter: drop-shadow(0 2px 8px rgba(244, 114, 182, 0.5));
+		}
+
+		.brand-title-wrap {
+			display: flex;
+			flex-direction: column;
+			line-height: 1;
+		}
+
+		.brand-title-nails {
+			font-family: var(--font-title);
+			font-size: 1.55rem;
+			font-weight: 800;
+			letter-spacing: 2px;
+			color: #ffffff;
+		}
+
+		.brand-title-artist {
+			font-family: var(--font-body);
+			font-size: 0.72rem;
+			font-weight: 800;
+			letter-spacing: 5px;
+			color: #f472b6;
+			margin-top: 2px;
+		}
+
+		.visual-middle-copy {
+			margin: 40px 0;
+		}
+
+		.visual-pill-tag {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			padding: 6px 14px;
+			background: rgba(225, 29, 72, 0.25);
+			border: 1px solid rgba(244, 114, 182, 0.4);
+			border-radius: 999px;
+			font-size: 0.78rem;
+			font-weight: 700;
+			letter-spacing: 1px;
+			text-transform: uppercase;
+			color: #fce7f3;
+			margin-bottom: 18px;
+			backdrop-filter: blur(8px);
+		}
+
+		.visual-heading {
+			font-family: var(--font-title);
+			font-size: 2.1rem;
+			font-weight: 700;
+			line-height: 1.25;
+			color: #ffffff;
+			margin-bottom: 14px;
+		}
+
+		.visual-heading span {
+			background: linear-gradient(135deg, #fbcfe8 0%, #f472b6 50%, #fbbf24 100%);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+		}
+
+		.visual-desc {
+			font-size: 0.92rem;
+			line-height: 1.6;
+			color: rgba(253, 242, 248, 0.85);
+			max-width: 380px;
+		}
+
+		.visual-features-list {
+			list-style: none;
+			display: flex;
+			flex-direction: column;
+			gap: 12px;
+			margin-top: 24px;
+		}
+
+		.visual-feature-item {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			font-size: 0.85rem;
+			font-weight: 600;
+			color: #ffffff;
+		}
+
+		.visual-feature-icon {
+			width: 26px;
+			height: 26px;
+			border-radius: 50%;
+			background: rgba(225, 29, 72, 0.35);
+			border: 1px solid rgba(244, 114, 182, 0.5);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 0.75rem;
+			color: #fef08a;
+			flex-shrink: 0;
+		}
+
+		.visual-footer-quote {
+			padding-top: 20px;
+			border-top: 1px solid rgba(255, 255, 255, 0.12);
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.vip-discount-badge {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			background: var(--gold-gradient);
+			color: #170914;
+			font-weight: 800;
+			font-size: 0.82rem;
+			padding: 7px 14px;
+			border-radius: 999px;
+			box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);
+			animation: floatBadge 3s ease-in-out infinite alternate;
+		}
+
+		@keyframes floatBadge {
+			0% { transform: translateY(0); }
+			100% { transform: translateY(-4px); }
+		}
+
+		/* ========================================================================= */
+		/* PANEL DERECHO: FORMULARIO DE ACCESO & REGISTRO                            */
+		/* ========================================================================= */
+		.form-panel {
+			padding: 44px 44px;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			background: #ffffff;
+		}
+
+		/* Pestañas de Alternancia (Tabs: Login / Registro) */
+		.mode-tabs-container {
+			display: flex;
+			background: var(--pink-light);
+			padding: 4px;
+			border-radius: var(--radius-md);
+			border: 1px solid var(--pink-border);
+			margin-bottom: 24px;
+			position: relative;
+		}
+
+		.mode-tab-btn {
+			flex: 1;
+			padding: 10px 14px;
+			border: none;
+			background: transparent;
+			font-family: var(--font-body);
+			font-size: 0.88rem;
+			font-weight: 700;
+			color: var(--text-muted);
+			border-radius: var(--radius-sm);
+			cursor: pointer;
+			transition: all 0.25s ease;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 8px;
+		}
+
+		.mode-tab-btn.active {
+			background: #ffffff;
+			color: var(--pink-vivid);
+			box-shadow: 0 4px 12px rgba(225, 29, 72, 0.12);
+		}
+
+		.form-header-block {
+			margin-bottom: 22px;
+		}
+
+		.form-title {
+			font-family: var(--font-title);
+			font-size: 1.85rem;
+			font-weight: 800;
+			color: var(--text-main);
+			margin-bottom: 6px;
+			letter-spacing: -0.5px;
+		}
+
+		.form-subtitle {
+			font-size: 0.9rem;
+			color: var(--text-muted);
+			line-height: 1.45;
+		}
+
+		/* Alertas */
+		.alert-box {
+			display: none;
+			padding: 12px 16px;
+			border-radius: var(--radius-md);
+			font-size: 0.86rem;
+			font-weight: 600;
+			margin-bottom: 18px;
+			animation: slideDown 0.3s ease;
+		}
+
+		@keyframes slideDown {
+			0% { opacity: 0; transform: translateY(-8px); }
+			100% { opacity: 1; transform: translateY(0); }
+		}
+
+		.alert-error {
+			background: #fff1f2;
+			border: 1px solid #fecdd3;
+			color: #be123c;
+		}
+
+		.alert-success {
+			background: #f0fdf4;
+			border: 1px solid #bbf7d0;
+			color: #15803d;
+		}
+
+		/* Grupos de Inputs */
+		.form-group {
+			margin-bottom: 18px;
+		}
+
+		.form-label {
+			display: block;
+			font-size: 0.84rem;
+			font-weight: 700;
+			color: var(--text-main);
+			margin-bottom: 7px;
+		}
+
+		.input-wrapper {
+			position: relative;
+			display: flex;
+			align-items: center;
+		}
+
+		.input-icon-left {
+			position: absolute;
+			left: 16px;
+			color: #9d7b93;
+			font-size: 1.1rem;
+			pointer-events: none;
+			transition: color 0.2s ease;
+		}
+
+		.form-input {
+			width: 100%;
+			padding: 13px 16px 13px 44px;
+			font-family: var(--font-body);
+			font-size: 0.92rem;
+			color: var(--text-main);
+			background: #faf7f9;
+			border: 1.5px solid #ebdbe5;
+			border-radius: var(--radius-md);
+			outline: none;
+			transition: all 0.25s ease;
+		}
+
+		.form-input:focus {
+			background: #ffffff;
+			border-color: var(--pink-vivid);
+			box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.12);
+		}
+
+		.form-input:focus + .input-icon-left,
+		.input-wrapper:focus-within .input-icon-left {
+			color: var(--pink-vivid);
+		}
+
+		.toggle-password-btn {
+			position: absolute;
+			right: 14px;
+			background: none;
+			border: none;
+			cursor: pointer;
+			color: var(--text-muted);
+			font-size: 1.05rem;
+			padding: 4px 6px;
+			border-radius: 6px;
+			transition: color 0.2s ease;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.toggle-password-btn:hover {
+			color: var(--pink-vivid);
+		}
+
+		/* Fila Recordarme & Olvidé contraseña */
+		.form-aux-row {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 22px;
+			font-size: 0.85rem;
+		}
+
+		.checkbox-label {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			cursor: pointer;
+			color: var(--text-main);
+			font-weight: 600;
+			user-select: none;
+		}
+
+		.checkbox-label input[type="checkbox"] {
+			accent-color: var(--pink-vivid);
+			width: 17px;
+			height: 17px;
+			cursor: pointer;
+			border-radius: 4px;
+		}
+
+		.forgot-pwd-link {
+			color: var(--pink-vivid);
+			text-decoration: none;
+			font-weight: 700;
+			transition: color 0.2s ease, text-decoration 0.2s ease;
+		}
+
+		.forgot-pwd-link:hover {
+			color: #be123c;
+			text-decoration: underline;
+		}
+
+		/* Botón Principal */
+		.btn-submit-action {
+			width: 100%;
+			padding: 14px 24px;
+			border: none;
+			border-radius: var(--radius-md);
+			background: var(--pink-gradient);
+			color: #ffffff;
+			font-family: var(--font-body);
+			font-size: 0.96rem;
+			font-weight: 800;
+			letter-spacing: 0.5px;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 10px;
+			box-shadow: 0 10px 25px -5px rgba(225, 29, 72, 0.4);
+			transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+			position: relative;
+			overflow: hidden;
+		}
+
+		.btn-submit-action::after {
+			content: '';
+			position: absolute;
+			top: -50%;
+			left: -60%;
+			width: 200%;
+			height: 200%;
+			background: linear-gradient(60deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.25) 50%, rgba(255, 255, 255, 0) 70%);
+			transform: rotate(25deg);
+			transition: all 0.75s ease;
+		}
+
+		.btn-submit-action:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 14px 30px -5px rgba(225, 29, 72, 0.55);
+		}
+
+		.btn-submit-action:hover::after {
+			left: 100%;
+		}
+
+		.btn-submit-action:active {
+			transform: translateY(0);
+		}
+
+		.btn-submit-action:disabled {
+			opacity: 0.7;
+			cursor: not-allowed;
+			transform: none;
+		}
+
+		/* Pie del Formulario y Enlace de Retorno */
+		.form-footer-block {
+			margin-top: 24px;
+			text-align: center;
+			display: flex;
+			flex-direction: column;
+			gap: 14px;
+			border-top: 1px solid #f1e2eb;
+			padding-top: 18px;
+		}
+
+		.form-switch-prompt {
+			font-size: 0.86rem;
+			color: var(--text-muted);
+		}
+
+		.switch-mode-action {
+			color: var(--pink-vivid);
+			font-weight: 800;
+			cursor: pointer;
+			text-decoration: underline;
+			border: none;
+			background: none;
+			font-size: 0.86rem;
+			margin-left: 4px;
+		}
+
+		.back-to-home-link {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 6px;
+			font-size: 0.84rem;
+			font-weight: 700;
+			color: var(--text-muted);
+			text-decoration: none;
+			transition: color 0.2s ease;
+		}
+
+		.back-to-home-link:hover {
+			color: var(--pink-vivid);
+		}
+
+		/* Grid de dos columnas para registro */
+		.form-row-2col {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 12px;
+		}
+
+		/* Spinner de carga */
+		.spinner {
+			width: 18px;
+			height: 18px;
+			border: 2.5px solid rgba(255, 255, 255, 0.4);
+			border-top-color: #ffffff;
+			border-radius: 50%;
+			animation: spin 0.7s linear infinite;
+			display: none;
+		}
+
+		@keyframes spin {
+			to { transform: rotate(360deg); }
+		}
+
+		/* ========================================================================= */
+		/* RESPONSIVE DESIGN (PC, Laptop, Tablet, Móvil)                             */
+		/* ========================================================================= */
+		@media (max-width: 900px) {
+			.login-master-container {
+				grid-template-columns: 1fr;
+				max-width: 520px;
+			}
+
+			.visual-panel {
+				padding: 32px 28px;
+				min-height: 240px;
+			}
+
+			.visual-middle-copy {
+				margin: 16px 0;
+			}
+
+			.visual-heading {
+				font-size: 1.6rem;
+			}
+
+			.visual-desc,
+			.visual-features-list {
+				display: none;
+			}
+
+			.form-panel {
+				padding: 32px 24px;
+			}
+		}
+
+		@media (max-width: 480px) {
+			body {
+				padding: 12px 10px;
+			}
+
+			.login-master-container {
+				border-radius: 18px;
+			}
+
+			.form-panel {
+				padding: 26px 18px;
+			}
+
+			.form-title {
+				font-size: 1.55rem;
+			}
+
+			.form-row-2col {
+				grid-template-columns: 1fr;
+				gap: 0;
+			}
+
+			.form-aux-row {
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 10px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+
+	<!-- Efectos de Fondo Glam -->
+	<div class="bg-glow-1"></div>
+	<div class="bg-glow-2"></div>
+
+	<!-- Master Container -->
+	<div class="login-master-container">
+
+		<!-- PANEL IZQUIERDO: Branding & Fotografía de Uñas Acrílicas -->
+		<div class="visual-panel">
+			<img src="images/hero_nails.jpg" alt="Uñas Acrílicas NailArtist" class="visual-bg-image" onerror="this.src='images/service_acrilicas.jpg'" />
+			<div class="visual-overlay"></div>
+
+			<div class="visual-content">
+				
+				<!-- Logo Superior -->
+				<a href="index.html" class="brand-header-link" title="Volver al inicio">
+					<svg class="brand-logo-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M50 8 C26.8 8 8 26.8 8 50 C8 73.2 26.8 92 50 92 C73.2 92 92 73.2 92 50 C92 31.5 80 16 62.5 11.5 C41.5 6.1 20.8 18.2 15.4 39.2 C10 60.2 22.1 80.9 43.1 86.3 C64.1 91.7 84.8 79.6 90.2 58.6 C94.5 41.8 84.5 24.5 67.7 20.2 C52.5 16.3 36.8 24.8 32.9 40 C29 55.2 37.5 70.9 52.7 74.8 C66.5 78.3 80.5 70 83.2 56 C85.5 44 77.5 32.5 65.5 30.2 C54.5 28.1 44 35.5 41.9 46.5 C40 56.5 47 65.5 57 67.4 C65.5 69 73 63 74.5 54.5" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
+					</svg>
+					<div class="brand-title-wrap">
+						<span class="brand-title-nails">NAILS</span>
+						<span class="brand-title-artist">ARTIST STUDIO</span>
+					</div>
+				</a>
+
+				<!-- Mensaje Central -->
+				<div class="visual-middle-copy">
+					<div class="visual-pill-tag"> Alta Costura en Uñas</div>
+					<h2 class="visual-heading">Diseños que <span>cautivan</span> en cada detalle.</h2>
+					<p class="visual-desc">Accede a tu cuenta para gestionar tus citas, reservar tus servicios favoritos y disfrutar de promociones VIP exclusivas.</p>
+
+					<ul class="visual-features-list">
+						<li class="visual-feature-item">
+							<span class="visual-feature-icon"></span>
+							<span>Esculpido profesional en acrílico y soft gel</span>
+						</li>
+						<li class="visual-feature-item">
+							<span class="visual-feature-icon"></span>
+							<span>Cristales Swarovski e incrustaciones 3D</span>
+						</li>
+						<li class="visual-feature-item">
+							<span class="visual-feature-icon"></span>
+							<span>Duración garantizada superior a 21 días</span>
+						</li>
+					</ul>
+				</div>
+
+				<!-- Pie del Visual: Descuento VIP -->
+				<div class="visual-footer-quote">
+					<div class="vip-discount-badge">
+						<span> 15% OFF VIP</span>
+						<span style="font-weight: 500; font-size: 0.76rem;">Primera Cita</span>
+					</div>
+					<span style="font-size: 0.78rem; color: rgba(255,255,255,0.7);">NailArtist 2026</span>
+				</div>
+
+			</div>
+		</div>
+
+		<!-- PANEL DERECHO: Tarjeta de Acceso y Registro -->
+		<div class="form-panel">
+
+			<!-- Tabs: Iniciar Sesión / Registro -->
+			<div class="mode-tabs-container">
+				<button type="button" class="mode-tab-btn active" id="tab-login" onclick="switchMode('login')">
+					<span> Iniciar Sesión</span>
+				</button>
+				<button type="button" class="mode-tab-btn" id="tab-register" onclick="switchMode('register')">
+					<span> Crear Cuenta VIP</span>
+				</button>
+			</div>
+
+			<!-- Header del Formulario -->
+			<div class="form-header-block">
+				<h1 class="form-title" id="form-heading">Bienvenida de nuevo</h1>
+				<p class="form-subtitle" id="form-subheading">Ingresa tus credenciales para acceder a tu cuenta.</p>
+			</div>
+
+			<!-- Caja de Alertas -->
+			<div id="alert-box" class="alert-box"></div>
+
+			<!-- ========================================== -->
+			<!-- FORMULARIO 1: INICIAR SESIÓN              -->
+			<!-- ========================================== -->
+			<form id="form-login" onsubmit="handleLoginSubmit(event)" autocomplete="on">
+				
+				<div class="form-group">
+					<label for="login-email" class="form-label">Correo Electrónico</label>
+					<div class="input-wrapper">
+						<span class="input-icon-left">✉️</span>
+						<input type="email" id="login-email" name="email" class="form-input" placeholder="tu.correo@ejemplo.com" required autocomplete="email" />
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="login-password" class="form-label">Contraseña</label>
+					<div class="input-wrapper">
+						<span class="input-icon-left">🔒</span>
+						<input type="password" id="login-password" name="password" class="form-input" placeholder="••••••••" required autocomplete="current-password" />
+						<button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('login-password', this)" title="Mostrar/Ocultar contraseña">
+							👁️
+						</button>
+					</div>
+				</div>
+
+				<div class="form-aux-row">
+					<label class="checkbox-label">
+						<input type="checkbox" id="remember-me" />
+						<span>Recordarme</span>
+					</label>
+					<a href="#" class="forgot-pwd-link" onclick="handleForgotPassword(event)">¿Olvidaste tu contraseña?</a>
+				</div>
+
+				<button type="submit" id="btn-login-submit" class="btn-submit-action">
+					<span class="spinner" id="spinner-login"></span>
+					<span id="btn-login-text">INICIAR SESIÓN</span>
+					<span style="font-size: 1.1rem;">→</span>
+				</button>
+			</form>
+
+			<!-- ========================================== -->
+			<!-- FORMULARIO 2: CREAR CUENTA VIP CLUB       -->
+			<!-- ========================================== -->
+			<form id="form-register" onsubmit="handleRegisterSubmit(event)" style="display: none;" autocomplete="on">
+				
+				<div class="form-row-2col">
+					<div class="form-group">
+						<label for="reg-nombre" class="form-label">Nombre</label>
+						<div class="input-wrapper">
+							<span class="input-icon-left">👤</span>
+							<input type="text" id="reg-nombre" name="nombre" class="form-input" placeholder="Camila" required />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="reg-apellido" class="form-label">Apellido</label>
+						<div class="input-wrapper">
+							<span class="input-icon-left"></span>
+							<input type="text" id="reg-apellido" name="apellido" class="form-input" placeholder="Morales" />
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="reg-email" class="form-label">Correo Electrónico</label>
+					<div class="input-wrapper">
+						<span class="input-icon-left">✉️</span>
+						<input type="email" id="reg-email" name="email" class="form-input" placeholder="camila@gmail.com" required autocomplete="email" />
+					</div>
+				</div>
+
+				<div class="form-row-2col">
+					<div class="form-group">
+						<label for="reg-telefono" class="form-label">Teléfono (WhatsApp)</label>
+						<div class="input-wrapper">
+							<span class="input-icon-left"></span>
+							<input type="tel" id="reg-telefono" name="telefono" class="form-input" placeholder="+591 70000000" />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="reg-password" class="form-label">Contraseña</label>
+						<div class="input-wrapper">
+							<span class="input-icon-left">🔒</span>
+							<input type="password" id="reg-password" name="password" class="form-input" placeholder="Mínimo 6 caracteres" required minlength="6" autocomplete="new-password" />
+							<button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('reg-password', this)" title="Mostrar/Ocultar contraseña">
+								👁️
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="reg-confirm-password" class="form-label">Confirmar Contraseña</label>
+					<div class="input-wrapper">
+						<span class="input-icon-left">🔒</span>
+						<input type="password" id="reg-confirm-password" name="confirm_password" class="form-input" placeholder="Repite tu contraseña" required minlength="6" autocomplete="new-password" />
+						<button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('reg-confirm-password', this)" title="Mostrar/Ocultar contraseña">
+							👁️
+						</button>
+					</div>
+				</div>
+
+				<div style="background: var(--pink-light); border: 1px dashed var(--pink-border); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 18px; font-size: 0.82rem; color: var(--pink-vivid); font-weight: 600; display: flex; align-items: center; gap: 8px;">
+					<span>🎁</span>
+					<span>¡Obtienes <strong>15% de descuento VIP</strong> automático para tu primera cita!</span>
+				</div>
+
+				<button type="submit" id="btn-reg-submit" class="btn-submit-action">
+					<span class="spinner" id="spinner-reg"></span>
+					<span id="btn-reg-text">CREAR MI CUENTA VIP</span>
+					<span style="font-size: 1.1rem;">✨</span>
+				</button>
+			</form>
+
+			<!-- Contenedor de Sesión Activa (si ya inició sesión) -->
+			<div id="already-logged-in-box" style="display: none; padding: 24px 16px; text-align: center;">
+				<div style="font-size: 3rem; margin-bottom: 12px;">👑</div>
+				<h3 id="logged-user-greeting" style="font-family: var(--font-title); font-size: 1.6rem; color: var(--pink-vivid); margin-bottom: 8px;">¡Ya has iniciado sesión!</h3>
+				<p id="logged-user-info" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px;">Tienes una sesión activa en NailArtist Studio.</p>
+				<div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+					<a id="btn-go-destination" href="index.html" class="btn-submit-action" style="padding: 12px 24px; text-decoration: none; display: inline-block;">
+						Continuar al Sistema →
+					</a>
+					<button type="button" onclick="handleLogout()" class="btn-submit-action" style="padding: 12px 24px; background: transparent; border: 1px solid var(--pink-vivid); color: var(--pink-vivid); box-shadow: none;">
+						Cerrar Sesión
+					</button>
+				</div>
+			</div>
+
+			<!-- Pie del Panel -->
+			<div class="form-footer-block">
+				<div class="form-switch-prompt" id="switch-prompt">
+					¿No tienes una cuenta aún?
+					<button type="button" class="switch-mode-action" onclick="switchMode('register')">Únete a Nails VIP</button>
+				</div>
+				<a href="index.html" class="back-to-home-link">
+					<span>← Volver al sitio principal</span>
+				</a>
+			</div>
+
+		</div>
+
+	</div>
+
+	<!-- Lógica de Autenticación, Registro y Redirección -->
+	<script>
+		let currentMode = 'login';
+
+		document.addEventListener('DOMContentLoaded', async () => {
+			// 1. Cargar correo guardado si el usuario marcó "Recordarme"
+			const rememberedEmail = localStorage.getItem('nailartist_remember_email');
+			if (rememberedEmail) {
+				const emailInput = document.getElementById('login-email');
+				const rememberCheckbox = document.getElementById('remember-me');
+				if (emailInput) emailInput.value = rememberedEmail;
+				if (rememberCheckbox) rememberCheckbox.checked = true;
+			}
+
+			// 2. Comprobar si ya existe una sesión activa persistente en Express/Node.js
+			await checkActiveSession();
+
+			// 3. Detectar parámetro ?mode=register en URL
+			const urlParams = new URLSearchParams(window.location.search);
+			if (urlParams.get('mode') === 'register') {
+				switchMode('register');
+			}
+		});
+
+		// Comprobar sesión activa
+		async function checkActiveSession() {
+			try {
+				const res = await fetch('/api/me');
+				const data = await res.json();
+
+				if (data.authenticated && data.user) {
+					const u = data.user;
+					localStorage.setItem('nailartist_user', JSON.stringify(u));
+
+					// Ocultar formularios y pestañas, mostrar panel de sesión activa
+					const tabs = document.querySelector('.auth-tabs-nav');
+					const formLogin = document.getElementById('form-login');
+					const formReg = document.getElementById('form-register');
+					const heading = document.getElementById('form-heading');
+					const subheading = document.getElementById('form-subheading');
+					const alreadyBox = document.getElementById('already-logged-in-box');
+					const greeting = document.getElementById('logged-user-greeting');
+					const info = document.getElementById('logged-user-info');
+					const btnDest = document.getElementById('btn-go-destination');
+					const switchPrompt = document.getElementById('switch-prompt');
+
+					if (tabs) tabs.style.display = 'none';
+					if (formLogin) formLogin.style.display = 'none';
+					if (formReg) formReg.style.display = 'none';
+					if (switchPrompt) switchPrompt.style.display = 'none';
+
+					if (heading) heading.innerText = `Hola, ${u.nombre}`;
+					if (subheading) subheading.innerText = 'Tu sesión está actualmente iniciada.';
+
+					if (alreadyBox) alreadyBox.style.display = 'block';
+					if (greeting) greeting.innerText = u.saludo || `¡Bienvenida, ${u.nombre}!`;
+					if (info) info.innerHTML = `Correo: <strong>${u.email}</strong> &nbsp;|&nbsp; Rol: <strong>${u.rol_nombre || u.rol}</strong> ${u.descuento_vip ? `&nbsp;|&nbsp; Descuento VIP: <strong>${u.descuento_vip}%</strong>` : ''}`;
+
+					const isAdm = u.rol_id === 1 || (u.rol && u.rol.toLowerCase() === 'administrador');
+					if (btnDest) {
+						btnDest.href = isAdm ? '/admin/index.html' : '/index.html';
+						btnDest.innerText = isAdm ? 'Ir al Panel Administrador 👑' : 'Ir al Catálogo de Servicios 💅';
+					}
+				}
+			} catch (err) {
+				console.warn('No se pudo verificar sesión previa:', err);
+			}
+		}
+
+		// Alternar entre Login y Registro
+		function switchMode(mode) {
+			currentMode = mode;
+			hideAlert();
+
+			const tabLogin = document.getElementById('tab-login');
+			const tabReg = document.getElementById('tab-register');
+			const formLogin = document.getElementById('form-login');
+			const formReg = document.getElementById('form-register');
+			const heading = document.getElementById('form-heading');
+			const subheading = document.getElementById('form-subheading');
+			const prompt = document.getElementById('switch-prompt');
+
+			if (mode === 'login') {
+				tabLogin.classList.add('active');
+				tabReg.classList.remove('active');
+				formLogin.style.display = 'block';
+				formReg.style.display = 'none';
+				heading.innerText = 'Bienvenida de nuevo';
+				subheading.innerText = 'Ingresa tus credenciales para acceder a tu cuenta.';
+				prompt.innerHTML = `¿No tienes una cuenta aún? <button type="button" class="switch-mode-action" onclick="switchMode('register')">Únete a Nails VIP</button>`;
+			} else {
+				tabReg.classList.add('active');
+				tabLogin.classList.remove('active');
+				formReg.style.display = 'block';
+				formLogin.style.display = 'none';
+				heading.innerText = 'Crea tu Cuenta VIP';
+				subheading.innerText = 'Regístrate hoy y recibe 15% de descuento en tu primera cita.';
+				prompt.innerHTML = `¿Ya tienes cuenta? <button type="button" class="switch-mode-action" onclick="switchMode('login')">Inicia Sesión aquí</button>`;
+			}
+		}
+
+		// Alternar visibilidad de contraseña
+		function togglePasswordVisibility(inputId, btn) {
+			const input = document.getElementById(inputId);
+			if (!input) return;
+			if (input.type === 'password') {
+				input.type = 'text';
+				btn.innerText = '🙈';
+			} else {
+				input.type = 'password';
+				btn.innerText = '👁️';
+			}
+		}
+
+		// Alertas de feedback
+		function showAlert(message, type = 'error') {
+			const box = document.getElementById('alert-box');
+			if (!box) return;
+			box.className = `alert-box alert-${type}`;
+			box.innerHTML = `${type === 'error' ? '⚠️' : '✨'} ${message}`;
+			box.style.display = 'block';
+		}
+
+		function hideAlert() {
+			const box = document.getElementById('alert-box');
+			if (box) box.style.display = 'none';
+		}
+
+		// Procesar Login
+		async function handleLoginSubmit(e) {
+			e.preventDefault();
+			hideAlert();
+
+			const email = document.getElementById('login-email').value.trim();
+			const password = document.getElementById('login-password').value;
+			const remember = document.getElementById('remember-me').checked;
+
+			if (!email) {
+				showAlert('Ingresa tu correo electrónico.');
+				return;
+			}
+
+			if (!password) {
+				showAlert('Ingresa tu contraseña.');
+				return;
+			}
+
+			if (remember) {
+				localStorage.setItem('nailartist_remember_email', email);
+			} else {
+				localStorage.removeItem('nailartist_remember_email');
+			}
+
+			const btn = document.getElementById('btn-login-submit');
+			const spinner = document.getElementById('spinner-login');
+			const btnText = document.getElementById('btn-login-text');
+			btn.disabled = true;
+			spinner.style.display = 'inline-block';
+			btnText.innerText = 'Verificando...';
+
+			try {
+				const response = await fetch('/api/login', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Accept': 'application/json'
+					},
+					body: JSON.stringify({ email, password })
+				});
+
+				const data = await response.json();
+
+				if (data.success) {
+					showAlert(data.message, 'success');
+					btnText.innerText = '¡Acceso Concedido!';
+
+					const user = data.data ? data.data.usuario : null;
+					if (user) {
+						localStorage.setItem('nailartist_user', JSON.stringify(user));
+					}
+
+					setTimeout(() => {
+						if (user && (user.rol_id === 1 || (user.rol && user.rol.toLowerCase() === 'administrador') || (user.rol && user.rol.toLowerCase() === 'admin'))) {
+							window.location.href = '/admin/index.html';
+						} else {
+							window.location.href = '/index.html';
+						}
+					}, 700);
+				} else {
+					showAlert(data.message || 'Correo o contraseña incorrectos.', 'error');
+					btn.disabled = false;
+					spinner.style.display = 'none';
+					btnText.innerText = 'INICIAR SESIÓN';
+				}
+			} catch (err) {
+				console.error('Error al iniciar sesión:', err);
+				showAlert('No se pudo conectar con el servidor Node.js.', 'error');
+				btn.disabled = false;
+				spinner.style.display = 'none';
+				btnText.innerText = 'INICIAR SESIÓN';
+			}
+		}
+
+		// Procesar Registro VIP
+		async function handleRegisterSubmit(e) {
+			e.preventDefault();
+			hideAlert();
+
+			const nombre = document.getElementById('reg-nombre').value.trim();
+			const apellido = document.getElementById('reg-apellido').value.trim();
+			const email = document.getElementById('reg-email').value.trim();
+			const telefono = document.getElementById('reg-telefono').value.trim();
+			const password = document.getElementById('reg-password').value;
+			const confirmPassword = document.getElementById('reg-confirm-password').value;
+
+			if (!nombre) {
+				showAlert('Por favor ingresa tu nombre.');
+				return;
+			}
+			if (!email) {
+				showAlert('Por favor ingresa tu correo electrónico.');
+				return;
+			}
+			if (!password) {
+				showAlert('Por favor ingresa una contraseña.');
+				return;
+			}
+
+			if (password.length < 6) {
+				showAlert('La contraseña debe tener al menos 6 caracteres.');
+				return;
+			}
+
+			if (confirmPassword && password !== confirmPassword) {
+				showAlert('Las contraseñas no coinciden. Por favor verifícalas.');
+				return;
+			}
+
+			const btn = document.getElementById('btn-reg-submit');
+			const spinner = document.getElementById('spinner-reg');
+			const btnText = document.getElementById('btn-reg-text');
+			btn.disabled = true;
+			spinner.style.display = 'inline-block';
+			btnText.innerText = 'Creando cuenta...';
+
+			try {
+				const response = await fetch('/api/register', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Accept': 'application/json'
+					},
+					body: JSON.stringify({ nombre, apellido, email, telefono, password, confirm_password: confirmPassword })
+				});
+
+				const data = await response.json();
+
+				if (data.success) {
+					showAlert(data.message || 'Cuenta creada correctamente.', 'success');
+					btnText.innerText = '¡Bienvenida!';
+
+					const user = data.data ? data.data.usuario : null;
+					if (user) {
+						localStorage.setItem('nailartist_user', JSON.stringify(user));
+					}
+
+					setTimeout(() => {
+						window.location.href = '/index.html';
+					}, 900);
+				} else {
+					showAlert(data.message || 'Error al registrar tu cuenta.', 'error');
+					btn.disabled = false;
+					spinner.style.display = 'none';
+					btnText.innerText = 'CREAR MI CUENTA VIP';
+				}
+			} catch (err) {
+				console.error('Error al registrar usuario:', err);
+				showAlert('Error de conexión con el servidor.', 'error');
+				btn.disabled = false;
+				spinner.style.display = 'none';
+				btnText.innerText = 'CREAR MI CUENTA VIP';
+			}
+		}
+
+		async function handleLogout() {
+			try {
+				await fetch('/api/logout', { method: 'POST' });
+				localStorage.removeItem('nailartist_user');
+				location.reload();
+			} catch (e) {
+				location.reload();
+			}
+		}
+
+		function handleForgotPassword(e) {
+			e.preventDefault();
+			const email = document.getElementById('login-email').value.trim();
+			const targetEmail = email ? email : 'tu correo registrado';
+			alert(`💌 Para restablecer tu contraseña:\n\nPor favor envía un mensaje a nuestro WhatsApp oficial (+591 60737902) con ${targetEmail} y te enviaremos tu enlace de recuperación.`);
+		}
+	</script>
+
+</body>
+
+</html>
