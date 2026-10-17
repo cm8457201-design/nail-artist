@@ -10,6 +10,63 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="assets/css/admin.css">
+    <style>
+        .filter-header-bar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .filter-tabs-admin {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .tab-filter-btn {
+            padding: 8px 16px;
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab-filter-btn.active, .tab-filter-btn:hover {
+            background: var(--pink-vivid);
+            color: #fff;
+            border-color: var(--pink-vivid);
+        }
+        .date-filter-select {
+            padding: 8px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: #fff;
+            color: var(--text-main);
+            outline: none;
+        }
+        .service-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed rgba(255, 0, 102, 0.15);
+        }
+        .service-item-row:last-child {
+            border-bottom: none;
+        }
+        .service-item-name {
+            font-family: var(--font-service-name);
+            font-weight: 700;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+    </style>
 </head>
 <body>
 
@@ -30,25 +87,25 @@
         <nav class="sidebar-nav">
             <div class="nav-section-title">Principal</div>
             <ul class="nav-list">
-                <li><a href="index.html" class="nav-link"><span class="nav-icon"></span><span>Dashboard</span></a></li>
+                <li><a href="index.html" class="nav-link"><span class="nav-icon">📊</span><span>Dashboard</span></a></li>
             </ul>
 
             <div class="nav-section-title">Gestión de Negocio</div>
             <ul class="nav-list">
-                <li><a href="citas.html" class="nav-link active"><span class="nav-icon"></span><span>Citas & Reservas</span></a></li>
-                <li><a href="servicios.html" class="nav-link"><span class="nav-icon"></span><span>Servicios & Precios</span></a></li>
-                <li><a href="usuarios.html" class="nav-link"><span class="nav-icon">z</span><span>Usuarios & Roles</span></a></li>
+                <li><a href="citas.html" class="nav-link active"><span class="nav-icon">📅</span><span>Citas & Reservas</span></a></li>
+                <li><a href="servicios.html" class="nav-link"><span class="nav-icon">💅</span><span>Servicios & Precios</span></a></li>
+                <li><a href="usuarios.html" class="nav-link"><span class="nav-icon">👥</span><span>Usuarios & Roles</span></a></li>
             </ul>
 
             <div class="nav-section-title">Interacción & Feedback</div>
             <ul class="nav-list">
-                <li><a href="resenas.html" class="nav-link"><span class="nav-icon"></span><span>Reseñas & Opiniones</span></a></li>
-                <li><a href="mensajes.html" class="nav-link"><span class="nav-icon"></span><span>Mensajes de Contacto</span></a></li>
+                <li><a href="resenas.html" class="nav-link"><span class="nav-icon">⭐</span><span>Reseñas & Opiniones</span></a></li>
+                <li><a href="mensajes.html" class="nav-link"><span class="nav-icon">✉️</span><span>Mensajes de Contacto</span></a></li>
             </ul>
 
             <div class="nav-section-title">Enlaces Directos</div>
             <ul class="nav-list">
-                <li><a href="/index.html" target="_blank" class="nav-link"><span class="nav-icon"></span><span>Ver Sitio Web</span></a></li>
+                <li><a href="/index.html" target="_blank" class="nav-link"><span class="nav-icon">🌐</span><span>Ver Sitio Web</span></a></li>
                 <li><a href="javascript:void(0)" onclick="cerrarSesionAdmin()" class="nav-link" style="color: #ff4d79;"><span class="nav-icon">🚪</span><span>Cerrar Sesión</span></a></li>
             </ul>
         </nav>
@@ -57,10 +114,10 @@
     <main class="main-content">
         <header class="admin-header">
             <div class="header-left">
-                <button id="mobile-sidebar-toggle" class="mobile-toggle-btn">☰</button>
+                <button id="mobile-sidebar-toggle" class="mobile-toggle-btn" aria-label="Abrir Menú">☰</button>
                 <div class="page-title-wrap">
                     <h1 class="page-heading">Citas & Reservas Agendadas</h1>
-                    <span class="breadcrumb">Control de estados, fechas, WhatsApp y totales</span>
+                    <span class="breadcrumb">Búsqueda, filtros por estado, cambio de estado y desglose de servicios</span>
                 </div>
             </div>
             <div class="header-right">
@@ -77,12 +134,28 @@
 
         <div class="admin-card">
             <div class="card-header">
-                <h3 class="card-title"> Listado Completo de Citas</h3>
+                <h3 class="card-title">📅 Listado Completo de Citas</h3>
+                <span class="badge badge-activo" id="badge-total-citas">0 citas</span>
             </div>
             
             <div class="card-body">
-                <div class="filter-bar">
-                    <input type="text" class="search-input" data-table-search="tabla-citas" placeholder=" Buscar por código, cliente o teléfono...">
+                <div class="filter-header-bar">
+                    <div class="filter-tabs-admin">
+                        <button type="button" class="tab-filter-btn active" onclick="filtrarCitasEstado('todas', this)">Todas</button>
+                        <button type="button" class="tab-filter-btn" onclick="filtrarCitasEstado('Pendiente', this)">⏳ Pendientes</button>
+                        <button type="button" class="tab-filter-btn" onclick="filtrarCitasEstado('Confirmada', this)">✨ Confirmadas</button>
+                        <button type="button" class="tab-filter-btn" onclick="filtrarCitasEstado('Completada', this)">✅ Completadas</button>
+                        <button type="button" class="tab-filter-btn" onclick="filtrarCitasEstado('Cancelada', this)">❌ Canceladas</button>
+                    </div>
+
+                    <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                        <select id="select-filtro-fecha" class="date-filter-select" onchange="filtrarCitasFecha(this.value)">
+                            <option value="todas">📅 Todas las fechas</option>
+                            <option value="hoy">⭐ Citas de Hoy</option>
+                            <option value="futuras">🗓️ Citas Próximas</option>
+                        </select>
+                        <input type="text" id="input-buscar-citas" class="search-input" placeholder="🔍 Buscar por código, cliente o teléfono..." oninput="buscarCitasTexto(this.value)">
+                    </div>
                 </div>
 
                 <div class="table-responsive">
@@ -97,10 +170,11 @@
                                 <th>Método</th>
                                 <th>Estado</th>
                                 <th>Cambiar Estado</th>
+                                <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-citas">
-                            <tr><td colspan="8" style="text-align: center; padding: 30px;">Cargando citas desde SQLite...</td></tr>
+                            <tr><td colspan="9" style="text-align: center; padding: 30px;">Cargando citas desde SQLite...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -109,8 +183,89 @@
     </main>
 </div>
 
+<!-- ========================================================================= -->
+<!-- MODAL: DETALLE COMPLETO DE CITA ADMINISTRADOR                             -->
+<!-- ========================================================================= -->
+<div id="modal-detalle-cita-admin" class="modal-overlay">
+    <div class="modal-card" style="max-width: 650px;">
+        <div class="modal-header">
+            <div>
+                <h3 class="modal-title" id="modal-adm-codigo">Cita RES-2026-0000</h3>
+                <span style="font-size:0.82rem; color:var(--text-muted);" id="modal-adm-fecha-creacion">Creada: --/--/----</span>
+            </div>
+            <button class="modal-close" onclick="closeAdminModal('modal-detalle-cita-admin')">✕</button>
+        </div>
+
+        <div class="modal-body" style="padding: 24px;">
+            <!-- Datos del Cliente -->
+            <div style="background:var(--bg-surface-soft); border:1px solid var(--border-pink); border-radius:16px; padding:16px; margin-bottom:18px;">
+                <h4 style="font-size:0.9rem; font-weight:800; color:var(--pink-vivid); margin-bottom:8px;">👤 Información de la Clienta:</h4>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:0.9rem;">
+                    <div>Nombre: <strong id="modal-adm-cliente-nombre">-</strong></div>
+                    <div>Teléfono: <strong id="modal-adm-cliente-tel">-</strong></div>
+                    <div style="grid-column:1/-1;">Correo: <strong id="modal-adm-cliente-email">-</strong></div>
+                </div>
+                <div style="margin-top:10px;">
+                    <a id="modal-adm-whatsapp-btn" href="#" target="_blank" class="btn btn-secondary" style="background:#25D366; color:#fff; border:none; padding:6px 14px; font-size:0.85rem; display:inline-flex; align-items:center; gap:6px;">
+                        <span>💬 Contactar por WhatsApp</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Desglose de Servicios -->
+            <div style="background:#ffffff; border:1px solid var(--border-soft); border-radius:16px; padding:16px; margin-bottom:18px;">
+                <h4 style="font-size:0.9rem; font-weight:800; color:var(--text-main); margin-bottom:10px;">💅 Servicios Solicitados:</h4>
+                <div id="modal-adm-lista-servicios">
+                    <!-- Servicios de detalle_cita -->
+                </div>
+                <div style="border-top:1px solid var(--border-light); margin-top:12px; padding-top:10px; display:flex; justify-content:space-between; font-size:1.1rem; font-weight:900;">
+                    <span>Total Final:</span>
+                    <span style="color:var(--pink-vivid);" id="modal-adm-total-bs">Bs. 0</span>
+                </div>
+            </div>
+
+            <!-- Programación y Observaciones -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:18px; font-size:0.9rem;">
+                <div style="background:var(--bg-surface-soft); padding:12px; border-radius:12px;">
+                    <span style="color:var(--text-muted); display:block; font-size:0.8rem;">📅 Fecha de Cita:</span>
+                    <strong id="modal-adm-fecha-cita">-</strong>
+                </div>
+                <div style="background:var(--bg-surface-soft); padding:12px; border-radius:12px;">
+                    <span style="color:var(--text-muted); display:block; font-size:0.8rem;">⏱ Hora de Cita:</span>
+                    <strong id="modal-adm-hora-cita">-</strong>
+                </div>
+                <div style="grid-column:1/-1; background:var(--bg-surface-soft); padding:12px; border-radius:12px;">
+                    <span style="color:var(--text-muted); display:block; font-size:0.8rem;">📝 Observaciones:</span>
+                    <span id="modal-adm-observaciones" style="font-weight:600;">-</span>
+                </div>
+            </div>
+
+            <!-- Cambiar Estado desde Modal -->
+            <div style="display:flex; align-items:center; justify-content:space-between; background:#fff8fb; border:1px solid var(--border-pink); padding:14px; border-radius:14px;">
+                <span style="font-weight:800; font-size:0.92rem;">Estado Actual:</span>
+                <select id="modal-adm-select-estado" style="padding:8px 14px; border-radius:10px; border:1px solid var(--border-pink); font-size:0.9rem; font-weight:700;">
+                    <option value="Pendiente">⏳ Pendiente</option>
+                    <option value="Confirmada">✨ Confirmada</option>
+                    <option value="Completada">✅ Completada</option>
+                    <option value="Cancelada">❌ Cancelada</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="modal-footer" style="padding:16px 24px; display:flex; justify-content:flex-end; gap:10px;">
+            <button type="button" class="btn btn-secondary" onclick="closeAdminModal('modal-detalle-cita-admin')">Cerrar</button>
+            <button type="button" class="btn btn-primary" onclick="guardarEstadoDesdeModal()">💾 Actualizar Estado</button>
+        </div>
+    </div>
+</div>
+
 <script src="assets/js/admin.js"></script>
 <script>
+let todasLasCitas = [];
+let citaEnModal = null;
+let filtroEstadoActual = 'todas';
+let filtroFechaActual = 'todas';
+
 document.addEventListener('DOMContentLoaded', () => {
     cargarCitas();
 });
@@ -120,47 +275,105 @@ async function cargarCitas() {
     try {
         const res = await apiAdminRequest('/api/admin/citas', {}, 'GET');
         if (res.success && res.data) {
-            if (res.data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px;">No hay citas agendadas aún.</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = res.data.map(c => {
-                let stClass = 'badge-pendiente';
-                if (c.estado === 'Confirmada') stClass = 'badge-confirmada';
-                if (c.estado === 'Completada') stClass = 'badge-activo';
-                if (c.estado === 'Cancelada') stClass = 'badge-bloqueado';
-
-                return `
-                    <tr>
-                        <td><strong style="color:var(--pink-vivid); font-family:monospace;">${c.codigo_reserva}</strong></td>
-                        <td>
-                            <div style="font-weight:700;">${c.cliente_nombre} ${c.cliente_apellido || ''}</div>
-                            <div style="font-size:0.8rem; color:var(--text-muted);">📱 ${c.cliente_telefono || 'Sin tel'}</div>
-                        </td>
-                        <td>
-                            <div><strong>${c.fecha_cita}</strong></div>
-                            <small style="color:var(--text-muted);">${c.hora_cita}</small>
-                        </td>
-                        <td><strong style="color:var(--pink-vivid); font-size:1.05rem;">Bs. ${c.total_final_bs}</strong></td>
-                        <td><small>Bs. ${c.descuento_aplicado || '0.00'}</small></td>
-                        <td><span style="font-size:0.85rem;">💬 ${c.metodo_contacto || 'WhatsApp'}</span></td>
-                        <td><span class="badge ${stClass}">${c.estado}</span></td>
-                        <td>
-                            <select onchange="cambiarEstadoCita(${c.id}, this.value)" style="padding:4px 8px; border-radius:8px; border:1px solid var(--border-soft); font-size:0.85rem;">
-                                <option value="Pendiente" ${c.estado === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
-                                <option value="Confirmada" ${c.estado === 'Confirmada' ? 'selected' : ''}>✨ Confirmada</option>
-                                <option value="Completada" ${c.estado === 'Completada' ? 'selected' : ''}>✅ Completada</option>
-                                <option value="Cancelada" ${c.estado === 'Cancelada' ? 'selected' : ''}>❌ Cancelada</option>
-                            </select>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
+            todasLasCitas = res.data;
+            document.getElementById('badge-total-citas').innerText = `${todasLasCitas.length} citas`;
+            aplicarFiltros();
         }
     } catch (err) {
         console.error('Error al cargar citas:', err);
     }
+}
+
+function renderizarTablaCitas(citas) {
+    const tbody = document.getElementById('tbody-citas');
+    if (citas.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:35px; color:var(--text-muted);">No se encontraron citas con los filtros seleccionados.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = citas.map(c => {
+        let stClass = 'badge-pendiente';
+        if (c.estado === 'Confirmada') stClass = 'badge-confirmada';
+        if (c.estado === 'Completada') stClass = 'badge-activo';
+        if (c.estado === 'Cancelada') stClass = 'badge-bloqueado';
+
+        return `
+            <tr>
+                <td><strong style="color:var(--pink-vivid); font-family:monospace; font-size:0.95rem;">${c.codigo_reserva}</strong></td>
+                <td>
+                    <div style="font-weight:700;">${c.cliente_nombre} ${c.cliente_apellido || ''}</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted);">📱 ${c.cliente_telefono || 'Sin tel'}</div>
+                </td>
+                <td>
+                    <div><strong>${c.fecha_cita}</strong></div>
+                    <small style="color:var(--text-muted);">${c.hora_cita}</small>
+                </td>
+                <td><strong style="color:var(--pink-vivid); font-size:1.05rem;">Bs. ${c.total_final_bs}</strong></td>
+                <td><small>Bs. ${c.descuento_aplicado || '0.00'}</small></td>
+                <td><span style="font-size:0.85rem;">💬 ${c.metodo_contacto || 'WhatsApp'}</span></td>
+                <td><span class="badge ${stClass}">${c.estado}</span></td>
+                <td>
+                    <select onchange="cambiarEstadoCita(${c.id}, this.value)" style="padding:6px 10px; border-radius:10px; border:1px solid var(--border-soft); font-size:0.85rem; font-weight:700; background:#fff;">
+                        <option value="Pendiente" ${c.estado === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
+                        <option value="Confirmada" ${c.estado === 'Confirmada' ? 'selected' : ''}>✨ Confirmada</option>
+                        <option value="Completada" ${c.estado === 'Completada' ? 'selected' : ''}>✅ Completada</option>
+                        <option value="Cancelada" ${c.estado === 'Cancelada' ? 'selected' : ''}>❌ Cancelada</option>
+                    </select>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-secondary" onclick="abrirModalDetalleCitaAdmin(${c.id})" style="padding:6px 12px; font-size:0.82rem;">
+                        👁️ Detalle
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function aplicarFiltros() {
+    let filtradas = [...todasLasCitas];
+
+    // 1. Filtro por Estado
+    if (filtroEstadoActual !== 'todas') {
+        filtradas = filtradas.filter(c => (c.estado || '').toLowerCase() === filtroEstadoActual.toLowerCase());
+    }
+
+    // 2. Filtro por Fecha
+    const hoyStr = new Date().toISOString().split('T')[0];
+    if (filtroFechaActual === 'hoy') {
+        filtradas = filtradas.filter(c => c.fecha_cita === hoyStr);
+    } else if (filtroFechaActual === 'futuras') {
+        filtradas = filtradas.filter(c => c.fecha_cita >= hoyStr);
+    }
+
+    // 3. Búsqueda de Texto
+    const searchVal = (document.getElementById('input-buscar-citas')?.value || '').trim().toLowerCase();
+    if (searchVal) {
+        filtradas = filtradas.filter(c => 
+            (c.codigo_reserva || '').toLowerCase().includes(searchVal) ||
+            (c.cliente_nombre || '').toLowerCase().includes(searchVal) ||
+            (c.cliente_apellido || '').toLowerCase().includes(searchVal) ||
+            (c.cliente_telefono || '').toLowerCase().includes(searchVal)
+        );
+    }
+
+    renderizarTablaCitas(filtradas);
+}
+
+function filtrarCitasEstado(estado, btn) {
+    filtroEstadoActual = estado;
+    document.querySelectorAll('.tab-filter-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    aplicarFiltros();
+}
+
+function filtrarCitasFecha(fechaVal) {
+    filtroFechaActual = fechaVal;
+    aplicarFiltros();
+}
+
+function buscarCitasTexto(txt) {
+    aplicarFiltros();
 }
 
 async function cambiarEstadoCita(id, nuevoEstado) {
@@ -171,6 +384,76 @@ async function cambiarEstadoCita(id, nuevoEstado) {
     } else {
         showAdminToast(res.message, 'error');
     }
+}
+
+async function abrirModalDetalleCitaAdmin(id) {
+    try {
+        const res = await apiAdminRequest(`/api/admin/citas/${id}/detalle`, {}, 'GET');
+        if (!res.success || !res.data) {
+            showAdminToast('No se pudo cargar la cita.', 'error');
+            return;
+        }
+
+        const cita = res.data;
+        citaEnModal = cita;
+
+        document.getElementById('modal-adm-codigo').innerText = `Cita ${cita.codigo_reserva}`;
+        document.getElementById('modal-adm-fecha-creacion').innerText = `Creada el: ${cita.fecha_creacion || 'Registro web'}`;
+        document.getElementById('modal-adm-cliente-nombre').innerText = `${cita.cliente_nombre} ${cita.cliente_apellido || ''}`.trim();
+        document.getElementById('modal-adm-cliente-tel').innerText = cita.cliente_telefono || 'No registrado';
+        document.getElementById('modal-adm-cliente-email').innerText = cita.cliente_email || 'No registrado';
+
+        // Enlace WhatsApp
+        const telLimpio = (cita.cliente_telefono || '').replace(/[^0-9]/g, '');
+        const btnWa = document.getElementById('modal-adm-whatsapp-btn');
+        if (telLimpio) {
+            btnWa.href = `https://wa.me/${telLimpio}?text=¡Hola%20${encodeURIComponent(cita.cliente_nombre)}!%20Te%20escribimos%20de%20NailArtist%20Studio%20sobre%20tu%20reserva%20${cita.codigo_reserva}%20💅`;
+            btnWa.style.display = 'inline-flex';
+        } else {
+            btnWa.style.display = 'none';
+        }
+
+        // Servicios de detalle_cita
+        const sBox = document.getElementById('modal-adm-lista-servicios');
+        if (cita.servicios && cita.servicios.length > 0) {
+            sBox.innerHTML = cita.servicios.map(s => `
+                <div class="service-item-row">
+                    <div>
+                        <div class="service-item-name">${s.servicio_nombre || 'Servicio de uñas'}</div>
+                        <small style="color:var(--text-muted);">Cantidad: ${s.cantidad} &nbsp;•&nbsp; Bs. ${s.precio_unitario} c/u</small>
+                    </div>
+                    <strong style="color:var(--pink-vivid);">Bs. ${s.subtotal}</strong>
+                </div>
+            `).join('');
+        } else {
+            sBox.innerHTML = `
+                <div class="service-item-row">
+                    <div>
+                        <div class="service-item-name">Servicio personalizado</div>
+                        <small style="color:var(--text-muted);">Cita programada</small>
+                    </div>
+                    <strong style="color:var(--pink-vivid);">Bs. ${cita.total_final_bs}</strong>
+                </div>
+            `;
+        }
+
+        document.getElementById('modal-adm-total-bs').innerText = `Bs. ${cita.total_final_bs}`;
+        document.getElementById('modal-adm-fecha-cita').innerText = cita.fecha_cita || '-';
+        document.getElementById('modal-adm-hora-cita').innerText = cita.hora_cita || '-';
+        document.getElementById('modal-adm-observaciones').innerText = cita.observaciones || 'Sin observaciones registradas';
+        document.getElementById('modal-adm-select-estado').value = cita.estado || 'Pendiente';
+
+        openAdminModal('modal-detalle-cita-admin');
+    } catch (err) {
+        console.error('Error al abrir modal detalle cita:', err);
+    }
+}
+
+async function guardarEstadoDesdeModal() {
+    if (!citaEnModal) return;
+    const nuevoEstado = document.getElementById('modal-adm-select-estado').value;
+    await cambiarEstadoCita(citaEnModal.id, nuevoEstado);
+    closeAdminModal('modal-detalle-cita-admin');
 }
 </script>
 </body>

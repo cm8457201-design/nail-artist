@@ -124,24 +124,78 @@ router.post(['/', '/crear_reserva'], (req, res) => {
  * GET /api/reservas/mis-citas
  */
 router.get('/mis-citas', (req, res) => {
-    if (!req.session || !req.session.userId) {
+    const userId = req.user ? req.user.id : (req.session ? req.session.userId : null);
+    if (!userId) {
         return res.status(401).json({ success: false, message: 'Inicia sesión para ver tus citas.' });
     }
 
     try {
         const citas = Database.all(
             `SELECT c.*, 
-                    (SELECT COUNT(*) FROM detalle_cita d WHERE d.cita_id = c.id) AS total_servicios
+                    (SELECT COUNT(*) FROM detalle_cita d WHERE d.cita_id = c.id) AS total_servicios,
+                    (SELECT GROUP_CONCAT(COALESCE(s.nombre, 'Servicio'), ', ') 
+                     FROM detalle_cita d 
+                     LEFT JOIN servicios s ON d.servicio_id = s.id 
+                     WHERE d.cita_id = c.id) AS servicios_resumen
              FROM citas c
              WHERE c.usuario_id = ?
              ORDER BY c.id DESC`,
-            [req.session.userId]
+            [userId]
         );
 
         return res.json({ success: true, data: citas });
     } catch (err) {
         console.error('Error al obtener citas del usuario:', err);
         return res.status(500).json({ success: false, message: 'Error al consultar citas.' });
+    }
+});
+
+/**
+ * GET /api/reservas/detalle/:id & /api/reservas/:id
+ * Obtener detalle completo de una reserva con todos los servicios
+ */
+router.get(['/detalle/:id', '/:id'], (req, res) => {
+    const userId = req.user ? req.user.id : (req.session ? req.session.userId : null);
+    if (!userId) {
+        return res.status(401).json({ success: false, message: 'Inicia sesión para consultar el detalle.' });
+    }
+
+    try {
+        const citaId = parseInt(req.params.id, 10);
+        const isAdmin = req.user && (req.user.rol_id === 1 || (req.user.rol_nombre || '').toLowerCase() === 'administrador');
+
+        // Si es admin puede ver cualquier cita; si es cliente sólo sus citas
+        const queryCita = isAdmin
+            ? `SELECT c.*, u.nombre AS cliente_nombre, u.apellido AS cliente_apellido, u.telefono AS cliente_telefono, u.email AS cliente_email 
+               FROM citas c INNER JOIN usuarios u ON c.usuario_id = u.id WHERE c.id = ?`
+            : `SELECT c.*, u.nombre AS cliente_nombre, u.apellido AS cliente_apellido, u.telefono AS cliente_telefono, u.email AS cliente_email 
+               FROM citas c INNER JOIN usuarios u ON c.usuario_id = u.id WHERE c.id = ? AND c.usuario_id = ?`;
+        
+        const params = isAdmin ? [citaId] : [citaId, userId];
+        const cita = Database.get(queryCita, params);
+
+        if (!cita) {
+            return res.status(404).json({ success: false, message: 'Reserva no encontrada o no autorizada.' });
+        }
+
+        const items = Database.all(
+            `SELECT d.*, s.nombre AS servicio_nombre, s.imagen AS servicio_imagen, s.duracion_minutos
+             FROM detalle_cita d
+             LEFT JOIN servicios s ON d.servicio_id = s.id
+             WHERE d.cita_id = ?`,
+            [citaId]
+        );
+
+        return res.json({
+            success: true,
+            data: {
+                ...cita,
+                servicios: items
+            }
+        });
+    } catch (err) {
+        console.error('Error al obtener detalle de reserva:', err);
+        return res.status(500).json({ success: false, message: 'Error al obtener detalle de la cita.' });
     }
 });
 

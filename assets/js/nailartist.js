@@ -117,12 +117,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 	await inicializarSesionUsuario();
 
 	// ==========================================
-	// 5. CARRITO DE SERVICIOS
+	// 5. CARGA DINÁMICA DE SERVICIOS (SQLITE API)
+	// ==========================================
+	await cargarServiciosCatalogo();
+
+	// ==========================================
+	// 6. CARRITO DE SERVICIOS
 	// ==========================================
 	initCart();
 
 	// ==========================================
-	// 6. SISTEMA DE RESEÑAS EN VIVO
+	// 7. SISTEMA DE RESEÑAS EN VIVO
 	// ==========================================
 	initReviewsSystem();
 });
@@ -176,11 +181,11 @@ function actualizarHeaderConUsuario(u) {
 		const isMani = u.rol_id === 3 || (u.rol && u.rol.toLowerCase() === 'manicurista');
 
 		let badgeIcon = '💖';
-		let roleLabel = 'Mi Cuenta';
+		let roleLabel = 'Mi Panel';
 		if (isAdm) { badgeIcon = '👑'; roleLabel = 'Panel Admin'; }
 		else if (isMani) { badgeIcon = '💅'; roleLabel = 'Manicurista'; }
 
-		// Reemplazar enlace con botón que abre Mi Cuenta o Panel Admin
+		// Reemplazar enlace con botón que abre Mi Panel Cliente o Panel Admin
 		authLink.innerHTML = `${badgeIcon} ${u.nombre} <small style="font-size:0.75rem; opacity:0.85;">(${roleLabel})</small>`;
 		authLink.removeAttribute('href');
 		authLink.style.cursor = 'pointer';
@@ -192,7 +197,7 @@ function actualizarHeaderConUsuario(u) {
 			if (isAdm) {
 				window.location.href = '/admin/index.html';
 			} else {
-				abrirModalMiCuenta();
+				window.location.href = '/cliente.html';
 			}
 		};
 	}
@@ -731,3 +736,204 @@ async function enviarResena(servicioId) {
 		alert('Error de conexión al enviar tu reseña.');
 	}
 }
+
+// =============================================================================
+// CARGA Y RENDERIZADO DINÁMICO DE SERVICIOS DESDE SQLITE (API /api/servicios)
+// =============================================================================
+async function cargarServiciosCatalogo() {
+	const gridIndex = document.getElementById('contenedor-servicios');
+	const gridCatalogo = document.getElementById('contenedor-servicios-catalogo');
+	const allGrids = document.querySelectorAll('.services-grid');
+
+	if (!gridIndex && !gridCatalogo && !allGrids.length) return;
+
+	try {
+		const res = await fetch('/api/servicios?_t=' + Date.now(), {
+			headers: { 'Cache-Control': 'no-cache' }
+		});
+		if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+		const result = await res.json();
+
+		if (!result.success || !Array.isArray(result.data)) {
+			console.warn('Respuesta inesperada al obtener servicios:', result);
+			return;
+		}
+
+		const servicios = result.data;
+		if (servicios.length === 0) {
+			const emptyMsg = `
+				<div style="grid-column: 1 / -1; text-align:center; padding: 50px 20px; background: rgba(255,255,255,0.7); border-radius: 20px; border: 1px dashed var(--border-pink);">
+					<p style="font-size: 2.5rem; margin-bottom: 8px;">💅</p>
+					<h3 style="font-family: var(--font-title); color: var(--pink-vivid); margin-bottom: 6px;">Próximamente Más Servicios</h3>
+					<p style="color: var(--text-muted);">Estamos actualizando nuestro catálogo exclusivo de tratamientos de uñas.</p>
+				</div>
+			`;
+			if (gridIndex) gridIndex.innerHTML = emptyMsg;
+			if (gridCatalogo) gridCatalogo.innerHTML = emptyMsg;
+			return;
+		}
+
+		// Generar HTML fiel al diseño original de NailArtist
+		const renderizarTarjetas = (lista) => {
+			return lista.map((s, idx) => {
+				const num = idx + 1;
+				const safeNombre = escapeHtml(s.nombre || 'Servicio');
+				const safeJsNombre = escapeJs(s.nombre || 'Servicio');
+				const safeCat = escapeHtml(s.categoria_nombre || 'Especial');
+				const safeDesc = escapeHtml(s.descripcion || '');
+				const precio = Number(s.precio || 0);
+				const calif = s.calificacion_promedio ? Number(s.calificacion_promedio).toFixed(1) : (s.calificacion ? Number(s.calificacion).toFixed(1) : '5.0');
+
+				const durMin = parseInt(s.duracion_minutos, 10) || 60;
+				let durTexto = `~${durMin}m`;
+				if (durMin >= 60) {
+					const horas = Math.floor(durMin / 60);
+					const mins = durMin % 60;
+					durTexto = mins > 0 ? `~${horas}h ${mins}m` : `~${horas}h 00m`;
+				}
+
+				let imgPath = (s.imagen || 'images/service_acrilicas.jpg').trim();
+				if (imgPath.startsWith('/')) imgPath = imgPath.substring(1);
+				const urlDetalle = s.url_detalle && s.url_detalle.trim() ? s.url_detalle.trim() : 'servicios.html';
+
+				return `
+					<div class="service-card" data-service-id="${s.id}">
+						<div class="card-img-holder">
+							<img src="${imgPath}" alt="${safeNombre}" loading="lazy" onerror="this.onerror=null; this.src='images/service_acrilicas.jpg';" />
+							<span class="card-category-badge">${safeCat}</span>
+							<div class="price-badge">Bs. ${precio}</div>
+						</div>
+						<div class="card-content">
+							<div class="card-meta">
+								<div class="card-rating">★★★★★ <span>(${calif})</span></div>
+								<span class="card-duration">⏱ ${durTexto}</span>
+							</div>
+							<h3 class="card-title">${num}. ${safeNombre}</h3>
+							<p class="card-desc">${safeDesc}</p>
+							<div class="card-actions-group">
+								<a href="${urlDetalle}" class="btn-card-details">🔍 Ver Detalles</a>
+								<button type="button" class="btn-add-cart" onclick="agregarAlCarrito('${safeJsNombre}', ${precio})">
+									🛒 Añadir
+								</button>
+							</div>
+						</div>
+					</div>
+				`;
+			}).join('');
+		};
+
+		const cardsHtml = renderizarTarjetas(servicios);
+
+		if (gridIndex) {
+			gridIndex.innerHTML = cardsHtml;
+		}
+
+		if (gridCatalogo) {
+			gridCatalogo.innerHTML = cardsHtml;
+		}
+
+		if (!gridIndex && !gridCatalogo) {
+			allGrids.forEach(grid => {
+				grid.innerHTML = cardsHtml;
+			});
+		}
+
+		// Actualizar dropdown del header con la lista real de SQLite
+		actualizarDropdownServicios(servicios);
+
+		// Reinicializar animaciones reveal en las tarjetas inyectadas
+		if ('IntersectionObserver' in window) {
+			const newCards = document.querySelectorAll('.service-card');
+			const revealObserver = new IntersectionObserver((entries, observer) => {
+				entries.forEach(entry => {
+					if (entry.isIntersecting) {
+						entry.target.style.opacity = '1';
+						entry.target.style.transform = 'translateY(0)';
+						observer.unobserve(entry.target);
+					}
+				});
+			}, { threshold: 0.1 });
+
+			newCards.forEach(el => {
+				el.style.opacity = '0';
+				el.style.transform = 'translateY(25px)';
+				el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+				revealObserver.observe(el);
+			});
+		}
+
+	} catch (err) {
+		console.error('Error al cargar servicios desde SQLite:', err);
+	}
+}
+
+function actualizarDropdownServicios(servicios) {
+	const dropdowns = document.querySelectorAll('.dropdown-menu');
+	if (!dropdowns.length || !servicios.length) return;
+
+	dropdowns.forEach(dd => {
+		const parentDropdown = dd.closest('.nav-item-dropdown');
+		const triggerLink = parentDropdown ? parentDropdown.querySelector('a') : null;
+		const isServicesMenu = triggerLink && (
+			(triggerLink.getAttribute('href') || '').includes('servicios') ||
+			(triggerLink.getAttribute('href') || '').includes('catalogo') ||
+			triggerLink.innerText.toLowerCase().includes('servicios')
+		);
+
+		if (!isServicesMenu) return;
+
+		let itemsHtml = servicios.slice(0, 9).map((s, idx) => {
+			let imgPath = (s.imagen || 'images/service_acrilicas.jpg').trim();
+			if (imgPath.startsWith('/')) imgPath = imgPath.substring(1);
+			const urlDetalle = s.url_detalle && s.url_detalle.trim() ? s.url_detalle.trim() : 'servicios.html';
+			const safeNombre = escapeHtml(s.nombre);
+			const safeCat = escapeHtml(s.categoria_nombre || 'Tratamiento');
+
+			return `
+				<li>
+					<a href="${urlDetalle}" class="dropdown-item-link">
+						<img src="${imgPath}" alt="${safeNombre}" class="dropdown-thumb" onerror="this.onerror=null; this.src='images/service_acrilicas.jpg';" />
+						<div class="dropdown-info">
+							<span class="dropdown-title">${idx + 1}. ${safeNombre}</span>
+							<span class="dropdown-subtitle">${safeCat}</span>
+						</div>
+					</a>
+				</li>
+			`;
+		}).join('');
+
+		itemsHtml += `
+			<li style="grid-column: 1 / -1;">
+				<a href="servicios.html" class="dropdown-all-services">
+					✨ Ver Todos los Servicios (${servicios.length}) & Precios
+				</a>
+			</li>
+		`;
+
+		dd.innerHTML = itemsHtml;
+	});
+}
+
+function escapeHtml(str) {
+	if (!str) return '';
+	return String(str)
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&#039;');
+}
+
+function escapeJs(str) {
+	if (!str) return '';
+	return String(str)
+		.replace(/\\/g, '\\\\')
+		.replace(/'/g, "\\'")
+		.replace(/"/g, '\\"')
+		.replace(/\n/g, '\\n')
+		.replace(/\r/g, '\\r');
+}
+
+// Exponer funciones globalmente para uso en botones o refrescos
+window.cargarServiciosCatalogo = cargarServiciosCatalogo;
+window.agregarAlCarrito = agregarAlCarrito;

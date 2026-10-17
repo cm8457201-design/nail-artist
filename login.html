@@ -987,8 +987,8 @@
 
 					const isAdm = u.rol_id === 1 || (u.rol && u.rol.toLowerCase() === 'administrador');
 					if (btnDest) {
-						btnDest.href = isAdm ? '/admin/index.html' : '/index.html';
-						btnDest.innerText = isAdm ? 'Ir al Panel Administrador 👑' : 'Ir al Catálogo de Servicios 💅';
+						btnDest.href = isAdm ? '/admin/index.html' : '/cliente.html';
+						btnDest.innerText = isAdm ? 'Ir al Panel Administrador 👑' : 'Ir a Mi Panel de Cliente ✨';
 					}
 				}
 			} catch (err) {
@@ -1109,10 +1109,14 @@
 					}
 
 					setTimeout(() => {
-						if (user && (user.rol_id === 1 || (user.rol && user.rol.toLowerCase() === 'administrador') || (user.rol && user.rol.toLowerCase() === 'admin'))) {
+						const urlParams = new URLSearchParams(window.location.search);
+						const redirectTarget = urlParams.get('redirect');
+						if (redirectTarget) {
+							window.location.href = redirectTarget;
+						} else if (user && (user.rol_id === 1 || (user.rol && user.rol.toLowerCase() === 'administrador') || (user.rol && user.rol.toLowerCase() === 'admin'))) {
 							window.location.href = '/admin/index.html';
 						} else {
-							window.location.href = '/index.html';
+							window.location.href = '/cliente.html';
 						}
 					}, 700);
 				} else {
@@ -1194,7 +1198,9 @@
 					}
 
 					setTimeout(() => {
-						window.location.href = '/index.html';
+						const urlParams = new URLSearchParams(window.location.search);
+						const redirectTarget = urlParams.get('redirect');
+						window.location.href = redirectTarget ? redirectTarget : '/cliente.html';
 					}, 900);
 				} else {
 					showAlert(data.message || 'Error al registrar tu cuenta.', 'error');

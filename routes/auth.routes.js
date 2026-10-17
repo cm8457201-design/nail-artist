@@ -317,4 +317,70 @@ router.get('/me', (req, res) => {
     }
 });
 
+/**
+ * PUT /perfil
+ * Actualizar datos de contacto seguros del usuario autenticado (Nombre, Apellido, Teléfono)
+ */
+router.put('/perfil', async (req, res) => {
+    const userId = req.user ? req.user.id : (req.session ? req.session.userId : null);
+    if (!userId) {
+        return res.status(401).json({ success: false, message: 'Debes iniciar sesión para actualizar tus datos.' });
+    }
+
+    try {
+        const { nombre, apellido, telefono, password, current_password } = req.body || {};
+
+        if (!nombre || !nombre.trim()) {
+            return res.status(400).json({ success: false, message: 'El nombre es obligatorio.' });
+        }
+
+        const currentUser = Database.get('SELECT * FROM usuarios WHERE id = ?', [userId]);
+        if (!currentUser) {
+            return res.status(404).json({ success: false, message: 'Usuario no encontrado.' });
+        }
+
+        // Si desea cambiar contraseña
+        if (password && password.trim().length > 0) {
+            if (password.trim().length < 6) {
+                return res.status(400).json({ success: false, message: 'La nueva contraseña debe tener al menos 6 caracteres.' });
+            }
+            if (current_password) {
+                const isMatch = await bcrypt.compare(current_password, currentUser.password_hash);
+                if (!isMatch) {
+                    return res.status(400).json({ success: false, message: 'La contraseña actual no es correcta.' });
+                }
+            }
+            const salt = await bcrypt.genSalt(10);
+            const pwdHash = await bcrypt.hash(password.trim(), salt);
+            Database.run(
+                'UPDATE usuarios SET nombre = ?, apellido = ?, telefono = ?, password_hash = ? WHERE id = ?',
+                [nombre.trim(), (apellido || '').trim(), (telefono || '').trim(), pwdHash, userId]
+            );
+        } else {
+            Database.run(
+                'UPDATE usuarios SET nombre = ?, apellido = ?, telefono = ? WHERE id = ?',
+                [nombre.trim(), (apellido || '').trim(), (telefono || '').trim(), userId]
+            );
+        }
+
+        const updatedUser = Database.get(
+            `SELECT u.id, u.rol_id, u.nombre, u.apellido, u.email, u.telefono, 
+                    u.descuento_vip, u.estado, u.fecha_registro, r.nombre AS rol_nombre
+             FROM usuarios u
+             INNER JOIN roles r ON u.rol_id = r.id
+             WHERE u.id = ?`,
+            [userId]
+        );
+
+        return res.json({
+            success: true,
+            message: 'Tus datos han sido actualizados correctamente ✨',
+            data: updatedUser
+        });
+    } catch (err) {
+        console.error('Error al actualizar perfil:', err);
+        return res.status(500).json({ success: false, message: 'Error al actualizar tus datos.' });
+    }
+});
+
 module.exports = router;

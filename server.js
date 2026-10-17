@@ -1,6 +1,6 @@
 /**
  * NailArtist Studio — Master Express Server (Node.js + SQLite 3)
- * Servidor HTTP y API REST oficial
+ * Servidor HTTP y API REST oficial con soporte multirol (Cliente, Manicurista, Administrador) y Catálogo Protegido
  */
 
 const express = require('express');
@@ -14,7 +14,7 @@ const fs = require('fs');
 const Database = require('./database/db');
 
 // Middlewares
-const { attachUser, requireAdmin } = require('./middleware/auth');
+const { attachUser, requireAdmin, requireManicurista } = require('./middleware/auth');
 
 // Rutas
 const authRoutes = require('./routes/auth.routes');
@@ -23,15 +23,34 @@ const reviewsRoutes = require('./routes/reviews.routes');
 const bookingsRoutes = require('./routes/bookings.routes');
 const contactRoutes = require('./routes/contact.routes');
 const adminRoutes = require('./routes/admin.routes');
+const manicuristaRoutes = require('./routes/manicurista.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Asegurar carpetas para fotografías de manicuristas y uploads
+const MANICURISTAS_IMG_DIR = path.join(__dirname, 'images', 'manicuristas');
+const UPLOADS_MANICURISTAS_DIR = path.join(__dirname, 'uploads', 'manicuristas');
+if (!fs.existsSync(MANICURISTAS_IMG_DIR)) {
+    fs.mkdirSync(MANICURISTAS_IMG_DIR, { recursive: true });
+}
+if (!fs.existsSync(UPLOADS_MANICURISTAS_DIR)) {
+    fs.mkdirSync(UPLOADS_MANICURISTAS_DIR, { recursive: true });
+}
+
 // Configuración de Middlewares globales
 app.use(morgan('dev'));
 app.use(cors({ origin: true, credentials: true }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true, limit: '5mb' }));
+
+// Cabeceras de seguridad básicas
+app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    next();
+});
 
 // Configuración de Sesiones en memoria/Express
 app.use(session({
@@ -60,7 +79,7 @@ app.post('/api/registrar_usuario', (req, res, next) => { req.url = '/register'; 
 app.all('/api/logout', (req, res, next) => { req.url = '/logout'; authRoutes(req, res, next); });
 app.get('/api/me', (req, res, next) => { req.url = '/me'; authRoutes(req, res, next); });
 
-// 2. Catálogo de Servicios
+// 2. Catálogo de Servicios (Protegido para usuarios autenticados)
 app.use('/api/servicios', servicesRoutes);
 app.use('/api/services', servicesRoutes);
 app.use('/api/obtener_servicios', servicesRoutes);
@@ -80,83 +99,20 @@ app.use('/api/contacto', contactRoutes);
 // 6. Panel de Administración
 app.use('/api/admin', adminRoutes);
 
-// Bridge de compatibilidad para api_admin.php (por si algún archivo legacy lo invoca)
-app.all(['/admin/api_admin.php', '/api_admin.php'], requireAdmin, async (req, res) => {
-    const action = req.query.action || req.body.action || '';
-    const input = { ...req.query, ...req.body };
-
-    try {
-        switch (action) {
-            case 'usuario_obtener': {
-                const id = parseInt(input.id, 10);
-                const user = Database.get('SELECT id, rol_id, nombre, apellido, email, telefono, descuento_vip, estado FROM usuarios WHERE id = ?', [id]);
-                if (user) return res.json({ success: true, message: 'Usuario obtenido', data: user });
-                return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
-            }
-            case 'usuario_crear': {
-                const { nombre, apellido, email, telefono, password, rol_id, estado, descuento_vip } = input;
-                const bcrypt = require('bcryptjs');
-                const salt = await bcrypt.genSalt(10);
-                const pwd = await bcrypt.hash(password || '123456', salt);
-                const result = Database.run(
-                    'INSERT INTO usuarios (rol_id, nombre, apellido, email, telefono, password_hash, descuento_vip, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                    [parseInt(rol_id, 10) || 2, nombre, apellido || '', email, telefono || '', pwd, parseFloat(descuento_vip) || 0, estado || 'activo']
-                );
-                return res.json({ success: true, message: `Usuario #${result.lastInsertRowid} creado exitosamente.` });
-            }
-            case 'usuario_editar': {
-                const id = parseInt(input.id, 10);
-                const { nombre, apellido, email, telefono, password, rol_id, estado, descuento_vip } = input;
-                if (password && password.trim().length >= 6) {
-                    const bcrypt = require('bcryptjs');
-                    const salt = await bcrypt.genSalt(10);
-                    const pwd = await bcrypt.hash(password.trim(), salt);
-                    Database.run(
-                        'UPDATE usuarios SET rol_id = ?, nombre = ?, apellido = ?, email = ?, telefono = ?, password_hash = ?, descuento_vip = ?, estado = ? WHERE id = ?',
-                        [parseInt(rol_id, 10) || 2, nombre, apellido || '', email, telefono || '', pwd, parseFloat(descuento_vip) || 0, estado || 'activo', id]
-                    );
-                } else {
-                    Database.run(
-                        'UPDATE usuarios SET rol_id = ?, nombre = ?, apellido = ?, email = ?, telefono = ?, descuento_vip = ?, estado = ? WHERE id = ?',
-                        [parseInt(rol_id, 10) || 2, nombre, apellido || '', email, telefono || '', parseFloat(descuento_vip) || 0, estado || 'activo', id]
-                    );
-                }
-                return res.json({ success: true, message: 'Usuario actualizado correctamente.' });
-            }
-            case 'usuario_eliminar': {
-                const id = parseInt(input.id, 10);
-                Database.run('DELETE FROM usuarios WHERE id = ?', [id]);
-                return res.json({ success: true, message: 'Usuario eliminado correctamente.' });
-            }
-            default:
-                return res.json({ success: false, message: `Acción '${action}' no reconocida.` });
-        }
-    } catch (err) {
-        console.error('Error en api_admin bridge:', err);
-        return res.status(500).json({ success: false, message: 'Error interno en bridge admin.' });
-    }
-});
+// 7. Panel de Manicuristas
+app.use('/api/manicurista', manicuristaRoutes);
 
 // =============================================================================
 // GESTIÓN Y PROTECCIÓN DE RUTAS DEL PANEL ADMINISTRADOR (/admin)
 // =============================================================================
 
-// Protección de acceso al directorio /admin
 app.use('/admin', (req, res, next) => {
-    // Permitir archivos de assets públicos del admin (css, js, imágenes)
     if (req.path.startsWith('/assets/')) {
         return next();
     }
 
-    // Verificar permisos de administrador
     if (!req.user || (req.user.rol_id !== 1 && (req.user.rol_nombre || '').toLowerCase() !== 'administrador')) {
         return res.redirect('/login.html?error=no_admin_access&redirect=' + encodeURIComponent(req.originalUrl));
-    }
-
-    // Redirección de .php a .html si aplica
-    if (req.path.endsWith('.php')) {
-        const htmlTarget = req.path.replace(/\.php$/, '.html');
-        return res.redirect(path.join('/admin', htmlTarget));
     }
 
     if (req.path === '/' || req.path === '') {
@@ -166,8 +122,39 @@ app.use('/admin', (req, res, next) => {
     next();
 });
 
-// Servir estáticos de admin
 app.use('/admin', express.static(path.join(__dirname, 'admin')));
+
+// =============================================================================
+// GESTIÓN Y PROTECCIÓN DE RUTAS DEL PANEL MANICURISTA (/manicurista)
+// =============================================================================
+
+app.use('/manicurista', (req, res, next) => {
+    if (req.path.startsWith('/assets/')) {
+        return next();
+    }
+
+    const rol = (req.user?.rol_nombre || '').toLowerCase();
+    const isManicuristaOrAdmin = req.user && (req.user.rol_id === 3 || req.user.rol_id === 1 || rol === 'manicurista' || rol === 'administrador');
+
+    if (!isManicuristaOrAdmin) {
+        return res.redirect('/login.html?error=no_manicurista_access&redirect=' + encodeURIComponent(req.originalUrl));
+    }
+
+    if (req.path === '/' || req.path === '') {
+        return res.sendFile(path.join(__dirname, 'manicurista', 'index.html'));
+    }
+
+    next();
+});
+
+app.use('/manicurista', express.static(path.join(__dirname, 'manicurista')));
+
+// =============================================================================
+// CATÁLOGO PÚBLICO (/servicios.html) — ACCESIBLE A TODOS LOS VISITANTES
+// =============================================================================
+app.get('/servicios.html', (req, res, next) => {
+    next();
+});
 
 // =============================================================================
 // ARCHIVOS ESTÁTICOS FRONTEND
@@ -204,10 +191,12 @@ app.listen(PORT, () => {
     console.log('\n=============================================================');
     console.log('✨ NAILARTIST STUDIO — SERVIDOR NODE.JS + SQLITE EN LÍNEA ✨');
     console.log('=============================================================');
-    console.log(`🌐 Servidor funcionando en:  http://localhost:${PORT}`);
-    console.log(`👑 Panel Administrador:      http://localhost:${PORT}/admin/`);
-    console.log(`💅 Catálogo de Servicios:    http://localhost:${PORT}/servicios.html`);
-    console.log(`🔐 Iniciar Sesión / Registro: http://localhost:${PORT}/login.html`);
-    console.log(`🗄️  Base de Datos SQLite:     nailartist.db`);
+    console.log(`🌐 Servidor funcionando en:   http://localhost:${PORT}`);
+    console.log(`👑 Panel Administrador:       http://localhost:${PORT}/admin/`);
+    console.log(`💅 Panel Manicurista:         http://localhost:${PORT}/manicurista/`);
+    console.log(`👤 Panel Cliente:             http://localhost:${PORT}/cliente.html`);
+    console.log(`🎨 Catálogo Protegido:        http://localhost:${PORT}/servicios.html`);
+    console.log(`🔐 Iniciar Sesión / Registro:  http://localhost:${PORT}/login.html`);
+    console.log(`🗄️  Base de Datos SQLite:      nailartist.db`);
     console.log('=============================================================\n');
 });

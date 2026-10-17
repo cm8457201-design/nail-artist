@@ -311,12 +311,23 @@ router.post('/servicios', (req, res) => {
             return res.status(400).json({ success: false, message: 'Nombre y precio son obligatorios.' });
         }
 
-        const slug = nombre.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        let baseSlug = nombre.trim().toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '');
+        if (!baseSlug) baseSlug = 'servicio';
+
+        let slug = baseSlug;
+        const existingSlug = Database.get('SELECT id FROM servicios WHERE slug = ?', [slug]);
+        if (existingSlug) {
+            slug = `${baseSlug}-${Date.now().toString().slice(-4)}`;
+        }
+
         const catId = parseInt(categoria_id, 10) || 1;
         const duracion = parseInt(duracion_minutos, 10) || 60;
-        const img = imagen || 'images/service_acrilicas.jpg';
-        const url = url_detalle || 'left-sidebar.html';
-        const isDestacado = destacado ? 1 : 0;
+        const img = (imagen && imagen.trim()) ? imagen.trim() : 'images/service_acrilicas.jpg';
+        const url = (url_detalle && url_detalle.trim()) ? url_detalle.trim() : 'servicios.html';
+        const isDestacado = (destacado === '1' || destacado === 1 || destacado === true || destacado === 'true') ? 1 : 0;
         const st = estado === 'inactivo' ? 'inactivo' : 'activo';
 
         const result = Database.run(`
@@ -346,9 +357,9 @@ router.put('/servicios/:id', (req, res) => {
 
         const catId = parseInt(categoria_id, 10) || 1;
         const duracion = parseInt(duracion_minutos, 10) || 60;
-        const img = imagen || 'images/service_acrilicas.jpg';
-        const url = url_detalle || 'left-sidebar.html';
-        const isDestacado = destacado ? 1 : 0;
+        const img = (imagen && imagen.trim()) ? imagen.trim() : 'images/service_acrilicas.jpg';
+        const url = (url_detalle && url_detalle.trim()) ? url_detalle.trim() : 'servicios.html';
+        const isDestacado = (destacado === '1' || destacado === 1 || destacado === true || destacado === 'true') ? 1 : 0;
         const st = estado === 'inactivo' ? 'inactivo' : 'activo';
 
         Database.run(`
@@ -391,6 +402,40 @@ router.get('/citas', (req, res) => {
     } catch (err) {
         console.error('Error al listar citas admin:', err);
         return res.status(500).json({ success: false, message: 'Error al listar citas.' });
+    }
+});
+
+router.get(['/citas/:id', '/citas/:id/detalle'], (req, res) => {
+    try {
+        const id = parseInt(req.params.id, 10);
+        const cita = Database.get(`
+            SELECT c.*, u.nombre AS cliente_nombre, u.apellido AS cliente_apellido, u.telefono AS cliente_telefono, u.email AS cliente_email
+            FROM citas c
+            INNER JOIN usuarios u ON c.usuario_id = u.id
+            WHERE c.id = ?
+        `, [id]);
+
+        if (!cita) {
+            return res.status(404).json({ success: false, message: 'Cita no encontrada.' });
+        }
+
+        const servicios = Database.all(`
+            SELECT d.*, s.nombre AS servicio_nombre, s.imagen AS servicio_imagen, s.duracion_minutos
+            FROM detalle_cita d
+            LEFT JOIN servicios s ON d.servicio_id = s.id
+            WHERE d.cita_id = ?
+        `, [id]);
+
+        return res.json({
+            success: true,
+            data: {
+                ...cita,
+                servicios
+            }
+        });
+    } catch (err) {
+        console.error('Error al obtener detalle cita admin:', err);
+        return res.status(500).json({ success: false, message: 'Error al consultar detalle de cita.' });
     }
 });
 

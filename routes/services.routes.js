@@ -12,13 +12,17 @@ const Database = require('../database/db');
  */
 router.get(['/', '/obtener_servicios'], (req, res) => {
     try {
+        res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        res.set('Pragma', 'no-cache');
+        res.set('Expires', '0');
+
         const { categoria_id, destacado } = req.query;
         let sql = `
-            SELECT s.*, c.nombre AS categoria_nombre, c.slug AS categoria_slug,
+            SELECT s.*, COALESCE(c.nombre, 'General') AS categoria_nombre, COALESCE(c.slug, 'general') AS categoria_slug,
                    (SELECT COUNT(*) FROM resenas r WHERE r.servicio_id = s.id AND r.publicado = 1) AS total_resenas,
                    (SELECT ROUND(AVG(calificacion), 1) FROM resenas r WHERE r.servicio_id = s.id AND r.publicado = 1) AS calificacion_promedio
             FROM servicios s
-            INNER JOIN categorias c ON s.categoria_id = c.id
+            LEFT JOIN categorias c ON s.categoria_id = c.id
             WHERE s.estado = 'activo'
         `;
         const params = [];
@@ -28,7 +32,7 @@ router.get(['/', '/obtener_servicios'], (req, res) => {
             params.push(categoria_id);
         }
 
-        if (destacado !== undefined) {
+        if (destacado !== undefined && destacado !== '') {
             sql += ' AND s.destacado = ?';
             params.push(destacado === '1' || destacado === 'true' ? 1 : 0);
         }
@@ -56,17 +60,18 @@ router.get(['/', '/obtener_servicios'], (req, res) => {
  */
 router.get('/:id', (req, res) => {
     try {
+        res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
         const id = parseInt(req.params.id, 10);
         if (isNaN(id)) {
             return res.status(400).json({ success: false, message: 'ID inválido' });
         }
 
         const servicio = Database.get(
-            `SELECT s.*, c.nombre AS categoria_nombre, c.slug AS categoria_slug,
+            `SELECT s.*, COALESCE(c.nombre, 'General') AS categoria_nombre, COALESCE(c.slug, 'general') AS categoria_slug,
                     (SELECT COUNT(*) FROM resenas r WHERE r.servicio_id = s.id AND r.publicado = 1) AS total_resenas,
                     (SELECT ROUND(AVG(calificacion), 1) FROM resenas r WHERE r.servicio_id = s.id AND r.publicado = 1) AS calificacion_promedio
              FROM servicios s
-             INNER JOIN categorias c ON s.categoria_id = c.id
+             LEFT JOIN categorias c ON s.categoria_id = c.id
              WHERE s.id = ? AND s.estado = 'activo'`,
             [id]
         );

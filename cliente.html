@@ -1,0 +1,1869 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Mi Panel de Cliente — NailArtist Studio</title>
+	<meta name="description" content="Gestiona tus citas, consulta el estado de tus reservas y actualiza tus datos en NailArtist Studio." />
+
+	<!-- Google Fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+	<!-- Estilos Centralizados NailArtist -->
+	<link rel="stylesheet" href="assets/css/nailartist-theme.css" />
+
+	<style>
+		:root {
+			--client-bg: #fdf8fb;
+			--client-card-bg: #ffffff;
+			--client-sidebar-bg: #190818;
+			--client-accent: #ff0066;
+			--client-accent-soft: #ffe6f0;
+			--client-border: rgba(255, 0, 102, 0.12);
+			--client-text: #240e1b;
+			--client-text-muted: #7a5a70;
+			--client-gold: #e5a93b;
+			--font-service-name: Arial, Helvetica, sans-serif;
+		}
+
+		body {
+			background-color: var(--client-bg);
+			color: var(--client-text);
+			font-family: var(--font-body);
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
+
+		/* Layout Maestro del Panel Cliente */
+		.client-panel-layout {
+			display: flex;
+			min-height: calc(100vh - 75px);
+			margin-top: 75px;
+			position: relative;
+		}
+
+		/* Barra Lateral del Cliente */
+		.client-sidebar {
+			width: 280px;
+			min-width: 280px;
+			background: var(--client-sidebar-bg);
+			color: #ffffff;
+			padding: 30px 20px;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			border-right: 1px solid rgba(255, 255, 255, 0.08);
+			transition: transform 0.3s ease;
+			z-index: 99;
+		}
+
+		.client-user-summary {
+			text-align: center;
+			padding-bottom: 24px;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+			margin-bottom: 20px;
+		}
+
+		.client-initial-badge {
+			width: 64px;
+			height: 64px;
+			background: linear-gradient(135deg, var(--client-accent) 0%, #db0056 100%);
+			color: #ffffff;
+			border-radius: 50%;
+			margin: 0 auto 12px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.8rem;
+			font-weight: 800;
+			font-family: var(--font-title);
+			box-shadow: 0 8px 20px rgba(255, 0, 102, 0.35);
+			border: 2px solid rgba(255, 255, 255, 0.2);
+		}
+
+		.client-user-name {
+			font-family: var(--font-title);
+			font-size: 1.25rem;
+			font-weight: 800;
+			color: #ffffff;
+			margin-bottom: 4px;
+		}
+
+		.client-user-email {
+			font-size: 0.82rem;
+			color: #f7dbe7;
+			opacity: 0.85;
+			margin-bottom: 8px;
+			word-break: break-all;
+		}
+
+		.client-vip-pill {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			padding: 4px 12px;
+			background: rgba(229, 169, 59, 0.2);
+			border: 1px solid rgba(229, 169, 59, 0.5);
+			color: var(--client-gold);
+			border-radius: var(--radius-full);
+			font-size: 0.76rem;
+			font-weight: 800;
+			letter-spacing: 0.5px;
+			text-transform: uppercase;
+		}
+
+		/* Navegación Lateral */
+		.client-nav-list {
+			list-style: none;
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+		}
+
+		.client-nav-btn {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			width: 100%;
+			padding: 12px 16px;
+			border-radius: 14px;
+			background: transparent;
+			border: none;
+			color: #f3e5ee;
+			font-size: 0.94rem;
+			font-weight: 600;
+			cursor: pointer;
+			text-align: left;
+			transition: all 0.25s ease;
+		}
+
+		.client-nav-btn:hover {
+			background: rgba(255, 255, 255, 0.08);
+			color: #ffffff;
+			transform: translateX(4px);
+		}
+
+		.client-nav-btn.active {
+			background: linear-gradient(135deg, rgba(255, 0, 102, 0.25) 0%, rgba(219, 0, 86, 0.15) 100%);
+			color: #ffffff;
+			border-left: 4px solid var(--client-accent);
+			font-weight: 800;
+		}
+
+		.client-nav-icon {
+			font-size: 1.15rem;
+			width: 24px;
+			text-align: center;
+		}
+
+		.client-nav-badge {
+			margin-left: auto;
+			background: var(--client-accent);
+			color: #ffffff;
+			font-size: 0.75rem;
+			font-weight: 800;
+			padding: 2px 8px;
+			border-radius: var(--radius-full);
+		}
+
+		.client-sidebar-footer {
+			border-top: 1px solid rgba(255, 255, 255, 0.1);
+			padding-top: 18px;
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+		}
+
+		.client-link-website, .client-btn-logout {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			padding: 10px 14px;
+			border-radius: 12px;
+			font-size: 0.88rem;
+			font-weight: 600;
+			text-decoration: none;
+			transition: all 0.2s ease;
+		}
+
+		.client-link-website {
+			color: var(--pink-soft);
+			background: rgba(255, 255, 255, 0.04);
+		}
+
+		.client-link-website:hover {
+			background: rgba(255, 255, 255, 0.1);
+			color: #ffffff;
+		}
+
+		.client-btn-logout {
+			color: #ff6b8b;
+			background: transparent;
+			border: 1px solid rgba(255, 107, 139, 0.3);
+			cursor: pointer;
+			width: 100%;
+		}
+
+		.client-btn-logout:hover {
+			background: rgba(255, 107, 139, 0.15);
+			color: #ffffff;
+		}
+
+		/* Contenido Principal */
+		.client-main-content {
+			flex: 1;
+			padding: 36px 40px;
+			max-width: 1200px;
+			width: 100%;
+			overflow-y: auto;
+		}
+
+		/* Barra Superior Móvil */
+		.client-mobile-bar {
+			display: none;
+			align-items: center;
+			justify-content: space-between;
+			padding: 14px 20px;
+			background: #ffffff;
+			border-bottom: 1px solid var(--client-border);
+			margin-bottom: 20px;
+			border-radius: 16px;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+		}
+
+		.client-mobile-toggle-btn {
+			background: var(--client-accent-soft);
+			border: 1px solid var(--client-border);
+			color: var(--client-accent);
+			padding: 8px 14px;
+			border-radius: 10px;
+			font-weight: 800;
+			font-size: 0.9rem;
+			cursor: pointer;
+		}
+
+		/* Secciones de Contenido */
+		.client-section-view {
+			display: none;
+			animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+		}
+
+		.client-section-view.active {
+			display: block;
+		}
+
+		@keyframes fadeIn {
+			from { opacity: 0; transform: translateY(12px); }
+			to { opacity: 1; transform: translateY(0); }
+		}
+
+		/* Cabeceras de Vista */
+		.view-header-row {
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-start;
+			margin-bottom: 28px;
+			flex-wrap: wrap;
+			gap: 16px;
+		}
+
+		.view-title-wrap h1 {
+			font-family: var(--font-title);
+			font-size: 2.1rem;
+			font-weight: 800;
+			color: var(--client-text);
+			margin-bottom: 4px;
+		}
+
+		.view-title-wrap p {
+			color: var(--client-text-muted);
+			font-size: 0.95rem;
+		}
+
+		/* Tarjetas de Estadísticas (KPIs) */
+		.client-kpi-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+			gap: 20px;
+			margin-bottom: 32px;
+		}
+
+		.client-kpi-card {
+			background: #ffffff;
+			border: 1px solid var(--client-border);
+			border-radius: 20px;
+			padding: 22px 24px;
+			box-shadow: 0 8px 25px rgba(36, 14, 27, 0.04);
+			transition: all 0.3s ease;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.client-kpi-card:hover {
+			transform: translateY(-4px);
+			border-color: var(--client-accent);
+			box-shadow: 0 14px 30px rgba(255, 0, 102, 0.12);
+		}
+
+		.kpi-info-col {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.kpi-num {
+			font-size: 2.2rem;
+			font-weight: 900;
+			color: var(--client-text);
+			line-height: 1;
+			margin-bottom: 6px;
+		}
+
+		.kpi-label {
+			font-size: 0.88rem;
+			font-weight: 700;
+			color: var(--client-text-muted);
+		}
+
+		.kpi-icon-badge {
+			width: 48px;
+			height: 48px;
+			border-radius: 14px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.4rem;
+		}
+
+		.kpi-icon-pink { background: #ffe6f0; color: var(--client-accent); }
+		.kpi-icon-gold { background: #fef3c7; color: #d97706; }
+		.kpi-icon-green { background: #d1fae5; color: #059669; }
+		.kpi-icon-purple { background: #ede9fe; color: #7c3aed; }
+
+		/* Tarjeta Próxima Cita */
+		.next-booking-card {
+			background: linear-gradient(135deg, #240e1b 0%, #150613 100%);
+			color: #ffffff;
+			border-radius: 24px;
+			padding: 30px 34px;
+			margin-bottom: 32px;
+			position: relative;
+			overflow: hidden;
+			border: 1px solid rgba(255, 0, 102, 0.3);
+			box-shadow: 0 18px 40px rgba(23, 9, 20, 0.25);
+		}
+
+		.next-booking-card::before {
+			content: '';
+			position: absolute;
+			top: -80px;
+			right: -80px;
+			width: 220px;
+			height: 220px;
+			border-radius: 50%;
+			background: radial-gradient(circle, rgba(255, 0, 102, 0.25) 0%, transparent 70%);
+			pointer-events: none;
+		}
+
+		.next-booking-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 18px;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+
+		.next-booking-tag {
+			font-size: 0.82rem;
+			font-weight: 800;
+			color: var(--pink-soft);
+			letter-spacing: 1px;
+			text-transform: uppercase;
+		}
+
+		.next-booking-body {
+			display: grid;
+			grid-template-columns: 1.5fr 1fr;
+			gap: 24px;
+			align-items: center;
+		}
+
+		.next-services-title {
+			font-family: var(--font-service-name);
+			font-size: 1.35rem;
+			font-weight: 700;
+			color: #ffffff;
+			margin-bottom: 10px;
+			line-height: 1.3;
+		}
+
+		.next-booking-meta {
+			display: flex;
+			gap: 20px;
+			flex-wrap: wrap;
+			font-size: 0.92rem;
+			color: #f7dbe7;
+		}
+
+		.next-booking-meta span {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.next-booking-actions {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-end;
+			justify-content: center;
+			gap: 12px;
+		}
+
+		.next-booking-price {
+			font-size: 1.75rem;
+			font-weight: 900;
+			color: var(--pink-soft);
+		}
+
+		/* Estado Vacío Elegante */
+		.empty-state-card {
+			background: #ffffff;
+			border: 2px dashed var(--client-border);
+			border-radius: 24px;
+			padding: 50px 30px;
+			text-align: center;
+			margin-bottom: 32px;
+		}
+
+		.empty-state-icon {
+			font-size: 3rem;
+			margin-bottom: 12px;
+			color: var(--client-accent);
+		}
+
+		.empty-state-title {
+			font-family: var(--font-title);
+			font-size: 1.6rem;
+			color: var(--client-text);
+			margin-bottom: 8px;
+			font-weight: 800;
+		}
+
+		.empty-state-desc {
+			color: var(--client-text-muted);
+			font-size: 0.95rem;
+			max-width: 480px;
+			margin: 0 auto 20px;
+		}
+
+		/* Botones de Acción */
+		.btn-client-primary {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			background: var(--gradient-btn);
+			color: #ffffff;
+			border: none;
+			padding: 12px 24px;
+			border-radius: 14px;
+			font-size: 0.94rem;
+			font-weight: 800;
+			cursor: pointer;
+			text-decoration: none;
+			box-shadow: 0 8px 20px rgba(255, 0, 102, 0.3);
+			transition: all 0.25s ease;
+		}
+
+		.btn-client-primary:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 12px 26px rgba(255, 0, 102, 0.45);
+			color: #ffffff;
+		}
+
+		.btn-client-secondary {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			background: #ffffff;
+			color: var(--client-text);
+			border: 1px solid var(--client-border);
+			padding: 10px 20px;
+			border-radius: 14px;
+			font-size: 0.9rem;
+			font-weight: 700;
+			cursor: pointer;
+			text-decoration: none;
+			transition: all 0.2s ease;
+		}
+
+		.btn-client-secondary:hover {
+			background: var(--client-accent-soft);
+			border-color: var(--client-accent);
+			color: var(--client-accent);
+		}
+
+		/* Badges de Estado */
+		.status-badge {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			padding: 5px 14px;
+			border-radius: var(--radius-full);
+			font-size: 0.78rem;
+			font-weight: 800;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
+
+		.status-pendiente {
+			background: #fef3c7;
+			color: #b45309;
+			border: 1px solid #fde68a;
+		}
+
+		.status-confirmada {
+			background: #dbeafe;
+			color: #1d4ed8;
+			border: 1px solid #bfdbfe;
+		}
+
+		.status-completada {
+			background: #dcfce7;
+			color: #15803d;
+			border: 1px solid #bbf7d0;
+		}
+
+		.status-cancelada {
+			background: #fee2e2;
+			color: #b91c1c;
+			border: 1px solid #fecaca;
+		}
+
+		/* Tabla / Lista de Reservas */
+		.client-bookings-table-card {
+			background: #ffffff;
+			border: 1px solid var(--client-border);
+			border-radius: 24px;
+			padding: 24px;
+			box-shadow: 0 8px 30px rgba(36, 14, 27, 0.04);
+		}
+
+		.booking-filters-bar {
+			display: flex;
+			gap: 10px;
+			margin-bottom: 20px;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.filter-tabs-group {
+			display: flex;
+			gap: 8px;
+			flex-wrap: wrap;
+		}
+
+		.filter-tab-btn {
+			padding: 8px 16px;
+			background: #fdf2f8;
+			border: 1px solid transparent;
+			border-radius: 12px;
+			font-size: 0.84rem;
+			font-weight: 700;
+			color: var(--client-text-muted);
+			cursor: pointer;
+			transition: all 0.2s;
+		}
+
+		.filter-tab-btn.active, .filter-tab-btn:hover {
+			background: var(--client-accent);
+			color: #ffffff;
+		}
+
+		.booking-search-input {
+			padding: 8px 16px;
+			border-radius: 12px;
+			border: 1px solid var(--client-border);
+			font-size: 0.88rem;
+			outline: none;
+			min-width: 220px;
+		}
+
+		.booking-search-input:focus {
+			border-color: var(--client-accent);
+		}
+
+		/* Grid de Tarjetas de Reserva Responsivo */
+		.bookings-cards-list {
+			display: flex;
+			flex-direction: column;
+			gap: 14px;
+		}
+
+		.booking-item-row {
+			background: #fdf9fb;
+			border: 1px solid rgba(255, 0, 102, 0.08);
+			border-radius: 18px;
+			padding: 18px 22px;
+			display: grid;
+			grid-template-columns: 1.2fr 2fr 1.2fr 1fr 1fr auto;
+			align-items: center;
+			gap: 16px;
+			transition: all 0.25s ease;
+		}
+
+		.booking-item-row:hover {
+			background: #ffffff;
+			border-color: var(--client-accent);
+			box-shadow: 0 6px 20px rgba(255, 0, 102, 0.08);
+			transform: translateX(4px);
+		}
+
+		.col-code strong {
+			font-family: monospace;
+			font-size: 0.98rem;
+			color: var(--client-accent);
+		}
+
+		.col-services {
+			font-family: var(--font-service-name);
+			font-size: 0.94rem;
+			font-weight: 700;
+			color: var(--client-text);
+			line-height: 1.3;
+		}
+
+		.col-services small {
+			display: block;
+			font-size: 0.78rem;
+			color: var(--client-text-muted);
+			font-weight: normal;
+			font-family: var(--font-body);
+			margin-top: 3px;
+		}
+
+		.col-date {
+			font-size: 0.88rem;
+			color: var(--client-text);
+			font-weight: 600;
+		}
+
+		.col-date small {
+			display: block;
+			color: var(--client-text-muted);
+			font-size: 0.78rem;
+		}
+
+		.col-total {
+			font-size: 1.05rem;
+			font-weight: 900;
+			color: var(--client-text);
+		}
+
+		/* Notificaciones */
+		.notifications-list {
+			display: flex;
+			flex-direction: column;
+			gap: 14px;
+		}
+
+		.notification-card {
+			background: #ffffff;
+			border: 1px solid var(--client-border);
+			border-radius: 18px;
+			padding: 20px 24px;
+			display: flex;
+			gap: 18px;
+			align-items: flex-start;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+		}
+
+		.notif-icon-wrap {
+			width: 42px;
+			height: 42px;
+			border-radius: 12px;
+			background: #ffe8f2;
+			color: var(--client-accent);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.3rem;
+			flex-shrink: 0;
+		}
+
+		.notif-content h4 {
+			font-size: 1.05rem;
+			font-weight: 800;
+			color: var(--client-text);
+			margin-bottom: 4px;
+		}
+
+		.notif-content p {
+			font-size: 0.92rem;
+			color: var(--client-text-muted);
+			line-height: 1.45;
+			margin-bottom: 6px;
+		}
+
+		.notif-time {
+			font-size: 0.78rem;
+			color: #a08098;
+		}
+
+		/* Mis Datos (Formulario Limpio) */
+		.profile-card {
+			background: #ffffff;
+			border: 1px solid var(--client-border);
+			border-radius: 24px;
+			padding: 34px;
+			box-shadow: 0 8px 30px rgba(36, 14, 27, 0.04);
+			max-width: 760px;
+		}
+
+		.profile-form-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 20px;
+			margin-top: 20px;
+		}
+
+		.form-group-full {
+			grid-column: 1 / -1;
+		}
+
+		.form-label {
+			display: block;
+			font-size: 0.88rem;
+			font-weight: 700;
+			color: var(--client-text);
+			margin-bottom: 6px;
+		}
+
+		.form-input {
+			width: 100%;
+			padding: 12px 16px;
+			border-radius: 12px;
+			border: 1px solid var(--client-border);
+			background: #fdf9fb;
+			font-size: 0.95rem;
+			color: var(--client-text);
+			outline: none;
+			transition: all 0.2s;
+		}
+
+		.form-input:focus {
+			border-color: var(--client-accent);
+			background: #ffffff;
+			box-shadow: 0 0 0 3px rgba(255, 0, 102, 0.1);
+		}
+
+		.form-input:disabled {
+			background: #f3e5ee;
+			color: #8c6a82;
+			cursor: not-allowed;
+		}
+
+		/* MODAL DE DETALLE DE RESERVA */
+		.modal-overlay {
+			position: fixed;
+			inset: 0;
+			background: rgba(18, 7, 16, 0.75);
+			backdrop-filter: blur(8px);
+			-webkit-backdrop-filter: blur(8px);
+			display: none;
+			align-items: center;
+			justify-content: center;
+			z-index: 99999;
+			padding: 20px;
+		}
+
+		.modal-overlay.active {
+			display: flex;
+		}
+
+		.booking-detail-modal-card {
+			background: #ffffff;
+			width: 100%;
+			max-width: 620px;
+			border-radius: 28px;
+			padding: 32px;
+			border: 1px solid var(--border-pink);
+			box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
+			position: relative;
+			max-height: 90vh;
+			overflow-y: auto;
+			animation: modalZoom 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+		}
+
+		@keyframes modalZoom {
+			from { opacity: 0; transform: scale(0.95); }
+			to { opacity: 1; transform: scale(1); }
+		}
+
+		.modal-close-btn {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			width: 36px;
+			height: 36px;
+			border-radius: 50%;
+			background: #fdf2f8;
+			border: none;
+			font-size: 1.1rem;
+			font-weight: bold;
+			color: var(--client-accent);
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: all 0.2s;
+		}
+
+		.modal-close-btn:hover {
+			background: var(--client-accent);
+			color: #ffffff;
+		}
+
+		/* Línea de Seguimiento Visual */
+		.booking-stepper {
+			display: flex;
+			justify-content: space-between;
+			position: relative;
+			margin: 24px 0 28px;
+			padding: 0 10px;
+		}
+
+		.booking-stepper::before {
+			content: '';
+			position: absolute;
+			top: 14px;
+			left: 30px;
+			right: 30px;
+			height: 3px;
+			background: #f3e0eb;
+			z-index: 1;
+		}
+
+		.step-node {
+			position: relative;
+			z-index: 2;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			text-align: center;
+		}
+
+		.step-circle {
+			width: 30px;
+			height: 30px;
+			border-radius: 50%;
+			background: #f3e0eb;
+			color: #8c6a82;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 0.85rem;
+			font-weight: 800;
+			margin-bottom: 6px;
+			border: 3px solid #ffffff;
+			transition: all 0.3s ease;
+		}
+
+		.step-label {
+			font-size: 0.76rem;
+			font-weight: 700;
+			color: var(--client-text-muted);
+			max-width: 90px;
+		}
+
+		.step-node.completed .step-circle {
+			background: var(--client-accent);
+			color: #ffffff;
+		}
+
+		.step-node.completed .step-label {
+			color: var(--client-accent);
+			font-weight: 800;
+		}
+
+		/* Desglose de Servicios en Modal */
+		.modal-services-box {
+			background: #fdf8fb;
+			border-radius: 18px;
+			border: 1px solid var(--client-border);
+			padding: 16px;
+			margin-bottom: 20px;
+		}
+
+		.modal-service-row {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 10px 0;
+			border-bottom: 1px dashed rgba(255, 0, 102, 0.12);
+		}
+
+		.modal-service-row:last-child {
+			border-bottom: none;
+		}
+
+		.modal-service-title {
+			font-family: var(--font-service-name);
+			font-size: 0.96rem;
+			font-weight: 700;
+			color: var(--client-text);
+		}
+
+		.modal-service-sub {
+			font-size: 0.8rem;
+			color: var(--client-text-muted);
+			font-family: var(--font-body);
+		}
+
+		.modal-service-price {
+			font-weight: 800;
+			color: var(--client-accent);
+			font-size: 0.98rem;
+		}
+
+		/* RESPONSIVE DESIGN (Móvil & Tablet) */
+		@media (max-width: 960px) {
+			.client-panel-layout {
+				flex-direction: column;
+			}
+			.client-sidebar {
+				position: fixed;
+				top: 75px;
+				left: 0;
+				bottom: 0;
+				transform: translateX(-100%);
+				box-shadow: 10px 0 30px rgba(0, 0, 0, 0.3);
+			}
+			.client-sidebar.mobile-open {
+				transform: translateX(0);
+			}
+			.client-main-content {
+				padding: 24px 20px;
+			}
+			.client-mobile-bar {
+				display: flex;
+			}
+			.booking-item-row {
+				grid-template-columns: 1fr 1fr;
+				gap: 12px;
+			}
+			.col-services {
+				grid-column: 1 / -1;
+			}
+			.next-booking-body {
+				grid-template-columns: 1fr;
+			}
+			.next-booking-actions {
+				align-items: flex-start;
+			}
+		}
+
+		@media (max-width: 580px) {
+			.booking-item-row {
+				grid-template-columns: 1fr;
+				padding: 16px;
+			}
+			.profile-form-grid {
+				grid-template-columns: 1fr;
+			}
+			.view-title-wrap h1 {
+				font-size: 1.7rem;
+			}
+			.client-kpi-grid {
+				grid-template-columns: 1fr;
+			}
+			.next-booking-card {
+				padding: 22px 18px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+
+	<!-- Navbar Superior -->
+	<header class="header-nav">
+		<a href="index.html" class="logo-container">
+			<div class="logo-brand-wrap">
+				<svg class="logo-spiral-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M50 8 C26.8 8 8 26.8 8 50 C8 73.2 26.8 92 50 92 C73.2 92 92 73.2 92 50 C92 31.5 80 16 62.5 11.5 C41.5 6.1 20.8 18.2 15.4 39.2 C10 60.2 22.1 80.9 43.1 86.3 C64.1 91.7 84.8 79.6 90.2 58.6 C94.5 41.8 84.5 24.5 67.7 20.2 C52.5 16.3 36.8 24.8 32.9 40 C29 55.2 37.5 70.9 52.7 74.8 C66.5 78.3 80.5 70 83.2 56 C85.5 44 77.5 32.5 65.5 30.2 C54.5 28.1 44 35.5 41.9 46.5 C40 56.5 47 65.5 57 67.4 C65.5 69 73 63 74.5 54.5" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
+				</svg>
+				<div class="logo-brand-text">
+					<span class="logo-nails">NAILS</span>
+					<span class="logo-artist">ARTIST</span>
+				</div>
+			</div>
+		</a>
+
+		<ul class="nav-menu" style="display: flex; align-items: center; gap: 15px;">
+			<li><a href="servicios.html" class="btn-client-secondary" style="padding: 6px 14px; font-size: 0.85rem;">💅 Ver Catálogo</a></li>
+			<li><button id="carrito" class="btn-cart-nav">🛒 Carrito <span id="contador" class="cart-count-badge">0</span></button></li>
+			<li><a href="javascript:void(0)" onclick="cerrarSesionCliente()" class="btn-client-secondary" style="color:#e11d48; border-color:#fbcfe8; padding: 6px 14px; font-size: 0.85rem;">🚪 Salir</a></li>
+		</ul>
+	</header>
+
+	<div class="client-panel-layout">
+
+		<!-- Overlay para móvil -->
+		<div id="client-sidebar-overlay" class="modal-overlay" onclick="toggleSidebarMenu(false)"></div>
+
+		<!-- Sidebar del Cliente -->
+		<aside id="client-sidebar" class="client-sidebar">
+			<div>
+				<div class="client-user-summary">
+					<div class="client-initial-badge" id="sidebar-user-initial">C</div>
+					<h3 class="client-user-name" id="sidebar-user-name">Clienta VIP</h3>
+					<div class="client-user-email" id="sidebar-user-email">cargando@correo.com</div>
+					<span class="client-vip-pill" id="sidebar-vip-badge">✨ Descuento VIP 15%</span>
+				</div>
+
+				<nav>
+					<ul class="client-nav-list">
+						<li>
+							<button type="button" class="client-nav-btn active" onclick="mostrarSeccion('inicio')">
+								<span class="client-nav-icon">🏠</span>
+								<span>Inicio</span>
+							</button>
+						</li>
+						<li>
+							<button type="button" class="client-nav-btn" onclick="mostrarSeccion('reservas')">
+								<span class="client-nav-icon">📅</span>
+								<span>Mis Reservas</span>
+								<span class="client-nav-badge" id="nav-count-reservas">0</span>
+							</button>
+						</li>
+						<li>
+							<button type="button" class="client-nav-btn" onclick="mostrarSeccion('notificaciones')">
+								<span class="client-nav-icon">🔔</span>
+								<span>Notificaciones</span>
+								<span class="client-nav-badge" id="nav-count-notifs" style="background:#059669;">2</span>
+							</button>
+						</li>
+						<li>
+							<button type="button" class="client-nav-btn" onclick="mostrarSeccion('datos')">
+								<span class="client-nav-icon">👤</span>
+								<span>Mis Datos</span>
+							</button>
+						</li>
+						<li>
+							<a href="servicios.html" class="client-nav-btn" style="text-decoration:none;">
+								<span class="client-nav-icon">💅</span>
+								<span>Explorar Servicios</span>
+							</a>
+						</li>
+						<li>
+							<a href="https://wa.me/59160737902?text=¡Hola%20NailArtist!%20Necesito%20ayuda%20con%20mi%20cuenta%20de%20cliente%20💖" target="_blank" class="client-nav-btn" style="text-decoration:none; color:#25d366;">
+								<span class="client-nav-icon">💬</span>
+								<span>Contacto / Ayuda</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+
+			<div class="client-sidebar-footer">
+				<a href="index.html" class="client-link-website">
+					<span>🌐</span>
+					<span>Volver a la Página Principal</span>
+				</a>
+				<button type="button" class="client-btn-logout" onclick="cerrarSesionCliente()">
+					<span>🚪</span>
+					<span>Cerrar Sesión</span>
+				</button>
+			</div>
+		</aside>
+
+		<!-- Contenedor Principal de Vistas -->
+		<main class="client-main-content">
+
+			<!-- Barra de Apertura en Móvil -->
+			<div class="client-mobile-bar">
+				<div>
+					<strong id="mobile-bar-username" style="font-size: 0.95rem; color: var(--client-text);">Mi Cuenta</strong>
+					<div style="font-size: 0.78rem; color: var(--client-accent);">Nails VIP Club</div>
+				</div>
+				<button type="button" class="client-mobile-toggle-btn" onclick="toggleSidebarMenu(true)">☰ Menú</button>
+			</div>
+
+			<!-- ========================================================================= -->
+			<!-- SECCIÓN 1: INICIO / DASHBOARD                                             -->
+			<!-- ========================================================================= -->
+			<section id="view-inicio" class="client-section-view active">
+				<div class="view-header-row">
+					<div class="view-title-wrap">
+						<h1 id="greeting-title">Bienvenida de nuevo</h1>
+						<p>Consulta tus próximas citas y el estado de tus reservas en el estudio.</p>
+					</div>
+					<a href="servicios.html" class="btn-client-primary">
+						<span>✨ Agendar Nueva Cita</span>
+					</a>
+				</div>
+
+				<!-- Tarjeta de Próxima Cita (Dinámica) -->
+				<div id="contenedor-proxima-cita">
+					<!-- Se inyecta la próxima cita o el estado vacío -->
+				</div>
+
+				<!-- Estadísticas Reales del Cliente -->
+				<div class="view-header-row" style="margin-bottom: 16px;">
+					<div class="view-title-wrap">
+						<h3 style="font-family: var(--font-title); font-size: 1.4rem; color: var(--client-text);">Resumen de tu Cuenta</h3>
+					</div>
+				</div>
+
+				<div class="client-kpi-grid">
+					<div class="client-kpi-card">
+						<div class="kpi-info-col">
+							<span class="kpi-num" id="kpi-total">0</span>
+							<span class="kpi-label">Reservas Realizadas</span>
+						</div>
+						<div class="kpi-icon-badge kpi-icon-pink">📅</div>
+					</div>
+
+					<div class="client-kpi-card">
+						<div class="kpi-info-col">
+							<span class="kpi-num" id="kpi-pendientes" style="color:#d97706;">0</span>
+							<span class="kpi-label">Pendientes</span>
+						</div>
+						<div class="kpi-icon-badge kpi-icon-gold">⏳</div>
+					</div>
+
+					<div class="client-kpi-card">
+						<div class="kpi-info-col">
+							<span class="kpi-num" id="kpi-confirmadas" style="color:#2563eb;">0</span>
+							<span class="kpi-label">Confirmadas</span>
+						</div>
+						<div class="kpi-icon-badge kpi-icon-purple">✨</div>
+					</div>
+
+					<div class="client-kpi-card">
+						<div class="kpi-info-col">
+							<span class="kpi-num" id="kpi-completadas" style="color:#059669;">0</span>
+							<span class="kpi-label">Completadas</span>
+						</div>
+						<div class="kpi-icon-badge kpi-icon-green">✅</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- ========================================================================= -->
+			<!-- SECCIÓN 2: MIS RESERVAS                                                   -->
+			<!-- ========================================================================= -->
+			<section id="view-reservas" class="client-section-view">
+				<div class="view-header-row">
+					<div class="view-title-wrap">
+						<h1>Mis Reservas de Citas</h1>
+						<p>Historial completo de tus solicitudes de uñas con fecha, hora y detalle de servicios.</p>
+					</div>
+					<a href="servicios.html" class="btn-client-primary">
+						<span>➕ Reservar Servicio</span>
+					</a>
+				</div>
+
+				<div class="client-bookings-table-card">
+					<div class="booking-filters-bar">
+						<div class="filter-tabs-group">
+							<button type="button" class="filter-tab-btn active" onclick="filtrarReservasEstado('todas', this)">Todas</button>
+							<button type="button" class="filter-tab-btn" onclick="filtrarReservasEstado('Pendiente', this)">Pendientes</button>
+							<button type="button" class="filter-tab-btn" onclick="filtrarReservasEstado('Confirmada', this)">Confirmadas</button>
+							<button type="button" class="filter-tab-btn" onclick="filtrarReservasEstado('Completada', this)">Completadas</button>
+							<button type="button" class="filter-tab-btn" onclick="filtrarReservasEstado('Cancelada', this)">Canceladas</button>
+						</div>
+
+						<input type="text" id="input-buscar-reserva" class="booking-search-input" placeholder="🔍 Buscar por código de reserva..." oninput="buscarReservasTexto(this.value)" />
+					</div>
+
+					<div class="bookings-cards-list" id="lista-todas-reservas">
+						<div style="text-align:center; padding: 40px; color: var(--client-text-muted);">
+							<div style="font-size: 2rem; margin-bottom: 8px;">⏳</div>
+							<p>Cargando tus reservas desde la base de datos...</p>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- ========================================================================= -->
+			<!-- SECCIÓN 3: NOTIFICACIONES                                                 -->
+			<!-- ========================================================================= -->
+			<section id="view-notificaciones" class="client-section-view">
+				<div class="view-header-row">
+					<div class="view-title-wrap">
+						<h1>Centro de Notificaciones</h1>
+						<p>Avisos importantes sobre tus reservas agendadas y promociones exclusivas.</p>
+					</div>
+				</div>
+
+				<div class="notifications-list" id="lista-notificaciones-cliente">
+					<!-- Se inyectan notificaciones reales -->
+				</div>
+			</section>
+
+			<!-- ========================================================================= -->
+			<!-- SECCIÓN 4: MIS DATOS                                                      -->
+			<!-- ========================================================================= -->
+			<section id="view-datos" class="client-section-view">
+				<div class="view-header-row">
+					<div class="view-title-wrap">
+						<h1>Mis Datos Personales</h1>
+						<p>Consulta y actualiza tu información de contacto registrada en NailArtist Studio.</p>
+					</div>
+				</div>
+
+				<div class="profile-card">
+					<div style="display:flex; align-items:center; gap:16px; margin-bottom: 24px;">
+						<div class="client-initial-badge" id="profile-avatar-initial" style="margin:0; width:56px; height:56px; font-size:1.5rem;">C</div>
+						<div>
+							<h3 id="profile-display-name" style="font-family: var(--font-title); font-size: 1.35rem; color: var(--client-text); margin-bottom: 2px;">Camila Morales</h3>
+							<span class="client-vip-pill" id="profile-display-discount">✨ Miembro Nails VIP Club (15% OFF)</span>
+						</div>
+					</div>
+
+					<form id="form-perfil-cliente" onsubmit="guardarPerfilCliente(event)">
+						<div class="profile-form-grid">
+							<div>
+								<label class="form-label" for="input-perfil-nombre">Nombre *</label>
+								<input type="text" id="input-perfil-nombre" class="form-input" required />
+							</div>
+
+							<div>
+								<label class="form-label" for="input-perfil-apellido">Apellido</label>
+								<input type="text" id="input-perfil-apellido" class="form-input" />
+							</div>
+
+							<div>
+								<label class="form-label" for="input-perfil-email">Correo Electrónico</label>
+								<input type="email" id="input-perfil-email" class="form-input" disabled title="El correo electrónico está vinculado a tu cuenta" />
+							</div>
+
+							<div>
+								<label class="form-label" for="input-perfil-telefono">Teléfono / WhatsApp *</label>
+								<input type="tel" id="input-perfil-telefono" class="form-input" placeholder="+591 7XXXXXXX" required />
+							</div>
+
+							<div class="form-group-full" style="border-top: 1px dashed var(--client-border); padding-top: 18px; margin-top: 6px;">
+								<label class="form-label" style="color: var(--client-accent);">Cambiar Contraseña (Opcional)</label>
+								<p style="font-size: 0.82rem; color: var(--client-text-muted); margin-bottom: 12px;">Déjalo en blanco si deseas conservar tu contraseña actual.</p>
+							</div>
+
+							<div>
+								<label class="form-label" for="input-perfil-new-pass">Nueva Contraseña</label>
+								<input type="password" id="input-perfil-new-pass" class="form-input" placeholder="Mínimo 6 caracteres" />
+							</div>
+
+							<div>
+								<label class="form-label" for="input-perfil-curr-pass">Contraseña Actual (si vas a cambiarla)</label>
+								<input type="password" id="input-perfil-curr-pass" class="form-input" placeholder="Tu clave actual" />
+							</div>
+						</div>
+
+						<div id="perfil-alert-msg" style="display:none; margin-top: 18px; padding: 12px; border-radius: 12px; font-size: 0.9rem;"></div>
+
+						<div style="margin-top: 24px; display: flex; gap: 12px;">
+							<button type="submit" id="btn-guardar-perfil" class="btn-client-primary">
+								<span>💾 Guardar Cambios</span>
+							</button>
+						</div>
+					</form>
+				</div>
+			</section>
+
+		</main>
+	</div>
+
+	<!-- ========================================================================= -->
+	<!-- MODAL: DETALLE COMPLETO DE RESERVA                                         -->
+	<!-- ========================================================================= -->
+	<div id="modal-detalle-reserva" class="modal-overlay">
+		<div class="booking-detail-modal-card">
+			<button type="button" class="modal-close-btn" onclick="cerrarModalDetalle()">✕</button>
+
+			<div style="margin-bottom: 16px;">
+				<span class="status-badge" id="modal-reserva-estado">Pendiente</span>
+				<h2 style="font-family: var(--font-title); font-size: 1.6rem; color: var(--client-text); margin-top: 8px;" id="modal-reserva-codigo">
+					RES-2026-0000
+				</h2>
+				<span style="font-size: 0.85rem; color: var(--client-text-muted);" id="modal-reserva-creacion">Creada el --/--/----</span>
+			</div>
+
+			<!-- Línea de Seguimiento Visual -->
+			<div class="booking-stepper">
+				<div class="step-node completed" id="step-1">
+					<div class="step-circle">1</div>
+					<div class="step-label">Solicitud enviada</div>
+				</div>
+				<div class="step-node" id="step-2">
+					<div class="step-circle">2</div>
+					<div class="step-label">Reserva confirmada</div>
+				</div>
+				<div class="step-node" id="step-3">
+					<div class="step-circle">3</div>
+					<div class="step-label">Cita realizada</div>
+				</div>
+			</div>
+
+			<!-- Desglose de Servicios -->
+			<div class="modal-services-box">
+				<h4 style="font-size: 0.92rem; font-weight: 800; color: var(--client-text); margin-bottom: 10px;">💅 Servicios Incluidos:</h4>
+				<div id="modal-lista-servicios-items">
+					<!-- Se inyectan filas de detalle_cita -->
+				</div>
+			</div>
+
+			<div style="background: #fdf2f8; border-radius: 16px; padding: 14px 18px; margin-bottom: 20px; font-size: 0.9rem;">
+				<div style="display:flex; justify-content:space-between; margin-bottom: 6px;">
+					<span style="color:var(--client-text-muted);">📅 Fecha Programada:</span>
+					<strong id="modal-reserva-fecha" style="color:var(--client-text);">-</strong>
+				</div>
+				<div style="display:flex; justify-content:space-between; margin-bottom: 6px;">
+					<span style="color:var(--client-text-muted);">⏱ Hora Estimada:</span>
+					<strong id="modal-reserva-hora" style="color:var(--client-text);">-</strong>
+				</div>
+				<div style="display:flex; justify-content:space-between; margin-bottom: 6px;">
+					<span style="color:var(--client-text-muted);">📝 Observaciones:</span>
+					<span id="modal-reserva-obs" style="color:var(--client-text); font-weight:600; text-align:right;">-</span>
+				</div>
+				<div style="border-top: 1px solid rgba(255,0,102,0.15); padding-top: 8px; margin-top: 8px; display:flex; justify-content:space-between; align-items:center;">
+					<span style="font-weight: 800; color: var(--client-text);">Total Final:</span>
+					<strong id="modal-reserva-total" style="font-size: 1.3rem; color: var(--client-accent); font-weight: 900;">Bs. 0</strong>
+				</div>
+			</div>
+
+			<div style="display: flex; gap: 12px; flex-wrap: wrap;">
+				<button type="button" id="modal-btn-whatsapp" class="btn-client-primary" style="flex: 1; justify-content: center; background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);">
+					<span>💬 Contactar por WhatsApp</span>
+				</button>
+				<button type="button" class="btn-client-secondary" onclick="cerrarModalDetalle()">
+					<span>Cerrar</span>
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- Drawer del Carrito (Reutilizado) -->
+	<div id="carrito-modal-overlay"></div>
+	<section id="carrito-panel">
+		<div class="cart-header">
+			<h2>🛒 Mis Servicios</h2>
+			<button class="cart-close-btn" id="cerrar-carrito">&times;</button>
+		</div>
+		<div class="cart-body" id="lista-carrito"></div>
+		<div class="cart-footer">
+			<div class="cart-total-box">
+				<span>Total Estimado:</span>
+				<span class="cart-total-amount">Bs. <span id="total">0</span></span>
+			</div>
+			<div class="cart-actions">
+				<button class="btn-whatsapp" id="whatsapp">💬 Reservar Cita por WhatsApp</button>
+				<button class="btn-vaciar" id="vaciar">Vaciar Carrito</button>
+			</div>
+		</div>
+	</section>
+
+	<div id="noti">¡Servicio añadido al carrito!</div>
+
+	<!-- Scripts -->
+	<script src="assets/js/nailartist.js"></script>
+	<script>
+		let clienteActual = null;
+		let todasLasCitas = [];
+		let citaSeleccionada = null;
+
+		document.addEventListener('DOMContentLoaded', async () => {
+			await verificarAutenticacionCliente();
+			await cargarMisReservas();
+		});
+
+		// 1. Verificar sesión activa del cliente
+		async function verificarAutenticacionCliente() {
+			try {
+				const res = await fetch('/api/me');
+				const data = await res.json();
+
+				if (!data.authenticated || !data.user) {
+					// No autenticado, redirigir al login
+					window.location.href = '/login.html?redirect=/cliente.html';
+					return;
+				}
+
+				clienteActual = data.user;
+				actualizarInterfazCliente(clienteActual);
+			} catch (err) {
+				console.warn('Error al verificar sesión en cliente.html:', err);
+				const cached = localStorage.getItem('nailartist_user');
+				if (cached) {
+					clienteActual = JSON.parse(cached);
+					actualizarInterfazCliente(clienteActual);
+				} else {
+					window.location.href = '/login.html';
+				}
+			}
+		}
+
+		// 2. Pintar datos del cliente en la interfaz
+		function actualizarInterfazCliente(u) {
+			const inicial = (u.nombre || 'C').charAt(0).toUpperCase();
+			const nombreCompleto = `${u.nombre} ${u.apellido || ''}`.trim();
+
+			document.getElementById('sidebar-user-initial').innerText = inicial;
+			document.getElementById('sidebar-user-name').innerText = nombreCompleto;
+			document.getElementById('sidebar-user-email').innerText = u.email;
+			document.getElementById('sidebar-vip-badge').innerText = `✨ Descuento VIP ${u.descuento_vip || 15}%`;
+
+			document.getElementById('greeting-title').innerText = `Bienvenido nuevamente, ${u.nombre}`;
+			document.getElementById('mobile-bar-username').innerText = nombreCompleto;
+
+			// Mis Datos
+			document.getElementById('profile-avatar-initial').innerText = inicial;
+			document.getElementById('profile-display-name').innerText = nombreCompleto;
+			document.getElementById('profile-display-discount').innerText = `✨ Miembro Nails VIP Club (${u.descuento_vip || 15}% OFF)`;
+
+			document.getElementById('input-perfil-nombre').value = u.nombre || '';
+			document.getElementById('input-perfil-apellido').value = u.apellido || '';
+			document.getElementById('input-perfil-email').value = u.email || '';
+			document.getElementById('input-perfil-telefono').value = u.telefono || '';
+		}
+
+		// 3. Cargar reservas del cliente desde la API
+		async function cargarMisReservas() {
+			try {
+				const res = await fetch('/api/reservas/mis-citas');
+				const data = await res.json();
+
+				if (data.success && Array.isArray(data.data)) {
+					todasLasCitas = data.data;
+					renderizarEstadisticas(todasLasCitas);
+					renderizarProximaCita(todasLasCitas);
+					renderizarListadoReservas(todasLasCitas);
+					renderizarNotificaciones(todasLasCitas);
+				}
+			} catch (err) {
+				console.error('Error al cargar reservas:', err);
+				document.getElementById('lista-todas-reservas').innerHTML = `
+					<div style="text-align:center; padding:30px; color:#e11d48;">
+						<p>No se pudieron cargar las reservas. Intenta nuevamente.</p>
+					</div>
+				`;
+			}
+		}
+
+		// 4. Estadísticas del Cliente
+		function renderizarEstadisticas(citas) {
+			const total = citas.length;
+			const pendientes = citas.filter(c => (c.estado || '').toLowerCase() === 'pendiente').length;
+			const confirmadas = citas.filter(c => (c.estado || '').toLowerCase() === 'confirmada').length;
+			const completadas = citas.filter(c => (c.estado || '').toLowerCase() === 'completada').length;
+
+			document.getElementById('kpi-total').innerText = total;
+			document.getElementById('kpi-pendientes').innerText = pendientes;
+			document.getElementById('kpi-confirmadas').innerText = confirmadas;
+			document.getElementById('kpi-completadas').innerText = completadas;
+			document.getElementById('nav-count-reservas').innerText = total;
+		}
+
+		// 5. Tarjeta Próxima Cita o Estado Vacío
+		function renderizarProximaCita(citas) {
+			const container = document.getElementById('contenedor-proxima-cita');
+			// Buscar la cita más reciente con estado Pendiente o Confirmada
+			const proxima = citas.find(c => ['pendiente', 'confirmada'].includes((c.estado || '').toLowerCase())) || citas[0];
+
+			if (!proxima) {
+				container.innerHTML = `
+					<div class="empty-state-card">
+						<div class="empty-state-icon">💅</div>
+						<h3 class="empty-state-title">Aún no tienes reservas</h3>
+						<p class="empty-state-desc">Explora nuestra colección de uñas acrílicas, soft gel y diseños personalizados para agendar tu primera cita.</p>
+						<a href="servicios.html" class="btn-client-primary">
+							<span>Explorar Servicios & Precios 💖</span>
+						</a>
+					</div>
+				`;
+				return;
+			}
+
+			let stClass = 'status-pendiente';
+			let stName = proxima.estado || 'Pendiente';
+			if (stName.toLowerCase() === 'confirmada') stClass = 'status-confirmada';
+			if (stName.toLowerCase() === 'completada') stClass = 'status-completada';
+			if (stName.toLowerCase() === 'cancelada') stClass = 'status-cancelada';
+
+			const serviciosTexto = proxima.servicios_resumen || 'Servicio de uñas personalizado';
+
+			container.innerHTML = `
+				<div class="next-booking-card">
+					<div class="next-booking-header">
+						<span class="next-booking-tag">📅 Tu Próxima Cita Agendada</span>
+						<span class="status-badge ${stClass}">● ${stName}</span>
+					</div>
+					<div class="next-booking-body">
+						<div>
+							<div style="font-family: monospace; font-size: 0.95rem; color: var(--pink-soft); margin-bottom: 6px;">
+								🔖 ${proxima.codigo_reserva}
+							</div>
+							<h3 class="next-services-title">${escapeHtml(serviciosTexto)}</h3>
+							<div class="next-booking-meta">
+								<span>📅 Fecha: <strong>${proxima.fecha_cita}</strong></span>
+								<span>⏱ Hora: <strong>${proxima.hora_cita}</strong></span>
+							</div>
+						</div>
+						<div class="next-booking-actions">
+							<div class="next-booking-price">Bs. ${proxima.total_final_bs}</div>
+							<button type="button" class="btn-client-primary" onclick="abrirModalDetalle(${proxima.id})" style="background:#ffffff; color:var(--client-text);">
+								<span>Ver Detalle Completo 🔍</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			`;
+		}
+
+		// 6. Listado de Reservas
+		function renderizarListadoReservas(citas) {
+			const container = document.getElementById('lista-todas-reservas');
+			if (citas.length === 0) {
+				container.innerHTML = `
+					<div style="text-align:center; padding: 40px 10px; color: var(--client-text-muted);">
+						<p style="font-size:2rem; margin-bottom:8px;">📅</p>
+						<p style="font-weight:700; color:var(--client-text);">No hay reservas en esta categoría.</p>
+					</div>
+				`;
+				return;
+			}
+
+			container.innerHTML = citas.map(c => {
+				let stClass = 'status-pendiente';
+				let stName = c.estado || 'Pendiente';
+				if (stName.toLowerCase() === 'confirmada') stClass = 'status-confirmada';
+				if (stName.toLowerCase() === 'completada') stClass = 'status-completada';
+				if (stName.toLowerCase() === 'cancelada') stClass = 'status-cancelada';
+
+				const serviciosTexto = c.servicios_resumen || 'Servicio de Estudio NailArtist';
+
+				return `
+					<div class="booking-item-row">
+						<div class="col-code">
+							<strong>${c.codigo_reserva}</strong>
+						</div>
+						<div class="col-services">
+							<span>${escapeHtml(serviciosTexto)}</span>
+							<small>${c.observaciones ? escapeHtml(c.observaciones) : 'Cita agendada vía web'}</small>
+						</div>
+						<div class="col-date">
+							<span>${c.fecha_cita}</span>
+							<small>${c.hora_cita}</small>
+						</div>
+						<div class="col-total">
+							Bs. ${c.total_final_bs}
+						</div>
+						<div>
+							<span class="status-badge ${stClass}">${stName}</span>
+						</div>
+						<div>
+							<button type="button" class="btn-client-secondary" onclick="abrirModalDetalle(${c.id})" style="padding: 6px 14px; font-size: 0.84rem;">
+								Ver Detalle
+							</button>
+						</div>
+					</div>
+				`;
+			}).join('');
+		}
+
+		// Filtro de Reservas por Estado
+		function filtrarReservasEstado(estado, btn) {
+			document.querySelectorAll('.filter-tab-btn').forEach(b => b.classList.remove('active'));
+			if (btn) btn.classList.add('active');
+
+			if (estado === 'todas') {
+				renderizarListadoReservas(todasLasCitas);
+			} else {
+				const filtradas = todasLasCitas.filter(c => (c.estado || '').toLowerCase() === estado.toLowerCase());
+				renderizarListadoReservas(filtradas);
+			}
+		}
+
+		// Buscador de Reservas por Código
+		function buscarReservasTexto(txt) {
+			const query = (txt || '').trim().toLowerCase();
+			if (!query) {
+				renderizarListadoReservas(todasLasCitas);
+				return;
+			}
+			const filtradas = todasLasCitas.filter(c => 
+				(c.codigo_reserva || '').toLowerCase().includes(query) ||
+				(c.servicios_resumen || '').toLowerCase().includes(query)
+			);
+			renderizarListadoReservas(filtradas);
+		}
+
+		// 7. Notificaciones del Cliente
+		function renderizarNotificaciones(citas) {
+			const container = document.getElementById('lista-notificaciones-cliente');
+			const notifs = [
+				{
+					icon: '💖',
+					titulo: '¡Bienvenida a Nails VIP Club!',
+					mensaje: 'Disfruta de un 15% de descuento en todos tus servicios de uñas acrílicas, gel y manicura en NailArtist Studio.',
+					tiempo: 'Membresía Activa'
+				}
+			];
+
+			citas.slice(0, 4).forEach(c => {
+				let ico = '⏳';
+				let tit = `Reserva recibida (${c.codigo_reserva})`;
+				let desc = `Tu reserva para el día ${c.fecha_cita} a las ${c.hora_cita} ha sido recibida y se encuentra en estado ${c.estado}.`;
+
+				if (c.estado === 'Confirmada') {
+					ico = '✨';
+					tit = `¡Reserva Confirmada! (${c.codigo_reserva})`;
+					desc = `Tu cita del ${c.fecha_cita} ha sido confirmada por el estudio. Te esperamos 10 minutos antes para tu atención.`;
+				} else if (c.estado === 'Completada') {
+					ico = '✅';
+					tit = `Cita Completada (${c.codigo_reserva})`;
+					desc = `¡Gracias por visitarnos! No olvides dejar tu reseña sobre el acabado y duración de tu set de uñas.`;
+				}
+
+				notifs.push({
+					icon: ico,
+					titulo: tit,
+					mensaje: desc,
+					tiempo: c.fecha_creacion ? `Fecha: ${c.fecha_creacion}` : 'Reciente'
+				});
+			});
+
+			container.innerHTML = notifs.map(n => `
+				<div class="notification-card">
+					<div class="notif-icon-wrap">${n.icon}</div>
+					<div class="notif-content">
+						<h4>${escapeHtml(n.titulo)}</h4>
+						<p>${escapeHtml(n.mensaje)}</p>
+						<span class="notif-time">${n.tiempo}</span>
+					</div>
+				</div>
+			`).join('');
+
+			document.getElementById('nav-count-notifs').innerText = notifs.length;
+		}
+
+		// 8. Abrir Modal de Detalle de Reserva
+		async function abrirModalDetalle(id) {
+			const modal = document.getElementById('modal-detalle-reserva');
+			try {
+				const res = await fetch(`/api/reservas/${id}`);
+				const data = await res.json();
+
+				if (!data.success || !data.data) {
+					alert('No se pudo cargar el detalle de la reserva.');
+					return;
+				}
+
+				const cita = data.data;
+				citaSeleccionada = cita;
+
+				// Estados
+				const stBadge = document.getElementById('modal-reserva-estado');
+				stBadge.innerText = cita.estado || 'Pendiente';
+				stBadge.className = 'status-badge';
+				if (cita.estado === 'Confirmada') stBadge.classList.add('status-confirmada');
+				else if (cita.estado === 'Completada') stBadge.classList.add('status-completada');
+				else if (cita.estado === 'Cancelada') stBadge.classList.add('status-cancelada');
+				else stBadge.classList.add('status-pendiente');
+
+				document.getElementById('modal-reserva-codigo').innerText = cita.codigo_reserva;
+				document.getElementById('modal-reserva-creacion').innerText = `Creada el ${cita.fecha_creacion || 'Registro reciente'}`;
+				document.getElementById('modal-reserva-fecha').innerText = cita.fecha_cita || '-';
+				document.getElementById('modal-reserva-hora').innerText = cita.hora_cita || '-';
+				document.getElementById('modal-reserva-obs').innerText = cita.observaciones || 'Sin observaciones';
+				document.getElementById('modal-reserva-total').innerText = `Bs. ${cita.total_final_bs}`;
+
+				// Línea de seguimiento (Stepper)
+				const s1 = document.getElementById('step-1');
+				const s2 = document.getElementById('step-2');
+				const s3 = document.getElementById('step-3');
+
+				s1.className = 'step-node completed';
+				s2.className = 'step-node';
+				s3.className = 'step-node';
+
+				if (cita.estado === 'Confirmada') {
+					s2.className = 'step-node completed';
+				} else if (cita.estado === 'Completada') {
+					s2.className = 'step-node completed';
+					s3.className = 'step-node completed';
+				}
+
+				// Servicios
+				const itemsContainer = document.getElementById('modal-lista-servicios-items');
+				if (cita.servicios && cita.servicios.length > 0) {
+					itemsContainer.innerHTML = cita.servicios.map(item => `
+						<div class="modal-service-row">
+							<div>
+								<div class="modal-service-title">${escapeHtml(item.servicio_nombre || 'Servicio')}</div>
+								<div class="modal-service-sub">Cantidad: <strong>${item.cantidad}</strong> &nbsp;|&nbsp; Bs. ${item.precio_unitario} c/u</div>
+							</div>
+							<div class="modal-service-price">Bs. ${item.subtotal}</div>
+						</div>
+					`).join('');
+				} else {
+					itemsContainer.innerHTML = `
+						<div class="modal-service-row">
+							<div>
+								<div class="modal-service-title">${escapeHtml(cita.servicios_resumen || 'Servicio de uñas')}</div>
+								<div class="modal-service-sub">1 cita programada</div>
+							</div>
+							<div class="modal-service-price">Bs. ${cita.total_final_bs}</div>
+						</div>
+					`;
+				}
+
+				// Botón WhatsApp: Reutilizar exactamente el generador oficial de mensaje
+				document.getElementById('modal-btn-whatsapp').onclick = () => {
+					enviarWhatsAppReserva(cita);
+				};
+
+				modal.classList.add('active');
+			} catch (err) {
+				console.error('Error al abrir modal detalle:', err);
+				alert('Error al consultar los detalles de la reserva.');
+			}
+		}
+
+		function cerrarModalDetalle() {
+			const modal = document.getElementById('modal-detalle-reserva');
+			if (modal) modal.classList.remove('active');
+		}
+
+		// 9. Generador Oficial de WhatsApp (FORMATO EXACTO INTACTO)
+		function enviarWhatsAppReserva(c) {
+			let msg = '✨ *NAILARTIST STUDIO — RESERVA DE CITA* ✨%0A%0A';
+			msg += `🔖 *Código de Reserva:* ${c.codigo_reserva}%0A`;
+			msg += '💅 *Servicios seleccionados:*%0A';
+
+			if (c.servicios && c.servicios.length > 0) {
+				c.servicios.forEach(i => {
+					msg += `• *${i.servicio_nombre || 'Servicio'}* (x${i.cantidad}) — Bs. ${i.subtotal}%0A`;
+				});
+			} else {
+				msg += `• *${c.servicios_resumen || 'Servicios'}* — Bs. ${c.total_final_bs}%0A`;
+			}
+
+			msg += `%0A💰 *Total Estimado:* Bs. ${c.total_final_bs}%0A`;
+			msg += '%0A¡Hola Nail Artist! Deseo confirmar la fecha y hora disponible para mi cita en el estudio 💖';
+
+			const numeroWhatsApp = '59160737902';
+			window.open(`https://wa.me/${numeroWhatsApp}?text=${msg}`, '_blank');
+		}
+
+		// 10. Actualizar Perfil del Cliente
+		async function guardarPerfilCliente(e) {
+			e.preventDefault();
+			const alertBox = document.getElementById('perfil-alert-msg');
+			const btn = document.getElementById('btn-guardar-perfil');
+
+			const nombre = document.getElementById('input-perfil-nombre').value.trim();
+			const apellido = document.getElementById('input-perfil-apellido').value.trim();
+			const telefono = document.getElementById('input-perfil-telefono').value.trim();
+			const password = document.getElementById('input-perfil-new-pass').value;
+			const current_password = document.getElementById('input-perfil-curr-pass').value;
+
+			if (!nombre) {
+				alertBox.style.display = 'block';
+				alertBox.style.background = '#fee2e2';
+				alertBox.style.color = '#b91c1c';
+				alertBox.innerText = 'El nombre es obligatorio.';
+				return;
+			}
+
+			btn.disabled = true;
+			btn.innerText = 'Guardando...';
+
+			try {
+				const res = await fetch('/api/auth/perfil', {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ nombre, apellido, telefono, password, current_password })
+				});
+
+				const data = await res.json();
+
+				if (data.success) {
+					alertBox.style.display = 'block';
+					alertBox.style.background = '#dcfce7';
+					alertBox.style.color = '#15803d';
+					alertBox.innerText = '✨ ¡Tus datos se actualizaron correctamente!';
+					clienteActual = data.data;
+					localStorage.setItem('nailartist_user', JSON.stringify(clienteActual));
+					actualizarInterfazCliente(clienteActual);
+
+					document.getElementById('input-perfil-new-pass').value = '';
+					document.getElementById('input-perfil-curr-pass').value = '';
+				} else {
+					alertBox.style.display = 'block';
+					alertBox.style.background = '#fee2e2';
+					alertBox.style.color = '#b91c1c';
+					alertBox.innerText = data.message || 'Error al actualizar tus datos.';
+				}
+			} catch (err) {
+				alertBox.style.display = 'block';
+				alertBox.style.background = '#fee2e2';
+				alertBox.style.color = '#b91c1c';
+				alertBox.innerText = 'Error de conexión con el servidor.';
+			} finally {
+				btn.disabled = false;
+				btn.innerText = '💾 Guardar Cambios';
+			}
+		}
+
+		// 11. Alternar Secciones del Panel
+		function mostrarSeccion(secId) {
+			document.querySelectorAll('.client-section-view').forEach(s => s.classList.remove('active'));
+			document.querySelectorAll('.client-nav-btn').forEach(b => b.classList.remove('active'));
+
+			const targetSec = document.getElementById(`view-${secId}`);
+			if (targetSec) targetSec.classList.add('active');
+
+			// Marcar activo en sidebar
+			const activeBtn = Array.from(document.querySelectorAll('.client-nav-btn')).find(b => {
+				const onclickAttr = b.getAttribute('onclick') || '';
+				return onclickAttr.includes(`mostrarSeccion('${secId}')`);
+			});
+			if (activeBtn) activeBtn.classList.add('active');
+
+			toggleSidebarMenu(false);
+		}
+
+		// Toggle móvil de sidebar
+		function toggleSidebarMenu(open) {
+			const sidebar = document.getElementById('client-sidebar');
+			const overlay = document.getElementById('client-sidebar-overlay');
+			if (sidebar && overlay) {
+				if (open) {
+					sidebar.classList.add('mobile-open');
+					overlay.classList.add('active');
+				} else {
+					sidebar.classList.remove('mobile-open');
+					overlay.classList.remove('active');
+				}
+			}
+		}
+
+		// Cerrar Sesión
+		async function cerrarSesionCliente() {
+			if (!confirm('¿Deseas cerrar tu sesión de Nails VIP Club?')) return;
+			try {
+				await fetch('/api/logout', { method: 'POST' });
+			} catch (e) {}
+			localStorage.removeItem('nailartist_user');
+			window.location.href = '/login.html';
+		}
+	</script>
+</body>
+</html>

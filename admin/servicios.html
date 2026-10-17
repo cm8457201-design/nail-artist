@@ -40,7 +40,7 @@
             <ul class="nav-list">
                 <li>
                     <a href="index.html" class="nav-link">
-                        <span class="nav-icon"></span>
+                        <span class="nav-icon">📊</span>
                         <span>Dashboard</span>
                     </a>
                 </li>
@@ -50,19 +50,19 @@
             <ul class="nav-list">
                 <li>
                     <a href="citas.html" class="nav-link">
-                        <span class="nav-icon"></span>
+                        <span class="nav-icon">📅</span>
                         <span>Citas & Reservas</span>
                     </a>
                 </li>
                 <li>
                     <a href="servicios.html" class="nav-link active">
-                        <span class="nav-icon"></span>
+                        <span class="nav-icon">💅</span>
                         <span>Servicios & Precios</span>
                     </a>
                 </li>
                 <li>
                     <a href="usuarios.html" class="nav-link">
-                        <span class="nav-icon"></span>
+                        <span class="nav-icon">👥</span>
                         <span>Usuarios & Roles</span>
                     </a>
                 </li>
@@ -72,13 +72,13 @@
             <ul class="nav-list">
                 <li>
                     <a href="resenas.html" class="nav-link">
-                        <span class="nav-icon"></span>
+                        <span class="nav-icon">⭐</span>
                         <span>Reseñas & Opiniones</span>
                     </a>
                 </li>
                 <li>
                     <a href="mensajes.html" class="nav-link">
-                        <span class="nav-icon"></span>
+                        <span class="nav-icon">✉️</span>
                         <span>Mensajes de Contacto</span>
                     </a>
                 </li>
@@ -88,7 +88,7 @@
             <ul class="nav-list">
                 <li>
                     <a href="/servicios.html" target="_blank" class="nav-link">
-                        <span class="nav-icon"></span>
+                        <span class="nav-icon">🌐</span>
                         <span>Ver Catálogo Público</span>
                     </a>
                 </li>
@@ -218,10 +218,24 @@
                         <input type="text" name="imagen" class="form-control" value="images/service_acrilicas.jpg">
                     </div>
                     <div class="form-group" style="margin-bottom: 16px;">
+                        <label class="form-label">Página de Detalle</label>
+                        <input type="text" name="url_detalle" class="form-control" value="servicios.html">
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group" style="margin-bottom: 16px;">
                         <label class="form-label">Estado</label>
                         <select name="estado" class="form-control">
                             <option value="activo" selected>Activo</option>
                             <option value="inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label class="form-label">¿Destacado en Portada?</label>
+                        <select name="destacado" class="form-control">
+                            <option value="1" selected>Sí (Destacado)</option>
+                            <option value="0">No</option>
                         </select>
                     </div>
                 </div>
@@ -285,10 +299,24 @@
                         <input type="text" name="imagen" id="edit-serv-img" class="form-control">
                     </div>
                     <div class="form-group" style="margin-bottom: 16px;">
+                        <label class="form-label">Página de Detalle</label>
+                        <input type="text" name="url_detalle" id="edit-serv-url" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group" style="margin-bottom: 16px;">
                         <label class="form-label">Estado</label>
                         <select name="estado" id="edit-serv-estado" class="form-control">
                             <option value="activo">Activo</option>
                             <option value="inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label class="form-label">¿Destacado en Portada?</label>
+                        <select name="destacado" id="edit-serv-destacado" class="form-control">
+                            <option value="1">Sí (Destacado)</option>
+                            <option value="0">No</option>
                         </select>
                     </div>
                 </div>
@@ -379,7 +407,9 @@ async function abrirModalEditarServicio(id) {
         document.getElementById('edit-serv-duracion').value = s.duracion_minutos;
         document.getElementById('edit-serv-desc').value = s.descripcion || '';
         document.getElementById('edit-serv-img').value = s.imagen || '';
+        document.getElementById('edit-serv-url').value = s.url_detalle || '';
         document.getElementById('edit-serv-estado').value = s.estado;
+        document.getElementById('edit-serv-destacado').value = s.destacado ? '1' : '0';
 
         openAdminModal('modal-editar-servicio');
     }
