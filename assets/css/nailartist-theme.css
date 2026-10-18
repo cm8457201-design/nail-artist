@@ -1,9 +1,13 @@
 /* ==========================================================================
    NAILARTIST STUDIO — LUXURY THEME & DESIGN SYSTEM
-   Modern, Feminine, High-End Beauty & Nail Salon Aesthetics
+   Modern, Feminine, High-End Beauty & Nail Salon Aesthetics,
    ========================================================================== */
 
 :root {
+	/* ==============================================
+   fondo de los colores priemero de el color del fondo segundo del fondo de las plantillas , 
+   tencero fondo de la parte ultima del la paginas despues de la tercera estan los cmabis de logo
+   ================================================== */
 	--bg-main: #fff5f8;
 	--bg-surface: #ffffff;
 	--bg-surface-soft: #fff0f6;
@@ -48,7 +52,9 @@
 }
 
 /* Reset & Global Base */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
@@ -80,7 +86,10 @@ img {
 	display: block;
 }
 
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
 	font-family: inherit;
 }
 
@@ -162,7 +171,7 @@ button, input, select, textarea {
 	align-items: center;
 }
 
-.nav-menu > li > a {
+.nav-menu>li>a {
 	color: var(--text-dark);
 	font-size: 0.96rem;
 	font-weight: 700;
@@ -174,7 +183,7 @@ button, input, select, textarea {
 	transition: var(--transition-smooth);
 }
 
-.nav-menu > li > a:hover {
+.nav-menu>li>a:hover {
 	color: var(--pink-vivid);
 	background: var(--pink-light);
 }
@@ -186,7 +195,7 @@ button, input, select, textarea {
 	position: relative;
 }
 
-.nav-item-dropdown > a::after {
+.nav-item-dropdown>a::after {
 	content: '▾';
 	font-size: 0.85rem;
 	color: var(--pink-vivid);
@@ -194,7 +203,7 @@ button, input, select, textarea {
 	transition: transform 0.3s ease;
 }
 
-.nav-item-dropdown:hover > a::after {
+.nav-item-dropdown:hover>a::after {
 	transform: rotate(180deg);
 }
 
@@ -520,50 +529,7 @@ button, input, select, textarea {
 	box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
 }
 
-/* Badges Stack */
-.hero-badges-stack {
-	display: flex;
-	flex-direction: column;
-	gap: 16px;
-	align-items: center;
-}
 
-.badge-circle {
-	width: 88px;
-	height: 88px;
-	background: rgba(255, 255, 255, 0.95);
-	backdrop-filter: blur(12px);
-	border: 2.5px solid var(--pink-vivid);
-	border-radius: 50%;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	text-align: center;
-	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-	transition: var(--transition-smooth);
-	padding: 8px;
-}
-
-.badge-circle:hover {
-	transform: scale(1.12) rotate(4deg);
-	border-color: var(--gold-accent);
-	box-shadow: 0 12px 30px rgba(255, 0, 102, 0.4);
-}
-
-.badge-circle .b-icon {
-	font-size: 1.5rem;
-	line-height: 1;
-}
-
-.badge-circle .b-text {
-	font-size: 0.66rem;
-	font-weight: 800;
-	color: var(--text-dark);
-	text-transform: uppercase;
-	margin-top: 3px;
-	line-height: 1.15;
-}
 
 /* Slider Controls */
 .slider-btn {
@@ -593,8 +559,13 @@ button, input, select, textarea {
 	box-shadow: var(--shadow-pink);
 }
 
-.slider-btn.prev { left: 30px; }
-.slider-btn.next { right: 30px; }
+.slider-btn.prev {
+	left: 30px;
+}
+
+.slider-btn.next {
+	right: 30px;
+}
 
 .slider-dots {
 	position: absolute;
@@ -1066,10 +1037,13 @@ button, input, select, textarea {
 }
 
 @keyframes floatSparkle {
-	0%, 100% {
+
+	0%,
+	100% {
 		transform: translateY(0) scale(0.85) rotate(0deg);
 		opacity: 0.35;
 	}
+
 	50% {
 		transform: translateY(-28px) scale(1.25) rotate(180deg);
 		opacity: 0.95;
@@ -1624,6 +1598,7 @@ button, input, select, textarea {
 		opacity: 0;
 		transform: translateY(30px);
 	}
+
 	to {
 		opacity: 1;
 		transform: translateY(0);
@@ -1635,6 +1610,7 @@ button, input, select, textarea {
 		transform: translateX(100%);
 		opacity: 0;
 	}
+
 	to {
 		transform: translateX(0);
 		opacity: 1;
@@ -1648,16 +1624,20 @@ button, input, select, textarea {
 	.dropdown-menu {
 		width: 520px;
 	}
+
 	.hero-title-nf {
 		font-size: 3.5rem;
 	}
+
 	.artist-grid {
 		grid-template-columns: 1fr;
 		gap: 40px;
 	}
+
 	.artist-image-card img {
 		height: 380px;
 	}
+
 	.footer-grid {
 		grid-template-columns: repeat(2, 1fr);
 	}
@@ -1667,6 +1647,7 @@ button, input, select, textarea {
 	.header-nav {
 		padding: 12px 20px;
 	}
+
 	.nav-menu {
 		position: fixed;
 		top: 70px;
@@ -1681,9 +1662,11 @@ button, input, select, textarea {
 		display: none;
 		box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
 	}
+
 	.nav-menu.mobile-open {
 		display: flex;
 	}
+
 	.dropdown-menu {
 		position: static;
 		transform: none !important;
@@ -1695,35 +1678,44 @@ button, input, select, textarea {
 		border: 1px solid var(--border-pink);
 		margin-top: 10px;
 	}
+
 	.mobile-menu-toggle {
 		display: block;
 	}
+
 	.hero-slider-content {
 		flex-direction: column;
 		text-align: center;
 		padding-top: 40px;
 	}
+
 	.hero-title-nf {
 		font-size: 2.8rem;
 	}
+
 	.hero-hashtag-pill {
 		margin-left: auto;
 		margin-right: auto;
 	}
+
 	.hero-actions-nf {
 		justify-content: center;
 	}
+
 	.hero-badges-stack {
 		flex-direction: row;
 		flex-wrap: wrap;
 		justify-content: center;
 	}
+
 	.services-grid {
 		grid-template-columns: 1fr;
 	}
+
 	.subpage-detail-grid {
 		grid-template-columns: 1fr;
 	}
+
 	.footer-grid {
 		grid-template-columns: 1fr;
 		gap: 35px;
@@ -1734,15 +1726,19 @@ button, input, select, textarea {
 	.hero-title-nf {
 		font-size: 2.2rem;
 	}
+
 	.section-title {
 		font-size: 2.2rem;
 	}
+
 	.card-actions-group {
 		grid-template-columns: 1fr;
 	}
+
 	.trust-features-list {
 		grid-template-columns: 1fr;
 	}
+
 	.register-card {
 		padding: 35px 20px;
 	}
@@ -1785,7 +1781,10 @@ button, input, select, textarea {
 .review-form-card::before {
 	content: '';
 	position: absolute;
-	top: 0; left: 0; right: 0; height: 4px;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 4px;
 	background: var(--gradient-btn);
 }
 
@@ -1912,3 +1911,363 @@ button, input, select, textarea {
 	font-weight: 600;
 }
 
+/* =============================================================================
+   SECCIÓN: CONOCE A NUESTRAS MANICURISTAS (PREMIUM LUXURY REDESIGN)
+   ============================================================================= */
+.team-manicuristas-section {
+	padding: 90px 20px;
+	background: var(--bg-surface-soft, #fcf8fa);
+	position: relative;
+	border-top: 1px solid var(--border-light, #f1e4ec);
+	border-bottom: 1px solid var(--border-light, #f1e4ec);
+}
+
+.team-manicuristas-section .section-header {
+	text-align: center;
+	max-width: 680px;
+	margin: 0 auto 48px;
+}
+
+.team-manicuristas-section .subtitle-tag {
+	display: inline-block;
+	font-size: 0.76rem;
+	font-weight: 800;
+	color: var(--pink-vivid, #e11d48);
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	margin-bottom: 10px;
+}
+
+.team-manicuristas-section .section-title {
+	font-family: var(--font-title, 'Playfair Display', Georgia, serif);
+	font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+	font-weight: 800;
+	color: var(--text-dark, #1e0e1a);
+	line-height: 1.2;
+	margin-bottom: 12px;
+	letter-spacing: -0.4px;
+}
+
+.team-manicuristas-section .section-title span {
+	color: var(--pink-vivid, #e11d48);
+}
+
+.team-manicuristas-section .section-desc {
+	font-size: 0.96rem;
+	color: var(--text-muted, #6e5567);
+	line-height: 1.6;
+	margin: 0 auto;
+}
+
+.manicuristas-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	gap: 28px;
+	max-width: 1280px;
+	margin: 0 auto;
+}
+
+.manicurista-card {
+	background: #ffffff;
+	border-radius: 16px;
+	padding: 28px 22px;
+	text-align: center;
+	border: 1px solid var(--border-light, #f1e4ec);
+	box-shadow: 0 4px 18px rgba(30, 14, 26, 0.03);
+	transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	position: relative;
+}
+
+.manicurista-card:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 14px 32px rgba(225, 29, 72, 0.08);
+	border-color: rgba(225, 29, 72, 0.2);
+}
+
+.manic-card-avatar-wrap {
+	position: relative;
+	margin-bottom: 18px;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.manic-card-avatar {
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	background: linear-gradient(135deg, #1e0e1a 0%, #3a1532 100%);
+	color: #ffffff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: var(--font-title, 'Playfair Display', Georgia, serif);
+	font-size: 2rem;
+	font-weight: 700;
+	border: 3px solid #ffffff;
+	outline: 2px solid rgba(225, 29, 72, 0.25);
+	box-shadow: 0 8px 24px rgba(30, 14, 26, 0.12);
+	letter-spacing: 0.5px;
+	transition: transform 0.3s ease, outline-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.manic-card-img {
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	object-fit: cover;
+	object-position: center top;
+	display: block;
+	border: 3px solid #ffffff;
+	outline: 2px solid rgba(225, 29, 72, 0.25);
+	box-shadow: 0 8px 24px rgba(30, 14, 26, 0.12);
+	transition: transform 0.3s ease, outline-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.manicurista-card:hover .manic-card-img,
+.manicurista-card:hover .manic-card-avatar {
+	transform: scale(1.04);
+	outline-color: var(--pink-vivid, #e11d48);
+	box-shadow: 0 12px 28px rgba(225, 29, 72, 0.22);
+}
+
+.manic-card-name {
+	font-family: var(--font-title, 'Playfair Display', Georgia, serif);
+	font-size: 1.25rem;
+	font-weight: 800;
+	color: var(--text-dark, #1e0e1a);
+	margin-bottom: 4px;
+	line-height: 1.25;
+}
+
+.manic-card-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	background: rgba(225, 29, 72, 0.06);
+	color: var(--pink-vivid, #e11d48);
+	font-size: 0.74rem;
+	font-weight: 700;
+	letter-spacing: 0.4px;
+	text-transform: uppercase;
+	padding: 4px 12px;
+	border-radius: 9999px;
+	margin-bottom: 12px;
+	border: 1px solid rgba(225, 29, 72, 0.12);
+}
+
+.manic-card-meta {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	font-size: 0.8rem;
+	color: var(--text-muted, #6e5567);
+	margin-bottom: 14px;
+}
+
+.manic-meta-item {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.manic-meta-item svg {
+	width: 14px;
+	height: 14px;
+	fill: #d97706;
+}
+
+.manic-specialties-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	justify-content: center;
+	margin-bottom: 20px;
+	min-height: 44px;
+	align-content: flex-start;
+}
+
+.manic-chip {
+	font-size: 0.74rem;
+	font-weight: 600;
+	background: #faf6f9;
+	color: var(--text-dark, #1e0e1a);
+	padding: 4px 10px;
+	border-radius: 9999px;
+	border: 1px solid var(--border-light, #f1e4ec);
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.manic-card-footer {
+	width: 100%;
+	margin-top: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.btn-manic-profile {
+	width: 100%;
+	min-height: 42px;
+	padding: 9px 16px;
+	background: #ffffff;
+	border: 1px solid var(--border-light, #f1e4ec);
+	color: var(--text-dark, #1e0e1a);
+	border-radius: 12px;
+	font-size: 0.86rem;
+	font-weight: 600;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 7px;
+	transition: all 0.2s ease;
+}
+
+.btn-manic-profile svg {
+	width: 16px;
+	height: 16px;
+	fill: var(--text-muted, #6e5567);
+	transition: fill 0.2s ease;
+}
+
+.btn-manic-profile:hover {
+	background: var(--bg-surface-soft, #fcf8fa);
+	border-color: rgba(225, 29, 72, 0.3);
+	color: var(--pink-vivid, #e11d48);
+}
+
+.btn-manic-profile:hover svg {
+	fill: var(--pink-vivid, #e11d48);
+}
+
+.btn-manic-book {
+	width: 100%;
+	min-height: 44px;
+	padding: 10px 16px;
+	background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+	color: #ffffff;
+	border: none;
+	border-radius: 12px;
+	font-size: 0.88rem;
+	font-weight: 700;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 7px;
+	box-shadow: 0 4px 14px rgba(225, 29, 72, 0.2);
+	transition: all 0.2s ease;
+}
+
+.btn-manic-book svg {
+	width: 16px;
+	height: 16px;
+	fill: #ffffff;
+}
+
+.btn-manic-book:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 20px rgba(225, 29, 72, 0.3);
+}
+
+/* Modal de Perfil */
+.manic-modal-backdrop {
+	position: fixed;
+	inset: 0;
+	background: rgba(18, 7, 16, 0.65);
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	display: none;
+	align-items: center;
+	justify-content: center;
+	z-index: 10050;
+	padding: 16px;
+	opacity: 0;
+	transition: opacity 0.25s ease;
+}
+
+.manic-modal-backdrop.active {
+	display: flex;
+	opacity: 1;
+}
+
+.manic-modal-card {
+	background: #ffffff;
+	width: 100%;
+	max-width: 520px;
+	border-radius: 20px;
+	padding: 32px 28px;
+	position: relative;
+	box-shadow: 0 25px 60px rgba(18, 7, 16, 0.35);
+	border: 1px solid rgba(225, 29, 72, 0.12);
+	max-height: 90vh;
+	overflow-y: auto;
+}
+
+.manic-modal-close {
+	position: absolute;
+	top: 18px;
+	right: 18px;
+	background: #faf6f9;
+	border: 1px solid #f1e4ec;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	font-size: 1rem;
+	color: #6e5567;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s ease;
+}
+
+.manic-modal-close:hover {
+	background: #e11d48;
+	border-color: #e11d48;
+	color: #ffffff;
+}
+
+/* Responsive Rules */
+@media (max-width: 900px) {
+	.team-manicuristas-section {
+		padding: 60px 16px;
+	}
+
+	.manicuristas-grid {
+		grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+		gap: 20px;
+	}
+}
+
+@media (max-width: 480px) {
+	.team-manicuristas-section {
+		padding: 48px 14px;
+	}
+
+	.manicuristas-grid {
+		grid-template-columns: 1fr;
+		gap: 16px;
+	}
+
+	.manicurista-card {
+		padding: 22px 18px;
+	}
+
+	.manic-card-img,
+	.manic-card-avatar {
+		width: 90px;
+		height: 90px;
+		font-size: 1.8rem;
+	}
+
+	.manic-modal-card {
+		padding: 24px 18px;
+		margin: 10px;
+		width: calc(100% - 20px);
+	}
+}

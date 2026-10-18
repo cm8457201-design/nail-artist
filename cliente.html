@@ -5,1226 +5,285 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Mi Panel de Cliente — NailArtist Studio</title>
-	<meta name="description" content="Gestiona tus citas, consulta el estado de tus reservas y actualiza tus datos en NailArtist Studio." />
+	<meta name="description" content="Gestiona tus citas, agenda con tu manicurista preferida y consulta el estado de tus reservas en NailArtist Studio." />
 
 	<!-- Google Fonts -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-	<!-- Estilos Centralizados NailArtist -->
-	<link rel="stylesheet" href="assets/css/nailartist-theme.css" />
-
-	<style>
-		:root {
-			--client-bg: #fdf8fb;
-			--client-card-bg: #ffffff;
-			--client-sidebar-bg: #190818;
-			--client-accent: #ff0066;
-			--client-accent-soft: #ffe6f0;
-			--client-border: rgba(255, 0, 102, 0.12);
-			--client-text: #240e1b;
-			--client-text-muted: #7a5a70;
-			--client-gold: #e5a93b;
-			--font-service-name: Arial, Helvetica, sans-serif;
-		}
-
-		body {
-			background-color: var(--client-bg);
-			color: var(--client-text);
-			font-family: var(--font-body);
-			min-height: 100vh;
-			display: flex;
-			flex-direction: column;
-		}
-
-		/* Layout Maestro del Panel Cliente */
-		.client-panel-layout {
-			display: flex;
-			min-height: calc(100vh - 75px);
-			margin-top: 75px;
-			position: relative;
-		}
-
-		/* Barra Lateral del Cliente */
-		.client-sidebar {
-			width: 280px;
-			min-width: 280px;
-			background: var(--client-sidebar-bg);
-			color: #ffffff;
-			padding: 30px 20px;
-			display: flex;
-			flex-direction: column;
-			justify-content: space-between;
-			border-right: 1px solid rgba(255, 255, 255, 0.08);
-			transition: transform 0.3s ease;
-			z-index: 99;
-		}
-
-		.client-user-summary {
-			text-align: center;
-			padding-bottom: 24px;
-			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-			margin-bottom: 20px;
-		}
-
-		.client-initial-badge {
-			width: 64px;
-			height: 64px;
-			background: linear-gradient(135deg, var(--client-accent) 0%, #db0056 100%);
-			color: #ffffff;
-			border-radius: 50%;
-			margin: 0 auto 12px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 1.8rem;
-			font-weight: 800;
-			font-family: var(--font-title);
-			box-shadow: 0 8px 20px rgba(255, 0, 102, 0.35);
-			border: 2px solid rgba(255, 255, 255, 0.2);
-		}
-
-		.client-user-name {
-			font-family: var(--font-title);
-			font-size: 1.25rem;
-			font-weight: 800;
-			color: #ffffff;
-			margin-bottom: 4px;
-		}
-
-		.client-user-email {
-			font-size: 0.82rem;
-			color: #f7dbe7;
-			opacity: 0.85;
-			margin-bottom: 8px;
-			word-break: break-all;
-		}
-
-		.client-vip-pill {
-			display: inline-flex;
-			align-items: center;
-			gap: 6px;
-			padding: 4px 12px;
-			background: rgba(229, 169, 59, 0.2);
-			border: 1px solid rgba(229, 169, 59, 0.5);
-			color: var(--client-gold);
-			border-radius: var(--radius-full);
-			font-size: 0.76rem;
-			font-weight: 800;
-			letter-spacing: 0.5px;
-			text-transform: uppercase;
-		}
-
-		/* Navegación Lateral */
-		.client-nav-list {
-			list-style: none;
-			display: flex;
-			flex-direction: column;
-			gap: 8px;
-		}
-
-		.client-nav-btn {
-			display: flex;
-			align-items: center;
-			gap: 12px;
-			width: 100%;
-			padding: 12px 16px;
-			border-radius: 14px;
-			background: transparent;
-			border: none;
-			color: #f3e5ee;
-			font-size: 0.94rem;
-			font-weight: 600;
-			cursor: pointer;
-			text-align: left;
-			transition: all 0.25s ease;
-		}
-
-		.client-nav-btn:hover {
-			background: rgba(255, 255, 255, 0.08);
-			color: #ffffff;
-			transform: translateX(4px);
-		}
-
-		.client-nav-btn.active {
-			background: linear-gradient(135deg, rgba(255, 0, 102, 0.25) 0%, rgba(219, 0, 86, 0.15) 100%);
-			color: #ffffff;
-			border-left: 4px solid var(--client-accent);
-			font-weight: 800;
-		}
-
-		.client-nav-icon {
-			font-size: 1.15rem;
-			width: 24px;
-			text-align: center;
-		}
-
-		.client-nav-badge {
-			margin-left: auto;
-			background: var(--client-accent);
-			color: #ffffff;
-			font-size: 0.75rem;
-			font-weight: 800;
-			padding: 2px 8px;
-			border-radius: var(--radius-full);
-		}
-
-		.client-sidebar-footer {
-			border-top: 1px solid rgba(255, 255, 255, 0.1);
-			padding-top: 18px;
-			display: flex;
-			flex-direction: column;
-			gap: 8px;
-		}
-
-		.client-link-website, .client-btn-logout {
-			display: flex;
-			align-items: center;
-			gap: 10px;
-			padding: 10px 14px;
-			border-radius: 12px;
-			font-size: 0.88rem;
-			font-weight: 600;
-			text-decoration: none;
-			transition: all 0.2s ease;
-		}
-
-		.client-link-website {
-			color: var(--pink-soft);
-			background: rgba(255, 255, 255, 0.04);
-		}
-
-		.client-link-website:hover {
-			background: rgba(255, 255, 255, 0.1);
-			color: #ffffff;
-		}
-
-		.client-btn-logout {
-			color: #ff6b8b;
-			background: transparent;
-			border: 1px solid rgba(255, 107, 139, 0.3);
-			cursor: pointer;
-			width: 100%;
-		}
-
-		.client-btn-logout:hover {
-			background: rgba(255, 107, 139, 0.15);
-			color: #ffffff;
-		}
-
-		/* Contenido Principal */
-		.client-main-content {
-			flex: 1;
-			padding: 36px 40px;
-			max-width: 1200px;
-			width: 100%;
-			overflow-y: auto;
-		}
-
-		/* Barra Superior Móvil */
-		.client-mobile-bar {
-			display: none;
-			align-items: center;
-			justify-content: space-between;
-			padding: 14px 20px;
-			background: #ffffff;
-			border-bottom: 1px solid var(--client-border);
-			margin-bottom: 20px;
-			border-radius: 16px;
-			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-		}
-
-		.client-mobile-toggle-btn {
-			background: var(--client-accent-soft);
-			border: 1px solid var(--client-border);
-			color: var(--client-accent);
-			padding: 8px 14px;
-			border-radius: 10px;
-			font-weight: 800;
-			font-size: 0.9rem;
-			cursor: pointer;
-		}
-
-		/* Secciones de Contenido */
-		.client-section-view {
-			display: none;
-			animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-		}
-
-		.client-section-view.active {
-			display: block;
-		}
-
-		@keyframes fadeIn {
-			from { opacity: 0; transform: translateY(12px); }
-			to { opacity: 1; transform: translateY(0); }
-		}
-
-		/* Cabeceras de Vista */
-		.view-header-row {
-			display: flex;
-			justify-content: space-between;
-			align-items: flex-start;
-			margin-bottom: 28px;
-			flex-wrap: wrap;
-			gap: 16px;
-		}
-
-		.view-title-wrap h1 {
-			font-family: var(--font-title);
-			font-size: 2.1rem;
-			font-weight: 800;
-			color: var(--client-text);
-			margin-bottom: 4px;
-		}
-
-		.view-title-wrap p {
-			color: var(--client-text-muted);
-			font-size: 0.95rem;
-		}
-
-		/* Tarjetas de Estadísticas (KPIs) */
-		.client-kpi-grid {
-			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-			gap: 20px;
-			margin-bottom: 32px;
-		}
-
-		.client-kpi-card {
-			background: #ffffff;
-			border: 1px solid var(--client-border);
-			border-radius: 20px;
-			padding: 22px 24px;
-			box-shadow: 0 8px 25px rgba(36, 14, 27, 0.04);
-			transition: all 0.3s ease;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-		}
-
-		.client-kpi-card:hover {
-			transform: translateY(-4px);
-			border-color: var(--client-accent);
-			box-shadow: 0 14px 30px rgba(255, 0, 102, 0.12);
-		}
-
-		.kpi-info-col {
-			display: flex;
-			flex-direction: column;
-		}
-
-		.kpi-num {
-			font-size: 2.2rem;
-			font-weight: 900;
-			color: var(--client-text);
-			line-height: 1;
-			margin-bottom: 6px;
-		}
-
-		.kpi-label {
-			font-size: 0.88rem;
-			font-weight: 700;
-			color: var(--client-text-muted);
-		}
-
-		.kpi-icon-badge {
-			width: 48px;
-			height: 48px;
-			border-radius: 14px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 1.4rem;
-		}
-
-		.kpi-icon-pink { background: #ffe6f0; color: var(--client-accent); }
-		.kpi-icon-gold { background: #fef3c7; color: #d97706; }
-		.kpi-icon-green { background: #d1fae5; color: #059669; }
-		.kpi-icon-purple { background: #ede9fe; color: #7c3aed; }
-
-		/* Tarjeta Próxima Cita */
-		.next-booking-card {
-			background: linear-gradient(135deg, #240e1b 0%, #150613 100%);
-			color: #ffffff;
-			border-radius: 24px;
-			padding: 30px 34px;
-			margin-bottom: 32px;
-			position: relative;
-			overflow: hidden;
-			border: 1px solid rgba(255, 0, 102, 0.3);
-			box-shadow: 0 18px 40px rgba(23, 9, 20, 0.25);
-		}
-
-		.next-booking-card::before {
-			content: '';
-			position: absolute;
-			top: -80px;
-			right: -80px;
-			width: 220px;
-			height: 220px;
-			border-radius: 50%;
-			background: radial-gradient(circle, rgba(255, 0, 102, 0.25) 0%, transparent 70%);
-			pointer-events: none;
-		}
-
-		.next-booking-header {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-bottom: 18px;
-			flex-wrap: wrap;
-			gap: 10px;
-		}
-
-		.next-booking-tag {
-			font-size: 0.82rem;
-			font-weight: 800;
-			color: var(--pink-soft);
-			letter-spacing: 1px;
-			text-transform: uppercase;
-		}
-
-		.next-booking-body {
-			display: grid;
-			grid-template-columns: 1.5fr 1fr;
-			gap: 24px;
-			align-items: center;
-		}
-
-		.next-services-title {
-			font-family: var(--font-service-name);
-			font-size: 1.35rem;
-			font-weight: 700;
-			color: #ffffff;
-			margin-bottom: 10px;
-			line-height: 1.3;
-		}
-
-		.next-booking-meta {
-			display: flex;
-			gap: 20px;
-			flex-wrap: wrap;
-			font-size: 0.92rem;
-			color: #f7dbe7;
-		}
-
-		.next-booking-meta span {
-			display: flex;
-			align-items: center;
-			gap: 6px;
-		}
-
-		.next-booking-actions {
-			display: flex;
-			flex-direction: column;
-			align-items: flex-end;
-			justify-content: center;
-			gap: 12px;
-		}
-
-		.next-booking-price {
-			font-size: 1.75rem;
-			font-weight: 900;
-			color: var(--pink-soft);
-		}
-
-		/* Estado Vacío Elegante */
-		.empty-state-card {
-			background: #ffffff;
-			border: 2px dashed var(--client-border);
-			border-radius: 24px;
-			padding: 50px 30px;
-			text-align: center;
-			margin-bottom: 32px;
-		}
-
-		.empty-state-icon {
-			font-size: 3rem;
-			margin-bottom: 12px;
-			color: var(--client-accent);
-		}
-
-		.empty-state-title {
-			font-family: var(--font-title);
-			font-size: 1.6rem;
-			color: var(--client-text);
-			margin-bottom: 8px;
-			font-weight: 800;
-		}
-
-		.empty-state-desc {
-			color: var(--client-text-muted);
-			font-size: 0.95rem;
-			max-width: 480px;
-			margin: 0 auto 20px;
-		}
-
-		/* Botones de Acción */
-		.btn-client-primary {
-			display: inline-flex;
-			align-items: center;
-			gap: 8px;
-			background: var(--gradient-btn);
-			color: #ffffff;
-			border: none;
-			padding: 12px 24px;
-			border-radius: 14px;
-			font-size: 0.94rem;
-			font-weight: 800;
-			cursor: pointer;
-			text-decoration: none;
-			box-shadow: 0 8px 20px rgba(255, 0, 102, 0.3);
-			transition: all 0.25s ease;
-		}
-
-		.btn-client-primary:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 12px 26px rgba(255, 0, 102, 0.45);
-			color: #ffffff;
-		}
-
-		.btn-client-secondary {
-			display: inline-flex;
-			align-items: center;
-			gap: 8px;
-			background: #ffffff;
-			color: var(--client-text);
-			border: 1px solid var(--client-border);
-			padding: 10px 20px;
-			border-radius: 14px;
-			font-size: 0.9rem;
-			font-weight: 700;
-			cursor: pointer;
-			text-decoration: none;
-			transition: all 0.2s ease;
-		}
-
-		.btn-client-secondary:hover {
-			background: var(--client-accent-soft);
-			border-color: var(--client-accent);
-			color: var(--client-accent);
-		}
-
-		/* Badges de Estado */
-		.status-badge {
-			display: inline-flex;
-			align-items: center;
-			gap: 6px;
-			padding: 5px 14px;
-			border-radius: var(--radius-full);
-			font-size: 0.78rem;
-			font-weight: 800;
-			text-transform: uppercase;
-			letter-spacing: 0.5px;
-		}
-
-		.status-pendiente {
-			background: #fef3c7;
-			color: #b45309;
-			border: 1px solid #fde68a;
-		}
-
-		.status-confirmada {
-			background: #dbeafe;
-			color: #1d4ed8;
-			border: 1px solid #bfdbfe;
-		}
-
-		.status-completada {
-			background: #dcfce7;
-			color: #15803d;
-			border: 1px solid #bbf7d0;
-		}
-
-		.status-cancelada {
-			background: #fee2e2;
-			color: #b91c1c;
-			border: 1px solid #fecaca;
-		}
-
-		/* Tabla / Lista de Reservas */
-		.client-bookings-table-card {
-			background: #ffffff;
-			border: 1px solid var(--client-border);
-			border-radius: 24px;
-			padding: 24px;
-			box-shadow: 0 8px 30px rgba(36, 14, 27, 0.04);
-		}
-
-		.booking-filters-bar {
-			display: flex;
-			gap: 10px;
-			margin-bottom: 20px;
-			flex-wrap: wrap;
-			align-items: center;
-			justify-content: space-between;
-		}
-
-		.filter-tabs-group {
-			display: flex;
-			gap: 8px;
-			flex-wrap: wrap;
-		}
-
-		.filter-tab-btn {
-			padding: 8px 16px;
-			background: #fdf2f8;
-			border: 1px solid transparent;
-			border-radius: 12px;
-			font-size: 0.84rem;
-			font-weight: 700;
-			color: var(--client-text-muted);
-			cursor: pointer;
-			transition: all 0.2s;
-		}
-
-		.filter-tab-btn.active, .filter-tab-btn:hover {
-			background: var(--client-accent);
-			color: #ffffff;
-		}
-
-		.booking-search-input {
-			padding: 8px 16px;
-			border-radius: 12px;
-			border: 1px solid var(--client-border);
-			font-size: 0.88rem;
-			outline: none;
-			min-width: 220px;
-		}
-
-		.booking-search-input:focus {
-			border-color: var(--client-accent);
-		}
-
-		/* Grid de Tarjetas de Reserva Responsivo */
-		.bookings-cards-list {
-			display: flex;
-			flex-direction: column;
-			gap: 14px;
-		}
-
-		.booking-item-row {
-			background: #fdf9fb;
-			border: 1px solid rgba(255, 0, 102, 0.08);
-			border-radius: 18px;
-			padding: 18px 22px;
-			display: grid;
-			grid-template-columns: 1.2fr 2fr 1.2fr 1fr 1fr auto;
-			align-items: center;
-			gap: 16px;
-			transition: all 0.25s ease;
-		}
-
-		.booking-item-row:hover {
-			background: #ffffff;
-			border-color: var(--client-accent);
-			box-shadow: 0 6px 20px rgba(255, 0, 102, 0.08);
-			transform: translateX(4px);
-		}
-
-		.col-code strong {
-			font-family: monospace;
-			font-size: 0.98rem;
-			color: var(--client-accent);
-		}
-
-		.col-services {
-			font-family: var(--font-service-name);
-			font-size: 0.94rem;
-			font-weight: 700;
-			color: var(--client-text);
-			line-height: 1.3;
-		}
-
-		.col-services small {
-			display: block;
-			font-size: 0.78rem;
-			color: var(--client-text-muted);
-			font-weight: normal;
-			font-family: var(--font-body);
-			margin-top: 3px;
-		}
-
-		.col-date {
-			font-size: 0.88rem;
-			color: var(--client-text);
-			font-weight: 600;
-		}
-
-		.col-date small {
-			display: block;
-			color: var(--client-text-muted);
-			font-size: 0.78rem;
-		}
-
-		.col-total {
-			font-size: 1.05rem;
-			font-weight: 900;
-			color: var(--client-text);
-		}
-
-		/* Notificaciones */
-		.notifications-list {
-			display: flex;
-			flex-direction: column;
-			gap: 14px;
-		}
-
-		.notification-card {
-			background: #ffffff;
-			border: 1px solid var(--client-border);
-			border-radius: 18px;
-			padding: 20px 24px;
-			display: flex;
-			gap: 18px;
-			align-items: flex-start;
-			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
-		}
-
-		.notif-icon-wrap {
-			width: 42px;
-			height: 42px;
-			border-radius: 12px;
-			background: #ffe8f2;
-			color: var(--client-accent);
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 1.3rem;
-			flex-shrink: 0;
-		}
-
-		.notif-content h4 {
-			font-size: 1.05rem;
-			font-weight: 800;
-			color: var(--client-text);
-			margin-bottom: 4px;
-		}
-
-		.notif-content p {
-			font-size: 0.92rem;
-			color: var(--client-text-muted);
-			line-height: 1.45;
-			margin-bottom: 6px;
-		}
-
-		.notif-time {
-			font-size: 0.78rem;
-			color: #a08098;
-		}
-
-		/* Mis Datos (Formulario Limpio) */
-		.profile-card {
-			background: #ffffff;
-			border: 1px solid var(--client-border);
-			border-radius: 24px;
-			padding: 34px;
-			box-shadow: 0 8px 30px rgba(36, 14, 27, 0.04);
-			max-width: 760px;
-		}
-
-		.profile-form-grid {
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-			gap: 20px;
-			margin-top: 20px;
-		}
-
-		.form-group-full {
-			grid-column: 1 / -1;
-		}
-
-		.form-label {
-			display: block;
-			font-size: 0.88rem;
-			font-weight: 700;
-			color: var(--client-text);
-			margin-bottom: 6px;
-		}
-
-		.form-input {
-			width: 100%;
-			padding: 12px 16px;
-			border-radius: 12px;
-			border: 1px solid var(--client-border);
-			background: #fdf9fb;
-			font-size: 0.95rem;
-			color: var(--client-text);
-			outline: none;
-			transition: all 0.2s;
-		}
-
-		.form-input:focus {
-			border-color: var(--client-accent);
-			background: #ffffff;
-			box-shadow: 0 0 0 3px rgba(255, 0, 102, 0.1);
-		}
-
-		.form-input:disabled {
-			background: #f3e5ee;
-			color: #8c6a82;
-			cursor: not-allowed;
-		}
-
-		/* MODAL DE DETALLE DE RESERVA */
-		.modal-overlay {
-			position: fixed;
-			inset: 0;
-			background: rgba(18, 7, 16, 0.75);
-			backdrop-filter: blur(8px);
-			-webkit-backdrop-filter: blur(8px);
-			display: none;
-			align-items: center;
-			justify-content: center;
-			z-index: 99999;
-			padding: 20px;
-		}
-
-		.modal-overlay.active {
-			display: flex;
-		}
-
-		.booking-detail-modal-card {
-			background: #ffffff;
-			width: 100%;
-			max-width: 620px;
-			border-radius: 28px;
-			padding: 32px;
-			border: 1px solid var(--border-pink);
-			box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
-			position: relative;
-			max-height: 90vh;
-			overflow-y: auto;
-			animation: modalZoom 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-		}
-
-		@keyframes modalZoom {
-			from { opacity: 0; transform: scale(0.95); }
-			to { opacity: 1; transform: scale(1); }
-		}
-
-		.modal-close-btn {
-			position: absolute;
-			top: 20px;
-			right: 20px;
-			width: 36px;
-			height: 36px;
-			border-radius: 50%;
-			background: #fdf2f8;
-			border: none;
-			font-size: 1.1rem;
-			font-weight: bold;
-			color: var(--client-accent);
-			cursor: pointer;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			transition: all 0.2s;
-		}
-
-		.modal-close-btn:hover {
-			background: var(--client-accent);
-			color: #ffffff;
-		}
-
-		/* Línea de Seguimiento Visual */
-		.booking-stepper {
-			display: flex;
-			justify-content: space-between;
-			position: relative;
-			margin: 24px 0 28px;
-			padding: 0 10px;
-		}
-
-		.booking-stepper::before {
-			content: '';
-			position: absolute;
-			top: 14px;
-			left: 30px;
-			right: 30px;
-			height: 3px;
-			background: #f3e0eb;
-			z-index: 1;
-		}
-
-		.step-node {
-			position: relative;
-			z-index: 2;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			text-align: center;
-		}
-
-		.step-circle {
-			width: 30px;
-			height: 30px;
-			border-radius: 50%;
-			background: #f3e0eb;
-			color: #8c6a82;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 0.85rem;
-			font-weight: 800;
-			margin-bottom: 6px;
-			border: 3px solid #ffffff;
-			transition: all 0.3s ease;
-		}
-
-		.step-label {
-			font-size: 0.76rem;
-			font-weight: 700;
-			color: var(--client-text-muted);
-			max-width: 90px;
-		}
-
-		.step-node.completed .step-circle {
-			background: var(--client-accent);
-			color: #ffffff;
-		}
-
-		.step-node.completed .step-label {
-			color: var(--client-accent);
-			font-weight: 800;
-		}
-
-		/* Desglose de Servicios en Modal */
-		.modal-services-box {
-			background: #fdf8fb;
-			border-radius: 18px;
-			border: 1px solid var(--client-border);
-			padding: 16px;
-			margin-bottom: 20px;
-		}
-
-		.modal-service-row {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			padding: 10px 0;
-			border-bottom: 1px dashed rgba(255, 0, 102, 0.12);
-		}
-
-		.modal-service-row:last-child {
-			border-bottom: none;
-		}
-
-		.modal-service-title {
-			font-family: var(--font-service-name);
-			font-size: 0.96rem;
-			font-weight: 700;
-			color: var(--client-text);
-		}
-
-		.modal-service-sub {
-			font-size: 0.8rem;
-			color: var(--client-text-muted);
-			font-family: var(--font-body);
-		}
-
-		.modal-service-price {
-			font-weight: 800;
-			color: var(--client-accent);
-			font-size: 0.98rem;
-		}
-
-		/* RESPONSIVE DESIGN (Móvil & Tablet) */
-		@media (max-width: 960px) {
-			.client-panel-layout {
-				flex-direction: column;
-			}
-			.client-sidebar {
-				position: fixed;
-				top: 75px;
-				left: 0;
-				bottom: 0;
-				transform: translateX(-100%);
-				box-shadow: 10px 0 30px rgba(0, 0, 0, 0.3);
-			}
-			.client-sidebar.mobile-open {
-				transform: translateX(0);
-			}
-			.client-main-content {
-				padding: 24px 20px;
-			}
-			.client-mobile-bar {
-				display: flex;
-			}
-			.booking-item-row {
-				grid-template-columns: 1fr 1fr;
-				gap: 12px;
-			}
-			.col-services {
-				grid-column: 1 / -1;
-			}
-			.next-booking-body {
-				grid-template-columns: 1fr;
-			}
-			.next-booking-actions {
-				align-items: flex-start;
-			}
-		}
-
-		@media (max-width: 580px) {
-			.booking-item-row {
-				grid-template-columns: 1fr;
-				padding: 16px;
-			}
-			.profile-form-grid {
-				grid-template-columns: 1fr;
-			}
-			.view-title-wrap h1 {
-				font-size: 1.7rem;
-			}
-			.client-kpi-grid {
-				grid-template-columns: 1fr;
-			}
-			.next-booking-card {
-				padding: 22px 18px;
-			}
-		}
-	</style>
+	<!-- Estilos Luxury NailArtist Client Panel -->
+	<link rel="stylesheet" href="assets/css/cliente.css" />
 </head>
 
 <body>
+	<!-- Canvas de Fondo: Partículas de Luz Sutiles -->
+	<canvas id="particlesCanvas" class="particles-bg-canvas"></canvas>
 
-	<!-- Navbar Superior -->
+	<!-- Header / Top Navbar -->
 	<header class="header-nav">
-		<a href="index.html" class="logo-container">
-			<div class="logo-brand-wrap">
-				<svg class="logo-spiral-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M50 8 C26.8 8 8 26.8 8 50 C8 73.2 26.8 92 50 92 C73.2 92 92 73.2 92 50 C92 31.5 80 16 62.5 11.5 C41.5 6.1 20.8 18.2 15.4 39.2 C10 60.2 22.1 80.9 43.1 86.3 C64.1 91.7 84.8 79.6 90.2 58.6 C94.5 41.8 84.5 24.5 67.7 20.2 C52.5 16.3 36.8 24.8 32.9 40 C29 55.2 37.5 70.9 52.7 74.8 C66.5 78.3 80.5 70 83.2 56 C85.5 44 77.5 32.5 65.5 30.2 C54.5 28.1 44 35.5 41.9 46.5 C40 56.5 47 65.5 57 67.4 C65.5 69 73 63 74.5 54.5" stroke="currentColor" stroke-width="5" stroke-linecap="round" />
-				</svg>
-				<div class="logo-brand-text">
-					<span class="logo-nails">NAILS</span>
-					<span class="logo-artist">ARTIST</span>
-				</div>
+		<a href="index.html" class="logo-brand">
+			<div class="logo-icon">
+				<svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+			</div>
+			<div class="logo-text">
+				<h1>NailArtist</h1>
+				<span>VIP Studio</span>
 			</div>
 		</a>
 
-		<ul class="nav-menu" style="display: flex; align-items: center; gap: 15px;">
-			<li><a href="servicios.html" class="btn-client-secondary" style="padding: 6px 14px; font-size: 0.85rem;">💅 Ver Catálogo</a></li>
-			<li><button id="carrito" class="btn-cart-nav">🛒 Carrito <span id="contador" class="cart-count-badge">0</span></button></li>
-			<li><a href="javascript:void(0)" onclick="cerrarSesionCliente()" class="btn-client-secondary" style="color:#e11d48; border-color:#fbcfe8; padding: 6px 14px; font-size: 0.85rem;">🚪 Salir</a></li>
-		</ul>
+		<div class="nav-actions">
+			<button type="button" class="btn-client-primary" onclick="abrirModalNuevaReserva()">
+				<svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+				<span>Nueva Cita</span>
+			</button>
+		</div>
 	</header>
 
+	<!-- Layout Maestro -->
 	<div class="client-panel-layout">
+		<!-- Overlay Móvil -->
+		<div id="client-sidebar-overlay" onclick="toggleSidebarMenu(false)"></div>
 
-		<!-- Overlay para móvil -->
-		<div id="client-sidebar-overlay" class="modal-overlay" onclick="toggleSidebarMenu(false)"></div>
+		<!-- Sidebar Lateral -->
+		<aside class="client-sidebar" id="client-sidebar">
+			<button type="button" class="sidebar-close-btn-mobile" onclick="toggleSidebarMenu(false)" aria-label="Cerrar menú">✕</button>
 
-		<!-- Sidebar del Cliente -->
-		<aside id="client-sidebar" class="client-sidebar">
 			<div>
+				<!-- Resumen de Usuario -->
 				<div class="client-user-summary">
 					<div class="client-initial-badge" id="sidebar-user-initial">C</div>
-					<h3 class="client-user-name" id="sidebar-user-name">Clienta VIP</h3>
-					<div class="client-user-email" id="sidebar-user-email">cargando@correo.com</div>
-					<span class="client-vip-pill" id="sidebar-vip-badge">✨ Descuento VIP 15%</span>
+					<div class="client-user-name" id="sidebar-user-name">Cargando...</div>
+					<div class="client-user-email" id="sidebar-user-email">cliente@nailartist.com</div>
+					<div class="client-vip-pill" id="sidebar-vip-badge">
+						<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+						<span>VIP 15% OFF</span>
+					</div>
 				</div>
 
+				<!-- Navegación -->
 				<nav>
 					<ul class="client-nav-list">
 						<li>
 							<button type="button" class="client-nav-btn active" onclick="mostrarSeccion('inicio')">
-								<span class="client-nav-icon">🏠</span>
-								<span>Inicio</span>
+								<span class="client-nav-icon">
+									<svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+								</span>
+								<span>Mi Panel</span>
 							</button>
 						</li>
 						<li>
 							<button type="button" class="client-nav-btn" onclick="mostrarSeccion('reservas')">
-								<span class="client-nav-icon">📅</span>
+								<span class="client-nav-icon">
+									<svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm-8 4H7v-2h2v2zm4 4h-2v-2h2v2zm4 4h-2v-2h2v2z"/></svg>
+								</span>
 								<span>Mis Reservas</span>
 								<span class="client-nav-badge" id="nav-count-reservas">0</span>
 							</button>
 						</li>
 						<li>
 							<button type="button" class="client-nav-btn" onclick="mostrarSeccion('notificaciones')">
-								<span class="client-nav-icon">🔔</span>
+								<span class="client-nav-icon">
+									<svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+								</span>
 								<span>Notificaciones</span>
-								<span class="client-nav-badge" id="nav-count-notifs" style="background:#059669;">2</span>
+								<span class="client-nav-badge" id="nav-count-notifs">0</span>
 							</button>
 						</li>
 						<li>
-							<button type="button" class="client-nav-btn" onclick="mostrarSeccion('datos')">
-								<span class="client-nav-icon">👤</span>
+							<button type="button" class="client-nav-btn" onclick="mostrarSeccion('perfil')">
+								<span class="client-nav-icon">
+									<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+								</span>
 								<span>Mis Datos</span>
 							</button>
-						</li>
-						<li>
-							<a href="servicios.html" class="client-nav-btn" style="text-decoration:none;">
-								<span class="client-nav-icon">💅</span>
-								<span>Explorar Servicios</span>
-							</a>
-						</li>
-						<li>
-							<a href="https://wa.me/59160737902?text=¡Hola%20NailArtist!%20Necesito%20ayuda%20con%20mi%20cuenta%20de%20cliente%20💖" target="_blank" class="client-nav-btn" style="text-decoration:none; color:#25d366;">
-								<span class="client-nav-icon">💬</span>
-								<span>Contacto / Ayuda</span>
-							</a>
 						</li>
 					</ul>
 				</nav>
 			</div>
 
+			<!-- Footer Sidebar -->
 			<div class="client-sidebar-footer">
-				<a href="index.html" class="client-link-website">
-					<span>🌐</span>
-					<span>Volver a la Página Principal</span>
+				<a href="servicios.html" class="client-link-website">
+					<svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M12 2L1 21h22L12 2zm0 3.51L19.23 19H4.77L12 5.51z"/></svg>
+					<span>Ver Catálogo de Uñas</span>
 				</a>
 				<button type="button" class="client-btn-logout" onclick="cerrarSesionCliente()">
-					<span>🚪</span>
+					<svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
 					<span>Cerrar Sesión</span>
 				</button>
 			</div>
 		</aside>
 
-		<!-- Contenedor Principal de Vistas -->
+		<!-- Contenido Principal -->
 		<main class="client-main-content">
-
-			<!-- Barra de Apertura en Móvil -->
-			<div class="client-mobile-bar">
-				<div>
-					<strong id="mobile-bar-username" style="font-size: 0.95rem; color: var(--client-text);">Mi Cuenta</strong>
-					<div style="font-size: 0.78rem; color: var(--client-accent);">Nails VIP Club</div>
-				</div>
-				<button type="button" class="client-mobile-toggle-btn" onclick="toggleSidebarMenu(true)">☰ Menú</button>
+			<!-- Barra Superior Móvil -->
+			<div class="client-mobile-topbar">
+				<button type="button" class="client-mobile-btn-toggle" onclick="toggleSidebarMenu(true)">
+					<svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+					<span>Menú</span>
+				</button>
+				<span style="font-weight:700; font-size:0.9rem;" id="mobile-bar-username">Cliente</span>
 			</div>
 
-			<!-- ========================================================================= -->
-			<!-- SECCIÓN 1: INICIO / DASHBOARD                                             -->
-			<!-- ========================================================================= -->
+			<!-- ============================================================= -->
+			<!-- SECCIÓN: INICIO / DASHBOARD PRINCIPAL                          -->
+			<!-- ============================================================= -->
 			<section id="view-inicio" class="client-section-view active">
-				<div class="view-header-row">
-					<div class="view-title-wrap">
-						<h1 id="greeting-title">Bienvenida de nuevo</h1>
-						<p>Consulta tus próximas citas y el estado de tus reservas en el estudio.</p>
+				<!-- Hero Header -->
+				<div class="client-hero-header">
+					<div>
+						<h2 class="client-greeting-title" id="greeting-title">Bienvenido nuevamente</h2>
+						<p class="client-greeting-sub">Gestiona tus citas de uñas, agenda con tu manicurista y revisa tu beneficio VIP.</p>
 					</div>
-					<a href="servicios.html" class="btn-client-primary">
-						<span>✨ Agendar Nueva Cita</span>
-					</a>
-				</div>
-
-				<!-- Tarjeta de Próxima Cita (Dinámica) -->
-				<div id="contenedor-proxima-cita">
-					<!-- Se inyecta la próxima cita o el estado vacío -->
-				</div>
-
-				<!-- Estadísticas Reales del Cliente -->
-				<div class="view-header-row" style="margin-bottom: 16px;">
-					<div class="view-title-wrap">
-						<h3 style="font-family: var(--font-title); font-size: 1.4rem; color: var(--client-text);">Resumen de tu Cuenta</h3>
+					<div class="client-hero-cta">
+						<button type="button" class="btn-client-primary" onclick="abrirModalNuevaReserva()">
+							<svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+							<span>Agendar Cita</span>
+						</button>
+						<button type="button" class="btn-client-secondary" onclick="mostrarSeccion('reservas')">
+							<svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+							<span>Ver Mis Reservas</span>
+						</button>
 					</div>
 				</div>
 
-				<div class="client-kpi-grid">
-					<div class="client-kpi-card">
-						<div class="kpi-info-col">
-							<span class="kpi-num" id="kpi-total">0</span>
-							<span class="kpi-label">Reservas Realizadas</span>
+				<!-- Estadísticas KPI -->
+				<div class="kpi-grid">
+					<div class="kpi-card">
+						<div class="kpi-icon-wrap kpi-icon-pink">
+							<svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
 						</div>
-						<div class="kpi-icon-badge kpi-icon-pink">📅</div>
+						<div>
+							<div class="kpi-value" id="kpi-total">0</div>
+							<div class="kpi-label">Total de Citas</div>
+						</div>
 					</div>
 
-					<div class="client-kpi-card">
-						<div class="kpi-info-col">
-							<span class="kpi-num" id="kpi-pendientes" style="color:#d97706;">0</span>
-							<span class="kpi-label">Pendientes</span>
+					<div class="kpi-card">
+						<div class="kpi-icon-wrap kpi-icon-gold">
+							<svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
 						</div>
-						<div class="kpi-icon-badge kpi-icon-gold">⏳</div>
+						<div>
+							<div class="kpi-value" id="kpi-pendientes">0</div>
+							<div class="kpi-label">Por Confirmar</div>
+						</div>
 					</div>
 
-					<div class="client-kpi-card">
-						<div class="kpi-info-col">
-							<span class="kpi-num" id="kpi-confirmadas" style="color:#2563eb;">0</span>
-							<span class="kpi-label">Confirmadas</span>
+					<div class="kpi-card">
+						<div class="kpi-icon-wrap kpi-icon-blue">
+							<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
 						</div>
-						<div class="kpi-icon-badge kpi-icon-purple">✨</div>
+						<div>
+							<div class="kpi-value" id="kpi-confirmadas">0</div>
+							<div class="kpi-label">Confirmadas</div>
+						</div>
 					</div>
 
-					<div class="client-kpi-card">
-						<div class="kpi-info-col">
-							<span class="kpi-num" id="kpi-completadas" style="color:#059669;">0</span>
-							<span class="kpi-label">Completadas</span>
+					<div class="kpi-card">
+						<div class="kpi-icon-wrap kpi-icon-green">
+							<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
 						</div>
-						<div class="kpi-icon-badge kpi-icon-green">✅</div>
+						<div>
+							<div class="kpi-value" id="kpi-completadas">0</div>
+							<div class="kpi-label">Completadas</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Banner Próxima Cita -->
+				<div class="next-booking-container" id="contenedor-proxima-cita">
+					<!-- Se inyecta dinámicamente -->
+				</div>
+
+				<!-- Acceso Rápido a Últimas Reservas -->
+				<div class="panel-card">
+					<div class="panel-card-header">
+						<h3 class="panel-card-title">
+							<svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z"/></svg>
+							<span>Últimas Reservas Registradas</span>
+						</h3>
+						<button type="button" class="btn-client-secondary" onclick="mostrarSeccion('reservas')">
+							<span>Ver Historial Completo →</span>
+						</button>
+					</div>
+
+					<div id="lista-resumen-inicio">
+						<!-- Filas inyectadas -->
 					</div>
 				</div>
 			</section>
 
-			<!-- ========================================================================= -->
-			<!-- SECCIÓN 2: MIS RESERVAS                                                   -->
-			<!-- ========================================================================= -->
+			<!-- ============================================================= -->
+			<!-- SECCIÓN: MIS RESERVAS (HISTORIAL COMPLETO)                    -->
+			<!-- ============================================================= -->
 			<section id="view-reservas" class="client-section-view">
-				<div class="view-header-row">
-					<div class="view-title-wrap">
-						<h1>Mis Reservas de Citas</h1>
-						<p>Historial completo de tus solicitudes de uñas con fecha, hora y detalle de servicios.</p>
+				<div class="panel-card">
+					<div class="panel-card-header">
+						<h3 class="panel-card-title">
+							<svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+							<span>Historial de Citas y Reservas</span>
+						</h3>
+						<button type="button" class="btn-client-primary" onclick="abrirModalNuevaReserva()">
+							<svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+							<span>Nueva Reserva</span>
+						</button>
 					</div>
-					<a href="servicios.html" class="btn-client-primary">
-						<span>➕ Reservar Servicio</span>
-					</a>
-				</div>
 
-				<div class="client-bookings-table-card">
-					<div class="booking-filters-bar">
+					<!-- Filtros y Búsqueda -->
+					<div class="filter-search-bar">
 						<div class="filter-tabs-group">
 							<button type="button" class="filter-tab-btn active" onclick="filtrarReservasEstado('todas', this)">Todas</button>
-							<button type="button" class="filter-tab-btn" onclick="filtrarReservasEstado('Pendiente', this)">Pendientes</button>
-							<button type="button" class="filter-tab-btn" onclick="filtrarReservasEstado('Confirmada', this)">Confirmadas</button>
-							<button type="button" class="filter-tab-btn" onclick="filtrarReservasEstado('Completada', this)">Completadas</button>
-							<button type="button" class="filter-tab-btn" onclick="filtrarReservasEstado('Cancelada', this)">Canceladas</button>
+							<button type="button" class="filter-tab-btn" onclick="filtrarReservasEstado('pendiente', this)">Pendientes</button>
+							<button type="button" class="filter-tab-btn" onclick="filtrarReservasEstado('confirmada', this)">Confirmadas</button>
+							<button type="button" class="filter-tab-btn" onclick="filtrarReservasEstado('completada', this)">Completadas</button>
 						</div>
 
-						<input type="text" id="input-buscar-reserva" class="booking-search-input" placeholder="🔍 Buscar por código de reserva..." oninput="buscarReservasTexto(this.value)" />
+						<div class="search-input-wrap">
+							<svg class="search-icon-inside" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+							<input type="text" id="input-buscar-reserva" placeholder="Buscar por código o servicio..." oninput="buscarReservasTexto(this.value)" />
+						</div>
 					</div>
 
-					<div class="bookings-cards-list" id="lista-todas-reservas">
-						<div style="text-align:center; padding: 40px; color: var(--client-text-muted);">
-							<div style="font-size: 2rem; margin-bottom: 8px;">⏳</div>
-							<p>Cargando tus reservas desde la base de datos...</p>
+					<!-- Lista de Reservas -->
+					<div id="lista-todas-reservas">
+						<div style="text-align:center; padding: 40px; color: var(--text-muted);">
+							Cargando tus citas...
 						</div>
 					</div>
 				</div>
 			</section>
 
-			<!-- ========================================================================= -->
-			<!-- SECCIÓN 3: NOTIFICACIONES                                                 -->
-			<!-- ========================================================================= -->
+			<!-- ============================================================= -->
+			<!-- SECCIÓN: NOTIFICACIONES                                        -->
+			<!-- ============================================================= -->
 			<section id="view-notificaciones" class="client-section-view">
-				<div class="view-header-row">
-					<div class="view-title-wrap">
-						<h1>Centro de Notificaciones</h1>
-						<p>Avisos importantes sobre tus reservas agendadas y promociones exclusivas.</p>
+				<div class="panel-card">
+					<div class="panel-card-header">
+						<h3 class="panel-card-title">
+							<svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+							<span>Centro de Notificaciones</span>
+						</h3>
 					</div>
-				</div>
-
-				<div class="notifications-list" id="lista-notificaciones-cliente">
-					<!-- Se inyectan notificaciones reales -->
+					<div class="notifications-list" id="lista-notificaciones-cliente">
+						<!-- Inyectado dinámicamente -->
+					</div>
 				</div>
 			</section>
 
-			<!-- ========================================================================= -->
-			<!-- SECCIÓN 4: MIS DATOS                                                      -->
-			<!-- ========================================================================= -->
-			<section id="view-datos" class="client-section-view">
-				<div class="view-header-row">
-					<div class="view-title-wrap">
-						<h1>Mis Datos Personales</h1>
-						<p>Consulta y actualiza tu información de contacto registrada en NailArtist Studio.</p>
-					</div>
-				</div>
-
+			<!-- ============================================================= -->
+			<!-- SECCIÓN: MIS DATOS / PERFIL                                   -->
+			<!-- ============================================================= -->
+			<section id="view-perfil" class="client-section-view">
 				<div class="profile-card">
-					<div style="display:flex; align-items:center; gap:16px; margin-bottom: 24px;">
-						<div class="client-initial-badge" id="profile-avatar-initial" style="margin:0; width:56px; height:56px; font-size:1.5rem;">C</div>
+					<div class="profile-header-banner">
+						<div class="profile-avatar-large" id="profile-avatar-initial">C</div>
 						<div>
-							<h3 id="profile-display-name" style="font-family: var(--font-title); font-size: 1.35rem; color: var(--client-text); margin-bottom: 2px;">Camila Morales</h3>
-							<span class="client-vip-pill" id="profile-display-discount">✨ Miembro Nails VIP Club (15% OFF)</span>
+							<h3 style="font-family: var(--font-title); font-size: 1.5rem; font-weight: 800; color: var(--text-main);" id="profile-display-name">Mi Perfil VIP</h3>
+							<div class="client-vip-pill" id="profile-display-discount">
+								<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+								<span>Miembro Nails VIP Club</span>
+							</div>
 						</div>
 					</div>
 
@@ -1250,9 +309,9 @@
 								<input type="tel" id="input-perfil-telefono" class="form-input" placeholder="+591 7XXXXXXX" required />
 							</div>
 
-							<div class="form-group-full" style="border-top: 1px dashed var(--client-border); padding-top: 18px; margin-top: 6px;">
-								<label class="form-label" style="color: var(--client-accent);">Cambiar Contraseña (Opcional)</label>
-								<p style="font-size: 0.82rem; color: var(--client-text-muted); margin-bottom: 12px;">Déjalo en blanco si deseas conservar tu contraseña actual.</p>
+							<div class="form-group-full" style="border-top: 1px dashed var(--border-light); padding-top: 18px; margin-top: 6px;">
+								<label class="form-label" style="color: var(--pink-primary);">Cambiar Contraseña (Opcional)</label>
+								<p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">Déjalo en blanco si deseas conservar tu contraseña actual.</p>
 							</div>
 
 							<div>
@@ -1270,7 +329,8 @@
 
 						<div style="margin-top: 24px; display: flex; gap: 12px;">
 							<button type="submit" id="btn-guardar-perfil" class="btn-client-primary">
-								<span>💾 Guardar Cambios</span>
+								<svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+								<span>Guardar Cambios</span>
 							</button>
 						</div>
 					</form>
@@ -1281,21 +341,114 @@
 	</div>
 
 	<!-- ========================================================================= -->
+	<!-- MODAL: NUEVA RESERVA INTERACTIVA CON MANICURISTA                          -->
+	<!-- ========================================================================= -->
+	<div id="modal-nueva-reserva" class="modal-overlay">
+		<div class="modal-card">
+			<button type="button" class="modal-close-btn" onclick="cerrarModalNuevaReserva()">✕</button>
+
+			<div style="margin-bottom: 18px;">
+				<span class="next-booking-tag">✨ Agendar Cita</span>
+				<h2 style="font-family: var(--font-title); font-size: 1.5rem; color: var(--text-main); margin-top: 4px;">
+					Personaliza tu Cita
+				</h2>
+				<p style="font-size: 0.86rem; color: var(--text-muted);">Selecciona tu manicurista de confianza, servicios y horario deseado.</p>
+			</div>
+
+			<form id="form-nueva-reserva" onsubmit="procesarNuevaReserva(event)">
+				<!-- Paso 1: Manicurista -->
+				<div style="margin-bottom: 18px;">
+					<label class="form-label">1. Elige a tu Manicurista:</label>
+					<div class="manicuristas-grid-select" id="booking-manicuristas-grid">
+						<!-- Inyectado desde /api/servicios/meta/manicuristas -->
+						<div style="padding: 10px; font-size: 0.85rem; color: var(--text-muted);">Cargando artistas...</div>
+					</div>
+				</div>
+
+				<!-- Paso 2: Servicios -->
+				<div style="margin-bottom: 18px;">
+					<label class="form-label">2. Selecciona el o los Servicios:</label>
+					<div class="services-select-list" id="booking-services-list">
+						<!-- Inyectado desde /api/servicios -->
+						<div style="padding: 10px; font-size: 0.85rem; color: var(--text-muted);">Cargando servicios...</div>
+					</div>
+				</div>
+
+				<!-- Paso 3: Fecha y Hora -->
+				<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px;">
+					<div>
+						<label class="form-label" for="booking-fecha">3. Fecha:</label>
+						<input type="date" id="booking-fecha" class="form-input" required onchange="cargarHorariosDisponibles()" />
+					</div>
+					<div>
+						<label class="form-label">4. Horario Disponible:</label>
+						<input type="hidden" id="booking-hora-selected" required />
+						<div id="booking-hora-display" style="font-size: 0.86rem; color: var(--text-muted); padding: 10px 0;">Selecciona una fecha</div>
+					</div>
+				</div>
+
+				<!-- Grid de Slots -->
+				<div id="booking-slots-container" style="display:none; margin-bottom: 18px;">
+					<label class="form-label">Selecciona tu turno:</label>
+					<div class="slots-grid" id="booking-slots-grid">
+						<!-- Inyectado dinámicamente -->
+					</div>
+				</div>
+
+				<!-- Paso 5: Observaciones -->
+				<div style="margin-bottom: 18px;">
+					<label class="form-label" for="booking-obs">5. Notas u Observaciones (Opcional):</label>
+					<textarea id="booking-obs" class="form-textarea" rows="2" placeholder="Ej: Retiro previo de acrílico, diseño específico, uña rota..."></textarea>
+				</div>
+
+				<!-- Resumen de Costo con Descuento VIP -->
+				<div class="booking-summary-box">
+					<div class="booking-summary-row">
+						<span>Subtotal Servicios:</span>
+						<strong id="summary-subtotal">Bs. 0</strong>
+					</div>
+					<div class="booking-summary-row" style="color: var(--gold-primary);">
+						<span id="summary-vip-label">Descuento VIP (15%):</span>
+						<strong id="summary-discount">- Bs. 0</strong>
+					</div>
+					<div class="booking-summary-total">
+						<span style="font-weight: 800;">Total a Pagar en Estudio:</span>
+						<strong id="summary-total-final">Bs. 0</strong>
+					</div>
+				</div>
+
+				<div id="booking-alert-error" style="display:none; margin-bottom: 14px; padding: 10px 14px; border-radius: 10px; background: #fee2e2; color: #dc2626; font-size: 0.85rem;"></div>
+
+				<!-- Botón Confirmar -->
+				<div style="display: flex; gap: 12px;">
+					<button type="submit" id="btn-confirmar-reserva" class="btn-client-primary" style="flex: 1; justify-content: center;">
+						<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+						<span>Confirmar y Agendar Cita</span>
+					</button>
+					<button type="button" class="btn-client-secondary" onclick="cerrarModalNuevaReserva()">
+						<span>Cancelar</span>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- ========================================================================= -->
 	<!-- MODAL: DETALLE COMPLETO DE RESERVA                                         -->
 	<!-- ========================================================================= -->
 	<div id="modal-detalle-reserva" class="modal-overlay">
-		<div class="booking-detail-modal-card">
+		<div class="modal-card">
 			<button type="button" class="modal-close-btn" onclick="cerrarModalDetalle()">✕</button>
 
 			<div style="margin-bottom: 16px;">
 				<span class="status-badge" id="modal-reserva-estado">Pendiente</span>
-				<h2 style="font-family: var(--font-title); font-size: 1.6rem; color: var(--client-text); margin-top: 8px;" id="modal-reserva-codigo">
+				<h2 style="font-family: var(--font-title); font-size: 1.5rem; color: var(--text-main); margin-top: 8px;" id="modal-reserva-codigo">
 					RES-2026-0000
 				</h2>
-				<span style="font-size: 0.85rem; color: var(--client-text-muted);" id="modal-reserva-creacion">Creada el --/--/----</span>
+				<span style="font-size: 0.82rem; color: var(--text-muted);" id="modal-reserva-creacion">Creada el --/--/----</span>
 			</div>
 
-			<!-- Línea de Seguimiento Visual -->
+			<!-- Stepper Visual -->
 			<div class="booking-stepper">
 				<div class="step-node completed" id="step-1">
 					<div class="step-circle">1</div>
@@ -1303,44 +456,53 @@
 				</div>
 				<div class="step-node" id="step-2">
 					<div class="step-circle">2</div>
-					<div class="step-label">Reserva confirmada</div>
+					<div class="step-label">Confirmada</div>
 				</div>
 				<div class="step-node" id="step-3">
 					<div class="step-circle">3</div>
-					<div class="step-label">Cita realizada</div>
+					<div class="step-label">Atendida</div>
 				</div>
 			</div>
 
 			<!-- Desglose de Servicios -->
-			<div class="modal-services-box">
-				<h4 style="font-size: 0.92rem; font-weight: 800; color: var(--client-text); margin-bottom: 10px;">💅 Servicios Incluidos:</h4>
+			<div style="background: var(--bg-surface-soft); border-radius: 12px; padding: 14px; margin-bottom: 16px; border: 1px solid var(--border-light);">
+				<h4 style="font-size: 0.88rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px;">Servicios Incluidos:</h4>
 				<div id="modal-lista-servicios-items">
 					<!-- Se inyectan filas de detalle_cita -->
 				</div>
 			</div>
 
-			<div style="background: #fdf2f8; border-radius: 16px; padding: 14px 18px; margin-bottom: 20px; font-size: 0.9rem;">
+			<!-- Ficha de Datos de la Cita -->
+			<div style="background: var(--bg-surface-soft); border-radius: 12px; padding: 14px; margin-bottom: 18px; font-size: 0.88rem; border: 1px solid var(--border-card);">
 				<div style="display:flex; justify-content:space-between; margin-bottom: 6px;">
-					<span style="color:var(--client-text-muted);">📅 Fecha Programada:</span>
-					<strong id="modal-reserva-fecha" style="color:var(--client-text);">-</strong>
+					<span style="color:var(--text-muted);">Manicurista Asignada:</span>
+					<strong id="modal-reserva-manicurista" style="color:var(--pink-primary); font-weight:700;">Por Asignar</strong>
 				</div>
 				<div style="display:flex; justify-content:space-between; margin-bottom: 6px;">
-					<span style="color:var(--client-text-muted);">⏱ Hora Estimada:</span>
-					<strong id="modal-reserva-hora" style="color:var(--client-text);">-</strong>
+					<span style="color:var(--text-muted);">Fecha Programada:</span>
+					<strong id="modal-reserva-fecha" style="color:var(--text-main);">-</strong>
 				</div>
 				<div style="display:flex; justify-content:space-between; margin-bottom: 6px;">
-					<span style="color:var(--client-text-muted);">📝 Observaciones:</span>
-					<span id="modal-reserva-obs" style="color:var(--client-text); font-weight:600; text-align:right;">-</span>
+					<span style="color:var(--text-muted);">Hora Estimada:</span>
+					<strong id="modal-reserva-hora" style="color:var(--text-main);">-</strong>
 				</div>
-				<div style="border-top: 1px solid rgba(255,0,102,0.15); padding-top: 8px; margin-top: 8px; display:flex; justify-content:space-between; align-items:center;">
-					<span style="font-weight: 800; color: var(--client-text);">Total Final:</span>
-					<strong id="modal-reserva-total" style="font-size: 1.3rem; color: var(--client-accent); font-weight: 900;">Bs. 0</strong>
+				<div style="display:flex; justify-content:space-between; margin-bottom: 6px;">
+					<span style="color:var(--text-muted);">Observaciones:</span>
+					<span id="modal-reserva-obs" style="color:var(--text-main); font-weight:600; text-align:right;">-</span>
+				</div>
+				<div style="border-top: 1px dashed var(--pink-border); padding-top: 8px; margin-top: 8px; display:flex; justify-content:space-between; align-items:center;">
+					<span style="font-weight: 800; color: var(--text-main);">Total Final:</span>
+					<strong id="modal-reserva-total" style="font-size: 1.25rem; color: var(--pink-primary); font-weight: 900;">Bs. 0</strong>
 				</div>
 			</div>
 
 			<div style="display: flex; gap: 12px; flex-wrap: wrap;">
 				<button type="button" id="modal-btn-whatsapp" class="btn-client-primary" style="flex: 1; justify-content: center; background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);">
-					<span>💬 Contactar por WhatsApp</span>
+					<svg viewBox="0 0 24 24" style="width:18px; height:18px; fill:currentColor;"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
+					<span>Enviar WhatsApp Oficial</span>
+				</button>
+				<button type="button" id="modal-btn-cancelar-cita" class="btn-client-secondary" onclick="confirmarCancelacionCita()" style="background:#fff1f2; color:#e11d48; border-color:#fecdd3;">
+					<span>❌ Cancelar Cita</span>
 				</button>
 				<button type="button" class="btn-client-secondary" onclick="cerrarModalDetalle()">
 					<span>Cerrar</span>
@@ -1349,48 +511,134 @@
 		</div>
 	</div>
 
-	<!-- Drawer del Carrito (Reutilizado) -->
-	<div id="carrito-modal-overlay"></div>
-	<section id="carrito-panel">
-		<div class="cart-header">
-			<h2>🛒 Mis Servicios</h2>
-			<button class="cart-close-btn" id="cerrar-carrito">&times;</button>
-		</div>
-		<div class="cart-body" id="lista-carrito"></div>
-		<div class="cart-footer">
-			<div class="cart-total-box">
-				<span>Total Estimado:</span>
-				<span class="cart-total-amount">Bs. <span id="total">0</span></span>
+	<!-- ========================================================================= -->
+	<!-- MODAL: CONFIRMACIÓN DE CANCELACIÓN DE CITA                                 -->
+	<!-- ========================================================================= -->
+	<div id="modal-confirmar-cancelacion" class="modal-overlay">
+		<div class="modal-card" style="max-width: 440px; text-align: center;">
+			<div style="width: 58px; height: 58px; border-radius: 50%; background: #fee2e2; color: #e11d48; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 1.6rem; border: 1px solid #fecdd3;">
+				⚠️
 			</div>
-			<div class="cart-actions">
-				<button class="btn-whatsapp" id="whatsapp">💬 Reservar Cita por WhatsApp</button>
-				<button class="btn-vaciar" id="vaciar">Vaciar Carrito</button>
+			<h3 style="font-family: var(--font-title); font-size: 1.35rem; color: var(--text-main); margin-bottom: 8px;">
+				¿Deseas cancelar esta cita?
+			</h3>
+			<p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 18px; line-height: 1.5;">
+				Estás a punto de cancelar tu reserva <strong id="cancelar-codigo-display" style="color: var(--pink-primary);">-</strong>. Se notificará a tu manicurista y tu historial se conservará intacto.
+			</p>
+			<div id="cancelar-alert-error" style="display:none; margin-bottom: 14px; padding: 10px; border-radius: 10px; background: #fee2e2; color: #dc2626; font-size: 0.85rem;"></div>
+			<div style="display: flex; gap: 10px; justify-content: center;">
+				<button type="button" class="btn-client-secondary" onclick="cerrarModalConfirmarCancelacion()">
+					<span>Volver</span>
+				</button>
+				<button type="button" id="btn-ejecutar-cancelacion" class="btn-client-primary" onclick="ejecutarCancelacionCita()" style="background: linear-gradient(135deg, #e11d48, #be123c);">
+					<span>Sí, Cancelar Cita</span>
+				</button>
 			</div>
 		</div>
-	</section>
+	</div>
 
-	<div id="noti">¡Servicio añadido al carrito!</div>
-
-	<!-- Scripts -->
-	<script src="assets/js/nailartist.js"></script>
+	<!-- ========================================================================= -->
+	<!-- LOGICA JS & PARTICLES ENGINE                                              -->
+	<!-- ========================================================================= -->
 	<script>
 		let clienteActual = null;
 		let todasLasCitas = [];
 		let citaSeleccionada = null;
 
+		// Estado para Modal de Nueva Reserva
+		let catalogoManicuristas = [];
+		let catalogoServicios = [];
+		let selectedManicuristaId = null;
+		let selectedServiceIds = new Set();
+		let selectedHoraSlot = null;
+
 		document.addEventListener('DOMContentLoaded', async () => {
+			initParticlesBackground();
 			await verificarAutenticacionCliente();
 			await cargarMisReservas();
+			await precargarCatalogosReserva();
+
+			// Revisar si viene con parámetros de preselección (ej: desde index.html "Reservar con ella")
+			const urlParams = new URLSearchParams(window.location.search);
+			const maniParam = urlParams.get('manicurista_id') || localStorage.getItem('selected_manicurista_id');
+			if (urlParams.get('nueva_reserva') === '1' || maniParam) {
+				localStorage.removeItem('selected_manicurista_id');
+				abrirModalNuevaReserva(maniParam);
+			}
 		});
 
-		// 1. Verificar sesión activa del cliente
+		// 1. Motor de Partículas de Luz Sutiles (Canvas)
+		function initParticlesBackground() {
+			const canvas = document.getElementById('particlesCanvas');
+			if (!canvas) return;
+			const ctx = canvas.getContext('2d');
+			if (!ctx) return;
+
+			if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+				canvas.style.display = 'none';
+				return;
+			}
+
+			let width = 0, height = 0;
+			function resize() {
+				width = canvas.width = window.innerWidth;
+				height = canvas.height = window.innerHeight;
+			}
+			window.addEventListener('resize', resize);
+			resize();
+
+			const particles = [];
+			const count = Math.min(Math.floor(window.innerWidth / 35), 45);
+			const colors = [
+				'rgba(225, 29, 72, 0.25)',   // Rose soft
+				'rgba(217, 119, 6, 0.25)',   // Gold soft
+				'rgba(2, 132, 199, 0.22)',   // Sky blue soft
+				'rgba(255, 255, 255, 0.6)'   // White light
+			];
+
+			for (let i = 0; i < count; i++) {
+				particles.push({
+					x: Math.random() * width,
+					y: Math.random() * height,
+					radius: Math.random() * 2.2 + 0.8,
+					color: colors[Math.floor(Math.random() * colors.length)],
+					vx: (Math.random() - 0.5) * 0.35,
+					vy: (Math.random() - 0.5) * 0.35,
+					pulseSpeed: Math.random() * 0.02 + 0.005,
+					alpha: Math.random() * 0.6 + 0.2
+				});
+			}
+
+			function animate() {
+				ctx.clearRect(0, 0, width, height);
+				particles.forEach(p => {
+					p.x += p.vx;
+					p.y += p.vy;
+					if (p.x < 0) p.x = width;
+					if (p.x > width) p.x = 0;
+					if (p.y < 0) p.y = height;
+					if (p.y > height) p.y = 0;
+
+					ctx.beginPath();
+					ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+					ctx.fillStyle = p.color;
+					ctx.shadowBlur = 8;
+					ctx.shadowColor = p.color;
+					ctx.fill();
+					ctx.shadowBlur = 0;
+				});
+				requestAnimationFrame(animate);
+			}
+			animate();
+		}
+
+		// 2. Verificar Autenticación de Cliente
 		async function verificarAutenticacionCliente() {
 			try {
 				const res = await fetch('/api/me');
 				const data = await res.json();
 
 				if (!data.authenticated || !data.user) {
-					// No autenticado, redirigir al login
 					window.location.href = '/login.html?redirect=/cliente.html';
 					return;
 				}
@@ -1409,23 +657,32 @@
 			}
 		}
 
-		// 2. Pintar datos del cliente en la interfaz
+		let infoDescuentoTienda = null;
+
+		// 3. Pintar Datos del Cliente
 		function actualizarInterfazCliente(u) {
 			const inicial = (u.nombre || 'C').charAt(0).toUpperCase();
 			const nombreCompleto = `${u.nombre} ${u.apellido || ''}`.trim();
+			const descPersonalizado = parseFloat(u.descuento_vip || 0);
+
+			let labelDesc = descPersonalizado > 0 
+				? `Descuento ${descPersonalizado}% OFF` 
+				: (infoDescuentoTienda?.general?.activo ? `Descuento General ${infoDescuentoTienda.general.porcentaje}% OFF` : 'Sin Descuento');
 
 			document.getElementById('sidebar-user-initial').innerText = inicial;
 			document.getElementById('sidebar-user-name').innerText = nombreCompleto;
 			document.getElementById('sidebar-user-email').innerText = u.email;
-			document.getElementById('sidebar-vip-badge').innerText = `✨ Descuento VIP ${u.descuento_vip || 15}%`;
+			document.getElementById('sidebar-vip-badge').querySelector('span').innerText = labelDesc;
 
-			document.getElementById('greeting-title').innerText = `Bienvenido nuevamente, ${u.nombre}`;
+			document.getElementById('greeting-title').innerText = `Bienvenida nuevamente, ${u.nombre}`;
 			document.getElementById('mobile-bar-username').innerText = nombreCompleto;
 
-			// Mis Datos
+			// Perfil View
 			document.getElementById('profile-avatar-initial').innerText = inicial;
 			document.getElementById('profile-display-name').innerText = nombreCompleto;
-			document.getElementById('profile-display-discount').innerText = `✨ Miembro Nails VIP Club (${u.descuento_vip || 15}% OFF)`;
+			document.getElementById('profile-display-discount').querySelector('span').innerText = descPersonalizado > 0
+				? `Descuento Personalizado (${descPersonalizado}% OFF)`
+				: `Descuento General del Estudio`;
 
 			document.getElementById('input-perfil-nombre').value = u.nombre || '';
 			document.getElementById('input-perfil-apellido').value = u.apellido || '';
@@ -1433,7 +690,7 @@
 			document.getElementById('input-perfil-telefono').value = u.telefono || '';
 		}
 
-		// 3. Cargar reservas del cliente desde la API
+		// 4. Cargar Reservas del Cliente
 		async function cargarMisReservas() {
 			try {
 				const res = await fetch('/api/reservas/mis-citas');
@@ -1443,20 +700,16 @@
 					todasLasCitas = data.data;
 					renderizarEstadisticas(todasLasCitas);
 					renderizarProximaCita(todasLasCitas);
+					renderizarListadoInicio(todasLasCitas);
 					renderizarListadoReservas(todasLasCitas);
 					renderizarNotificaciones(todasLasCitas);
 				}
 			} catch (err) {
 				console.error('Error al cargar reservas:', err);
-				document.getElementById('lista-todas-reservas').innerHTML = `
-					<div style="text-align:center; padding:30px; color:#e11d48;">
-						<p>No se pudieron cargar las reservas. Intenta nuevamente.</p>
-					</div>
-				`;
 			}
 		}
 
-		// 4. Estadísticas del Cliente
+		// 5. Renderizar Estadísticas KPI
 		function renderizarEstadisticas(citas) {
 			const total = citas.length;
 			const pendientes = citas.filter(c => (c.estado || '').toLowerCase() === 'pendiente').length;
@@ -1470,21 +723,23 @@
 			document.getElementById('nav-count-reservas').innerText = total;
 		}
 
-		// 5. Tarjeta Próxima Cita o Estado Vacío
+		// 6. Tarjeta Próxima Cita
 		function renderizarProximaCita(citas) {
 			const container = document.getElementById('contenedor-proxima-cita');
-			// Buscar la cita más reciente con estado Pendiente o Confirmada
 			const proxima = citas.find(c => ['pendiente', 'confirmada'].includes((c.estado || '').toLowerCase())) || citas[0];
 
 			if (!proxima) {
 				container.innerHTML = `
 					<div class="empty-state-card">
-						<div class="empty-state-icon">💅</div>
-						<h3 class="empty-state-title">Aún no tienes reservas</h3>
-						<p class="empty-state-desc">Explora nuestra colección de uñas acrílicas, soft gel y diseños personalizados para agendar tu primera cita.</p>
-						<a href="servicios.html" class="btn-client-primary">
-							<span>Explorar Servicios & Precios 💖</span>
-						</a>
+						<div class="empty-state-icon">
+							<svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+						</div>
+						<h3 class="empty-state-title">Aún no tienes reservas programadas</h3>
+						<p class="empty-state-desc">Elige a tu manicurista favorita y reserva tu cita para uñas acrílicas, soft gel o diseño exclusivo.</p>
+						<button type="button" class="btn-client-primary" onclick="abrirModalNuevaReserva()">
+							<svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+							<span>Agendar Mi Primera Cita</span>
+						</button>
 					</div>
 				`;
 				return;
@@ -1496,29 +751,40 @@
 			if (stName.toLowerCase() === 'completada') stClass = 'status-completada';
 			if (stName.toLowerCase() === 'cancelada') stClass = 'status-cancelada';
 
-			const serviciosTexto = proxima.servicios_resumen || 'Servicio de uñas personalizado';
-
 			container.innerHTML = `
 				<div class="next-booking-card">
 					<div class="next-booking-header">
-						<span class="next-booking-tag">📅 Tu Próxima Cita Agendada</span>
-						<span class="status-badge ${stClass}">● ${stName}</span>
+						<span class="next-booking-tag">
+							<svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+							Tu Próxima Cita Agendada
+						</span>
+						<span class="status-badge ${stClass}">${stName}</span>
 					</div>
 					<div class="next-booking-body">
 						<div>
-							<div style="font-family: monospace; font-size: 0.95rem; color: var(--pink-soft); margin-bottom: 6px;">
-								🔖 ${proxima.codigo_reserva}
+							<div style="font-family: monospace; font-size: 0.95rem; color: var(--pink-primary); margin-bottom: 6px; font-weight:700;">
+								${escapeHtml(proxima.codigo_reserva)}
 							</div>
-							<h3 class="next-services-title">${escapeHtml(serviciosTexto)}</h3>
+							<h3 class="next-services-title">${escapeHtml(proxima.servicios_resumen || 'Servicio de Uñas')}</h3>
 							<div class="next-booking-meta">
-								<span>📅 Fecha: <strong>${proxima.fecha_cita}</strong></span>
-								<span>⏱ Hora: <strong>${proxima.hora_cita}</strong></span>
+								<span>
+									<svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z"/></svg>
+									Fecha: <strong>${escapeHtml(proxima.fecha_cita)}</strong>
+								</span>
+								<span>
+									<svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+									Hora: <strong>${escapeHtml(proxima.hora_cita)}</strong>
+								</span>
+								<span>
+									<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+									Manicurista: <strong>${escapeHtml(proxima.manicurista_nombre || 'Asignación de Staff')}</strong>
+								</span>
 							</div>
 						</div>
 						<div class="next-booking-actions">
 							<div class="next-booking-price">Bs. ${proxima.total_final_bs}</div>
-							<button type="button" class="btn-client-primary" onclick="abrirModalDetalle(${proxima.id})" style="background:#ffffff; color:var(--client-text);">
-								<span>Ver Detalle Completo 🔍</span>
+							<button type="button" class="btn-client-secondary" onclick="abrirModalDetalle(${proxima.id})">
+								<span>Ver Detalle</span>
 							</button>
 						</div>
 					</div>
@@ -1526,58 +792,68 @@
 			`;
 		}
 
-		// 6. Listado de Reservas
+		// 7. Renderizar Lista Resumen Inicio
+		function renderizarListadoInicio(citas) {
+			const container = document.getElementById('lista-resumen-inicio');
+			if (citas.length === 0) {
+				container.innerHTML = `<p style="color:var(--text-muted); font-size:0.9rem;">No tienes citas registradas recientemente.</p>`;
+				return;
+			}
+
+			container.innerHTML = citas.slice(0, 3).map(c => renderFilaCita(c)).join('');
+		}
+
+		// 8. Renderizar Listado Completo Reservas
 		function renderizarListadoReservas(citas) {
 			const container = document.getElementById('lista-todas-reservas');
 			if (citas.length === 0) {
 				container.innerHTML = `
-					<div style="text-align:center; padding: 40px 10px; color: var(--client-text-muted);">
-						<p style="font-size:2rem; margin-bottom:8px;">📅</p>
-						<p style="font-weight:700; color:var(--client-text);">No hay reservas en esta categoría.</p>
+					<div style="text-align:center; padding: 40px 10px; color: var(--text-muted);">
+						<p style="font-weight:700; color:var(--text-main);">No se encontraron reservas en esta categoría.</p>
 					</div>
 				`;
 				return;
 			}
 
-			container.innerHTML = citas.map(c => {
-				let stClass = 'status-pendiente';
-				let stName = c.estado || 'Pendiente';
-				if (stName.toLowerCase() === 'confirmada') stClass = 'status-confirmada';
-				if (stName.toLowerCase() === 'completada') stClass = 'status-completada';
-				if (stName.toLowerCase() === 'cancelada') stClass = 'status-cancelada';
-
-				const serviciosTexto = c.servicios_resumen || 'Servicio de Estudio NailArtist';
-
-				return `
-					<div class="booking-item-row">
-						<div class="col-code">
-							<strong>${c.codigo_reserva}</strong>
-						</div>
-						<div class="col-services">
-							<span>${escapeHtml(serviciosTexto)}</span>
-							<small>${c.observaciones ? escapeHtml(c.observaciones) : 'Cita agendada vía web'}</small>
-						</div>
-						<div class="col-date">
-							<span>${c.fecha_cita}</span>
-							<small>${c.hora_cita}</small>
-						</div>
-						<div class="col-total">
-							Bs. ${c.total_final_bs}
-						</div>
-						<div>
-							<span class="status-badge ${stClass}">${stName}</span>
-						</div>
-						<div>
-							<button type="button" class="btn-client-secondary" onclick="abrirModalDetalle(${c.id})" style="padding: 6px 14px; font-size: 0.84rem;">
-								Ver Detalle
-							</button>
-						</div>
-					</div>
-				`;
-			}).join('');
+			container.innerHTML = citas.map(c => renderFilaCita(c)).join('');
 		}
 
-		// Filtro de Reservas por Estado
+		function renderFilaCita(c) {
+			let stClass = 'status-pendiente';
+			let stName = c.estado || 'Pendiente';
+			if (stName.toLowerCase() === 'confirmada') stClass = 'status-confirmada';
+			if (stName.toLowerCase() === 'completada') stClass = 'status-completada';
+			if (stName.toLowerCase() === 'cancelada') stClass = 'status-cancelada';
+
+			return `
+				<div class="booking-item-row">
+					<div class="col-code">
+						<strong>${escapeHtml(c.codigo_reserva)}</strong>
+					</div>
+					<div class="col-services">
+						<span>${escapeHtml(c.servicios_resumen || 'Servicio de Uñas')}</span>
+						<small>Manicurista: <strong>${escapeHtml(c.manicurista_nombre || 'Staff NailArtist')}</strong></small>
+					</div>
+					<div class="col-date">
+						<span>${escapeHtml(c.fecha_cita)}</span>
+						<small>${escapeHtml(c.hora_cita)}</small>
+					</div>
+					<div class="col-total">
+						Bs. ${c.total_final_bs}
+					</div>
+					<div>
+						<span class="status-badge ${stClass}">${stName}</span>
+					</div>
+					<div>
+						<button type="button" class="btn-client-secondary" onclick="abrirModalDetalle(${c.id})" style="padding: 6px 14px; font-size: 0.84rem;">
+							Detalle
+						</button>
+					</div>
+				</div>
+			`;
+		}
+
+		// Filtros y Buscador
 		function filtrarReservasEstado(estado, btn) {
 			document.querySelectorAll('.filter-tab-btn').forEach(b => b.classList.remove('active'));
 			if (btn) btn.classList.add('active');
@@ -1590,7 +866,6 @@
 			}
 		}
 
-		// Buscador de Reservas por Código
 		function buscarReservasTexto(txt) {
 			const query = (txt || '').trim().toLowerCase();
 			if (!query) {
@@ -1599,53 +874,56 @@
 			}
 			const filtradas = todasLasCitas.filter(c => 
 				(c.codigo_reserva || '').toLowerCase().includes(query) ||
-				(c.servicios_resumen || '').toLowerCase().includes(query)
+				(c.servicios_resumen || '').toLowerCase().includes(query) ||
+				(c.manicurista_nombre || '').toLowerCase().includes(query)
 			);
 			renderizarListadoReservas(filtradas);
 		}
 
-		// 7. Notificaciones del Cliente
+		// 9. Notificaciones
 		function renderizarNotificaciones(citas) {
 			const container = document.getElementById('lista-notificaciones-cliente');
+			const descUser = parseFloat(clienteActual?.descuento_vip || 0);
+			const descText = descUser > 0 ? `un ${descUser}% de descuento personalizado` : 'descuento especial';
+
 			const notifs = [
 				{
-					icon: '💖',
-					titulo: '¡Bienvenida a Nails VIP Club!',
-					mensaje: 'Disfruta de un 15% de descuento en todos tus servicios de uñas acrílicas, gel y manicura en NailArtist Studio.',
-					tiempo: 'Membresía Activa'
+					titulo: '¡Beneficio de Cliente Activo!',
+					mensaje: `Cuentas con ${descText} en todos los servicios de uñas del salón.`,
+					tiempo: 'Activo'
 				}
 			];
 
-			citas.slice(0, 4).forEach(c => {
-				let ico = '⏳';
-				let tit = `Reserva recibida (${c.codigo_reserva})`;
-				let desc = `Tu reserva para el día ${c.fecha_cita} a las ${c.hora_cita} ha sido recibida y se encuentra en estado ${c.estado}.`;
-
+			citas.slice(0, 5).forEach(c => {
+				let tit = `Reserva enviada (${c.codigo_reserva})`;
+				let desc = `Cita agendada para el ${c.fecha_cita} a las ${c.hora_cita} con ${c.manicurista_nombre || 'NailArtist Staff'}.`;
 				if (c.estado === 'Confirmada') {
-					ico = '✨';
-					tit = `¡Reserva Confirmada! (${c.codigo_reserva})`;
-					desc = `Tu cita del ${c.fecha_cita} ha sido confirmada por el estudio. Te esperamos 10 minutos antes para tu atención.`;
+					tit = `Cita Confirmada (${c.codigo_reserva})`;
+					desc = `Tu cita del ${c.fecha_cita} a las ${c.hora_cita} ha sido confirmada por el estudio.`;
 				} else if (c.estado === 'Completada') {
-					ico = '✅';
 					tit = `Cita Completada (${c.codigo_reserva})`;
-					desc = `¡Gracias por visitarnos! No olvides dejar tu reseña sobre el acabado y duración de tu set de uñas.`;
+					desc = `¡Gracias por visitarnos! Esperamos que ames tus uñas.`;
+				} else if (c.estado === 'Cancelada') {
+					tit = `Cita Cancelada (${c.codigo_reserva})`;
+					desc = `Tu cita del ${c.fecha_cita} a las ${c.hora_cita} ha sido cancelada.`;
 				}
 
 				notifs.push({
-					icon: ico,
 					titulo: tit,
 					mensaje: desc,
-					tiempo: c.fecha_creacion ? `Fecha: ${c.fecha_creacion}` : 'Reciente'
+					tiempo: c.fecha_cita || 'Reciente'
 				});
 			});
 
 			container.innerHTML = notifs.map(n => `
 				<div class="notification-card">
-					<div class="notif-icon-wrap">${n.icon}</div>
+					<div class="notif-icon-wrap">
+						<svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+					</div>
 					<div class="notif-content">
 						<h4>${escapeHtml(n.titulo)}</h4>
 						<p>${escapeHtml(n.mensaje)}</p>
-						<span class="notif-time">${n.tiempo}</span>
+						<span class="notif-time">${escapeHtml(n.tiempo)}</span>
 					</div>
 				</div>
 			`).join('');
@@ -1653,7 +931,275 @@
 			document.getElementById('nav-count-notifs').innerText = notifs.length;
 		}
 
-		// 8. Abrir Modal de Detalle de Reserva
+		// =========================================================================
+		// 10. MODAL DE NUEVA RESERVA & CONEXION BACKEND CON DISPONIBILIDAD
+		// =========================================================================
+		async function precargarCatalogosReserva() {
+			try {
+				// Cargar información de descuentos
+				const resDesc = await fetch('/api/servicios/meta/descuento');
+				const dataDesc = await resDesc.json();
+				if (dataDesc.success && dataDesc.data) {
+					infoDescuentoTienda = dataDesc.data;
+					if (clienteActual) {
+						actualizarInterfazCliente(clienteActual);
+					}
+				}
+
+				// Cargar manicuristas
+				const resMani = await fetch('/api/servicios/meta/manicuristas');
+				const dataMani = await resMani.json();
+				if (dataMani.success) {
+					catalogoManicuristas = dataMani.data;
+				}
+
+				// Cargar servicios
+				const resServ = await fetch('/api/servicios');
+				const dataServ = await resServ.json();
+				if (dataServ.success) {
+					catalogoServicios = dataServ.data;
+				}
+			} catch (err) {
+				console.warn('Error al precargar catálogos de reserva:', err);
+			}
+		}
+
+		function abrirModalNuevaReserva(preselectedManiId = null) {
+			const modal = document.getElementById('modal-nueva-reserva');
+			const fechaInput = document.getElementById('booking-fecha');
+
+			// Set min date to today
+			const today = new Date().toISOString().split('T')[0];
+			fechaInput.min = today;
+			fechaInput.value = today;
+
+			// Render Manicuristas
+			const maniGrid = document.getElementById('booking-manicuristas-grid');
+			maniGrid.innerHTML = catalogoManicuristas.map(m => {
+				const isSelected = preselectedManiId ? (String(m.id) === String(preselectedManiId)) : false;
+				const initials = (m.nombre || 'M').charAt(0).toUpperCase();
+				const cargo = m.cargo_especialidad || m.especialidades_texto || 'Especialista';
+				const fotoUrl = m.foto_perfil || m.foto;
+				const avatarMarkup = fotoUrl
+					? `<img src="${escapeHtml(fotoUrl)}" class="mani-avatar-img" alt="${escapeHtml(m.nombre)}" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'mani-avatar\\'>${initials}</div>';" />`
+					: `<div class="mani-avatar">${initials}</div>`;
+
+				return `
+					<div class="manicurista-radio-card ${isSelected ? 'selected' : ''}" data-id="${m.id}" onclick="seleccionarManicuristaReserva(${m.id})">
+						${avatarMarkup}
+						<div class="mani-name">${escapeHtml(m.nombre)} ${escapeHtml(m.apellido || '')}</div>
+						<div class="mani-role">${escapeHtml(cargo)}</div>
+					</div>
+				`;
+			}).join('');
+
+			if (preselectedManiId) {
+				selectedManicuristaId = parseInt(preselectedManiId, 10);
+			} else if (catalogoManicuristas.length > 0) {
+				selectedManicuristaId = catalogoManicuristas[0].id;
+				const firstCard = maniGrid.querySelector('.manicurista-radio-card');
+				if (firstCard) firstCard.classList.add('selected');
+			}
+
+			// Render Servicios utilizando precio y duración oficiales de SQLite
+			const servList = document.getElementById('booking-services-list');
+			servList.innerHTML = catalogoServicios.map((s, idx) => {
+				const precioNum = Number(s.precio || 0);
+				const durMin = parseInt(s.duracion_minutos || 60, 10);
+				const catNombre = s.categoria_nombre || 'Uñas';
+
+				return `
+					<label class="service-select-item">
+						<input type="checkbox" value="${s.id}" data-precio="${precioNum}" data-nombre="${escapeHtml(s.nombre)}" data-duracion="${durMin}" ${idx === 0 ? 'checked' : ''} onchange="actualizarCalculoReserva()">
+						<div class="service-item-info">
+							<span class="service-item-name">${escapeHtml(s.nombre)}</span>
+							<span class="service-item-duration">${durMin} min — ${escapeHtml(catNombre)}</span>
+						</div>
+						<span class="service-item-price">Bs. ${precioNum}</span>
+					</label>
+				`;
+			}).join('');
+
+			actualizarCalculoReserva();
+			cargarHorariosDisponibles();
+
+			document.getElementById('booking-alert-error').style.display = 'none';
+			modal.classList.add('active');
+		}
+
+		function cerrarModalNuevaReserva() {
+			const modal = document.getElementById('modal-nueva-reserva');
+			if (modal) modal.classList.remove('active');
+		}
+
+		function seleccionarManicuristaReserva(id) {
+			selectedManicuristaId = id;
+			document.querySelectorAll('#booking-manicuristas-grid .manicurista-radio-card').forEach(card => {
+				if (card.getAttribute('data-id') == id) {
+					card.classList.add('selected');
+				} else {
+					card.classList.remove('selected');
+				}
+			});
+			cargarHorariosDisponibles();
+		}
+
+		function actualizarCalculoReserva() {
+			const checkboxes = document.querySelectorAll('#booking-services-list input[type="checkbox"]:checked');
+			selectedServiceIds.clear();
+			let subtotal = 0;
+
+			checkboxes.forEach(cb => {
+				selectedServiceIds.add(parseInt(cb.value, 10));
+				const price = parseFloat(cb.getAttribute('data-precio')) || 0;
+				subtotal += price;
+			});
+
+			// Determinar descuento según regla de prioridad
+			let descPct = 0;
+			let labelText = 'Descuento (0%):';
+
+			const userCustomDesc = parseFloat(clienteActual?.descuento_vip || 0);
+			const generalActivo = infoDescuentoTienda?.general?.activo !== false;
+			const generalPct = parseFloat(infoDescuentoTienda?.general?.porcentaje || 15);
+
+			if (userCustomDesc > 0) {
+				descPct = userCustomDesc;
+				labelText = `Descuento personalizado (${descPct}%):`;
+			} else if (generalActivo && generalPct > 0) {
+				descPct = generalPct;
+				labelText = `Descuento general (${descPct}%):`;
+			}
+
+			const descuentoMonto = Math.round(subtotal * (descPct / 100));
+			const totalFinal = Math.max(0, Math.round(subtotal - descuentoMonto));
+
+			document.getElementById('summary-subtotal').innerText = `Bs. ${Math.round(subtotal)}`;
+			document.getElementById('summary-vip-label').innerText = labelText;
+			document.getElementById('summary-discount').innerText = `- Bs. ${descuentoMonto}`;
+			document.getElementById('summary-total-final').innerText = `Bs. ${totalFinal}`;
+		}
+
+		async function cargarHorariosDisponibles() {
+			const fecha = document.getElementById('booking-fecha').value;
+			const maniId = selectedManicuristaId;
+			const display = document.getElementById('booking-hora-display');
+			const slotsContainer = document.getElementById('booking-slots-container');
+			const slotsGrid = document.getElementById('booking-slots-grid');
+
+			if (!fecha || !maniId) {
+				display.innerText = 'Selecciona una fecha y manicurista.';
+				slotsContainer.style.display = 'none';
+				return;
+			}
+
+			display.innerText = 'Consultando turnos disponibles...';
+			slotsContainer.style.display = 'block';
+			slotsGrid.innerHTML = '<span style="font-size:0.85rem; color:var(--text-muted);">Consultando agenda...</span>';
+
+			try {
+				const res = await fetch(`/api/reservas/disponibilidad?manicurista_id=${maniId}&fecha=${fecha}`);
+				const data = await res.json();
+
+				if (data.success && Array.isArray(data.data?.slots)) {
+					display.innerText = `Turnos para el ${fecha}:`;
+					selectedHoraSlot = null;
+					document.getElementById('booking-hora-selected').value = '';
+
+					slotsGrid.innerHTML = data.data.slots.map(s => {
+						const isOccupied = s.ocupado;
+						const titleText = isOccupied ? (s.motivo || s.etiqueta || 'Horario no disponible') : 'Turno disponible';
+						return `
+							<button type="button" class="slot-btn" ${isOccupied ? `disabled title="${titleText}"` : ''} onclick="seleccionarTurnoSlot('${s.hora}', this)">
+								${s.hora}
+							</button>
+						`;
+					}).join('');
+				}
+			} catch (err) {
+				console.error('Error al consultar disponibilidad:', err);
+				display.innerText = 'Error al cargar horarios. Intenta con otra fecha.';
+			}
+		}
+
+		function seleccionarTurnoSlot(hora, btn) {
+			selectedHoraSlot = hora;
+			document.getElementById('booking-hora-selected').value = hora;
+			document.querySelectorAll('#booking-slots-grid .slot-btn').forEach(b => b.classList.remove('selected'));
+			btn.classList.add('selected');
+		}
+
+		async function procesarNuevaReserva(e) {
+			e.preventDefault();
+			const errBox = document.getElementById('booking-alert-error');
+			const btn = document.getElementById('btn-confirmar-reserva');
+			errBox.style.display = 'none';
+
+			const fecha = document.getElementById('booking-fecha').value;
+			const hora = document.getElementById('booking-hora-selected').value || selectedHoraSlot;
+			const observaciones = document.getElementById('booking-obs').value.trim();
+
+			if (!selectedManicuristaId) {
+				errBox.innerText = 'Por favor selecciona a tu manicurista.';
+				errBox.style.display = 'block';
+				return;
+			}
+
+			if (selectedServiceIds.size === 0) {
+				errBox.innerText = 'Por favor selecciona al menos un servicio del catálogo.';
+				errBox.style.display = 'block';
+				return;
+			}
+
+			if (!fecha || !hora) {
+				errBox.innerText = 'Por favor selecciona una fecha y un horario de atención disponible.';
+				errBox.style.display = 'block';
+				return;
+			}
+
+			btn.disabled = true;
+			btn.innerText = 'Agendando cita...';
+
+			const payload = {
+				manicurista_id: selectedManicuristaId,
+				fecha_cita: fecha,
+				hora_cita: hora,
+				observaciones: observaciones,
+				items: Array.from(selectedServiceIds).map(id => ({
+					servicio_id: id,
+					cantidad: 1
+				}))
+			};
+
+			try {
+				const res = await fetch('/api/reservas', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(payload)
+				});
+
+				const data = await res.json();
+
+				if (data.success && data.data) {
+					cerrarModalNuevaReserva();
+					await cargarMisReservas();
+					abrirModalDetalle(data.data.id || data.data.cita_id);
+				} else {
+					errBox.innerText = data.message || 'No se pudo crear la reserva. Verifica el horario.';
+					errBox.style.display = 'block';
+				}
+			} catch (err) {
+				errBox.innerText = 'Error de conexión con el servidor al registrar la reserva.';
+				errBox.style.display = 'block';
+			} finally {
+				btn.disabled = false;
+				btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><span>Confirmar y Agendar Cita</span>`;
+			}
+		}
+
+		// =========================================================================
+		// 11. MODAL DETALLE DE RESERVA & CANCELACIÓN
+		// =========================================================================
 		async function abrirModalDetalle(id) {
 			const modal = document.getElementById('modal-detalle-reserva');
 			try {
@@ -1668,23 +1214,26 @@
 				const cita = data.data;
 				citaSeleccionada = cita;
 
-				// Estados
+				const estadoUpper = (cita.estado || 'Pendiente');
+				const estadoLower = estadoUpper.toLowerCase();
+
 				const stBadge = document.getElementById('modal-reserva-estado');
-				stBadge.innerText = cita.estado || 'Pendiente';
+				stBadge.innerText = estadoUpper;
 				stBadge.className = 'status-badge';
-				if (cita.estado === 'Confirmada') stBadge.classList.add('status-confirmada');
-				else if (cita.estado === 'Completada') stBadge.classList.add('status-completada');
-				else if (cita.estado === 'Cancelada') stBadge.classList.add('status-cancelada');
+				if (estadoLower === 'confirmada') stBadge.classList.add('status-confirmada');
+				else if (estadoLower === 'completada') stBadge.classList.add('status-completada');
+				else if (estadoLower === 'cancelada') stBadge.classList.add('status-cancelada');
 				else stBadge.classList.add('status-pendiente');
 
 				document.getElementById('modal-reserva-codigo').innerText = cita.codigo_reserva;
 				document.getElementById('modal-reserva-creacion').innerText = `Creada el ${cita.fecha_creacion || 'Registro reciente'}`;
+				document.getElementById('modal-reserva-manicurista').innerText = cita.manicurista_nombre ? `${cita.manicurista_nombre} ${cita.manicurista_apellido || ''}`.trim() : 'Asignación automática';
 				document.getElementById('modal-reserva-fecha').innerText = cita.fecha_cita || '-';
 				document.getElementById('modal-reserva-hora').innerText = cita.hora_cita || '-';
 				document.getElementById('modal-reserva-obs').innerText = cita.observaciones || 'Sin observaciones';
-				document.getElementById('modal-reserva-total').innerText = `Bs. ${cita.total_final_bs}`;
+				document.getElementById('modal-reserva-total').innerText = `Bs. ${Math.round(Number(cita.total_final_bs) || 0)}`;
 
-				// Línea de seguimiento (Stepper)
+				// Stepper
 				const s1 = document.getElementById('step-1');
 				const s2 = document.getElementById('step-2');
 				const s3 = document.getElementById('step-3');
@@ -1693,38 +1242,48 @@
 				s2.className = 'step-node';
 				s3.className = 'step-node';
 
-				if (cita.estado === 'Confirmada') {
+				if (estadoLower === 'confirmada') {
 					s2.className = 'step-node completed';
-				} else if (cita.estado === 'Completada') {
+				} else if (estadoLower === 'completada') {
 					s2.className = 'step-node completed';
 					s3.className = 'step-node completed';
+				} else if (estadoLower === 'cancelada') {
+					s1.className = 'step-node';
+					s2.className = 'step-node';
+					s3.className = 'step-node';
+				}
+
+				// Control del botón Cancelar
+				const btnCancelar = document.getElementById('modal-btn-cancelar-cita');
+				if (btnCancelar) {
+					if (['pendiente', 'confirmada'].includes(estadoLower)) {
+						btnCancelar.style.display = 'inline-flex';
+					} else {
+						btnCancelar.style.display = 'none';
+					}
 				}
 
 				// Servicios
 				const itemsContainer = document.getElementById('modal-lista-servicios-items');
 				if (cita.servicios && cita.servicios.length > 0) {
 					itemsContainer.innerHTML = cita.servicios.map(item => `
-						<div class="modal-service-row">
+						<div style="display:flex; justify-content:space-between; padding: 6px 0; border-bottom: 1px solid var(--border-light);">
 							<div>
-								<div class="modal-service-title">${escapeHtml(item.servicio_nombre || 'Servicio')}</div>
-								<div class="modal-service-sub">Cantidad: <strong>${item.cantidad}</strong> &nbsp;|&nbsp; Bs. ${item.precio_unitario} c/u</div>
+								<div style="font-weight:700; font-size:0.88rem; color:var(--text-main);">${escapeHtml(item.servicio_nombre || 'Servicio')}</div>
+								<div style="font-size:0.76rem; color:var(--text-muted);">Cantidad: ${item.cantidad} — Bs. ${Math.round(Number(item.precio_unitario) || 0)} c/u</div>
 							</div>
-							<div class="modal-service-price">Bs. ${item.subtotal}</div>
+							<div style="font-weight:800; color:var(--pink-primary);">Bs. ${Math.round(Number(item.subtotal) || 0)}</div>
 						</div>
 					`).join('');
 				} else {
 					itemsContainer.innerHTML = `
-						<div class="modal-service-row">
-							<div>
-								<div class="modal-service-title">${escapeHtml(cita.servicios_resumen || 'Servicio de uñas')}</div>
-								<div class="modal-service-sub">1 cita programada</div>
-							</div>
-							<div class="modal-service-price">Bs. ${cita.total_final_bs}</div>
+						<div style="display:flex; justify-content:space-between; padding: 6px 0;">
+							<span style="font-weight:700; color:var(--text-main);">${escapeHtml(cita.servicios_resumen || 'Servicio')}</span>
+							<strong style="color:var(--pink-primary);">Bs. ${Math.round(Number(cita.total_final_bs) || 0)}</strong>
 						</div>
 					`;
 				}
 
-				// Botón WhatsApp: Reutilizar exactamente el generador oficial de mensaje
 				document.getElementById('modal-btn-whatsapp').onclick = () => {
 					enviarWhatsAppReserva(cita);
 				};
@@ -1741,10 +1300,61 @@
 			if (modal) modal.classList.remove('active');
 		}
 
-		// 9. Generador Oficial de WhatsApp (FORMATO EXACTO INTACTO)
+		// 11.1 Cancelación de Cita (Modal & Backend Call)
+		function confirmarCancelacionCita() {
+			if (!citaSeleccionada) return;
+			const modal = document.getElementById('modal-confirmar-cancelacion');
+			document.getElementById('cancelar-codigo-display').innerText = citaSeleccionada.codigo_reserva;
+			document.getElementById('cancelar-alert-error').style.display = 'none';
+			modal.classList.add('active');
+		}
+
+		function cerrarModalConfirmarCancelacion() {
+			const modal = document.getElementById('modal-confirmar-cancelacion');
+			if (modal) modal.classList.remove('active');
+		}
+
+		async function ejecutarCancelacionCita() {
+			if (!citaSeleccionada) return;
+			const errBox = document.getElementById('cancelar-alert-error');
+			const btn = document.getElementById('btn-ejecutar-cancelacion');
+			errBox.style.display = 'none';
+
+			btn.disabled = true;
+			btn.innerText = 'Cancelando...';
+
+			try {
+				const res = await fetch(`/api/reservas/${citaSeleccionada.id}/cancelar`, {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json' }
+				});
+
+				const data = await res.json();
+
+				if (data.success) {
+					cerrarModalConfirmarCancelacion();
+					await cargarMisReservas();
+					abrirModalDetalle(citaSeleccionada.id);
+				} else {
+					errBox.innerText = data.message || 'No se pudo cancelar la cita.';
+					errBox.style.display = 'block';
+				}
+			} catch (err) {
+				errBox.innerText = 'Error de conexión con el servidor al procesar la cancelación.';
+				errBox.style.display = 'block';
+			} finally {
+				btn.disabled = false;
+				btn.innerText = 'Sí, Cancelar Cita';
+			}
+		}
+
+		// 12. Generador Oficial de WhatsApp (FORMATO EXACTO INTACTO)
 		function enviarWhatsAppReserva(c) {
 			let msg = '✨ *NAILARTIST STUDIO — RESERVA DE CITA* ✨%0A%0A';
 			msg += `🔖 *Código de Reserva:* ${c.codigo_reserva}%0A`;
+			msg += `💅 *Manicurista:* ${c.manicurista_nombre || 'Equipo NailArtist'}%0A`;
+			msg += `📅 *Fecha:* ${c.fecha_cita}%0A`;
+			msg += `⏱ *Hora:* ${c.hora_cita}%0A%0A`;
 			msg += '💅 *Servicios seleccionados:*%0A';
 
 			if (c.servicios && c.servicios.length > 0) {
@@ -1762,7 +1372,7 @@
 			window.open(`https://wa.me/${numeroWhatsApp}?text=${msg}`, '_blank');
 		}
 
-		// 10. Actualizar Perfil del Cliente
+		// 13. Actualizar Perfil del Cliente
 		async function guardarPerfilCliente(e) {
 			e.preventDefault();
 			const alertBox = document.getElementById('perfil-alert-msg');
@@ -1798,7 +1408,7 @@
 					alertBox.style.display = 'block';
 					alertBox.style.background = '#dcfce7';
 					alertBox.style.color = '#15803d';
-					alertBox.innerText = '✨ ¡Tus datos se actualizaron correctamente!';
+					alertBox.innerText = 'Tus datos se actualizaron correctamente.';
 					clienteActual = data.data;
 					localStorage.setItem('nailartist_user', JSON.stringify(clienteActual));
 					actualizarInterfazCliente(clienteActual);
@@ -1818,11 +1428,11 @@
 				alertBox.innerText = 'Error de conexión con el servidor.';
 			} finally {
 				btn.disabled = false;
-				btn.innerText = '💾 Guardar Cambios';
+				btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg><span>Guardar Cambios</span>`;
 			}
 		}
 
-		// 11. Alternar Secciones del Panel
+		// 14. Alternar Secciones del Panel
 		function mostrarSeccion(secId) {
 			document.querySelectorAll('.client-section-view').forEach(s => s.classList.remove('active'));
 			document.querySelectorAll('.client-nav-btn').forEach(b => b.classList.remove('active'));
@@ -1830,7 +1440,6 @@
 			const targetSec = document.getElementById(`view-${secId}`);
 			if (targetSec) targetSec.classList.add('active');
 
-			// Marcar activo en sidebar
 			const activeBtn = Array.from(document.querySelectorAll('.client-nav-btn')).find(b => {
 				const onclickAttr = b.getAttribute('onclick') || '';
 				return onclickAttr.includes(`mostrarSeccion('${secId}')`);
@@ -1840,7 +1449,7 @@
 			toggleSidebarMenu(false);
 		}
 
-		// Toggle móvil de sidebar
+		// Toggle Móvil de Sidebar
 		function toggleSidebarMenu(open) {
 			const sidebar = document.getElementById('client-sidebar');
 			const overlay = document.getElementById('client-sidebar-overlay');
@@ -1863,6 +1472,16 @@
 			} catch (e) {}
 			localStorage.removeItem('nailartist_user');
 			window.location.href = '/login.html';
+		}
+
+		function escapeHtml(str) {
+			if (!str) return '';
+			return String(str)
+				.replace(/&/g, '&amp;')
+				.replace(/</g, '&lt;')
+				.replace(/>/g, '&gt;')
+				.replace(/"/g, '&quot;')
+				.replace(/'/g, '&#039;');
 		}
 	</script>
 </body>

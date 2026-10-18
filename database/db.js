@@ -20,6 +20,38 @@ function initDatabase() {
         dbInstance.exec('PRAGMA foreign_keys = ON;');
         dbInstance.exec('PRAGMA journal_mode = WAL;');
 
+        // Inicializar tabla de configuración general si no existe
+        dbInstance.exec(`
+            CREATE TABLE IF NOT EXISTS configuracion (
+                clave TEXT PRIMARY KEY,
+                valor TEXT NOT NULL,
+                descripcion TEXT,
+                fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        // Valores por defecto de configuración de descuentos
+        const insertConfig = dbInstance.prepare(`
+            INSERT OR IGNORE INTO configuracion (clave, valor, descripcion) 
+            VALUES (?, ?, ?)
+        `);
+        insertConfig.run('descuento_general_porcentaje', '15.00', 'Porcentaje de descuento general aplicable a los servicios');
+        insertConfig.run('descuento_general_activo', '1', 'Estado del descuento general: 1 = Activo, 0 = Inactivo');
+        insertConfig.run('descuento_general_nombre', 'Descuento General de Temporada', 'Nombre o campaña del descuento general');
+
+        // Asegurar columnas de perfil profesional de manicuristas en usuarios
+        try {
+            const tableInfoStmt = dbInstance.prepare("PRAGMA table_info(usuarios);");
+            const columns = tableInfoStmt.all().map(c => c.name);
+            if (!columns.includes('foto_perfil')) dbInstance.exec("ALTER TABLE usuarios ADD COLUMN foto_perfil TEXT;");
+            if (!columns.includes('foto')) dbInstance.exec("ALTER TABLE usuarios ADD COLUMN foto TEXT;");
+            if (!columns.includes('cargo_especialidad')) dbInstance.exec("ALTER TABLE usuarios ADD COLUMN cargo_especialidad TEXT;");
+            if (!columns.includes('descripcion')) dbInstance.exec("ALTER TABLE usuarios ADD COLUMN descripcion TEXT;");
+            if (!columns.includes('experiencia_anios')) dbInstance.exec("ALTER TABLE usuarios ADD COLUMN experiencia_anios INTEGER DEFAULT 3;");
+        } catch(colErr) {
+            console.warn('Nota sobre esquema de usuarios:', colErr.message);
+        }
+
         console.log(`🗄️  [SQLite] Base de datos conectada exitosamente: ${path.basename(DB_PATH)}`);
         return dbInstance;
     } catch (err) {

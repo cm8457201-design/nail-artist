@@ -431,6 +431,11 @@
 			left: 16px;
 			color: #9d7b93;
 			font-size: 1.1rem;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 18px;
+			height: 18px;
 			pointer-events: none;
 			transition: color 0.2s ease;
 		}
@@ -791,7 +796,9 @@
 				<div class="form-group">
 					<label for="login-email" class="form-label">Correo Electrónico</label>
 					<div class="input-wrapper">
-						<span class="input-icon-left">✉️</span>
+						<span class="input-icon-left">
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+						</span>
 						<input type="email" id="login-email" name="email" class="form-input" placeholder="tu.correo@ejemplo.com" required autocomplete="email" />
 					</div>
 				</div>
@@ -799,10 +806,12 @@
 				<div class="form-group">
 					<label for="login-password" class="form-label">Contraseña</label>
 					<div class="input-wrapper">
-						<span class="input-icon-left">🔒</span>
+						<span class="input-icon-left">
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+						</span>
 						<input type="password" id="login-password" name="password" class="form-input" placeholder="••••••••" required autocomplete="current-password" />
-						<button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('login-password', this)" title="Mostrar/Ocultar contraseña">
-							👁️
+						<button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('login-password', this)" title="Mostrar/Ocultar contraseña" aria-label="Mostrar/Ocultar contraseña">
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
 						</button>
 					</div>
 				</div>
@@ -818,7 +827,7 @@
 				<button type="submit" id="btn-login-submit" class="btn-submit-action">
 					<span class="spinner" id="spinner-login"></span>
 					<span id="btn-login-text">INICIAR SESIÓN</span>
-					<span style="font-size: 1.1rem;">→</span>
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
 				</button>
 			</form>
 
@@ -831,7 +840,9 @@
 					<div class="form-group">
 						<label for="reg-nombre" class="form-label">Nombre</label>
 						<div class="input-wrapper">
-							<span class="input-icon-left">👤</span>
+							<span class="input-icon-left">
+								<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+							</span>
 							<input type="text" id="reg-nombre" name="nombre" class="form-input" placeholder="Camila" required />
 						</div>
 					</div>
@@ -839,7 +850,9 @@
 					<div class="form-group">
 						<label for="reg-apellido" class="form-label">Apellido</label>
 						<div class="input-wrapper">
-							<span class="input-icon-left"></span>
+							<span class="input-icon-left">
+								<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+							</span>
 							<input type="text" id="reg-apellido" name="apellido" class="form-input" placeholder="Morales" />
 						</div>
 					</div>
@@ -848,7 +861,9 @@
 				<div class="form-group">
 					<label for="reg-email" class="form-label">Correo Electrónico</label>
 					<div class="input-wrapper">
-						<span class="input-icon-left">✉️</span>
+						<span class="input-icon-left">
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+						</span>
 						<input type="email" id="reg-email" name="email" class="form-input" placeholder="camila@gmail.com" required autocomplete="email" />
 					</div>
 				</div>
@@ -857,7 +872,9 @@
 					<div class="form-group">
 						<label for="reg-telefono" class="form-label">Teléfono (WhatsApp)</label>
 						<div class="input-wrapper">
-							<span class="input-icon-left"></span>
+							<span class="input-icon-left">
+								<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+							</span>
 							<input type="tel" id="reg-telefono" name="telefono" class="form-input" placeholder="+591 70000000" />
 						</div>
 					</div>
@@ -865,10 +882,12 @@
 					<div class="form-group">
 						<label for="reg-password" class="form-label">Contraseña</label>
 						<div class="input-wrapper">
-							<span class="input-icon-left">🔒</span>
+							<span class="input-icon-left">
+								<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+							</span>
 							<input type="password" id="reg-password" name="password" class="form-input" placeholder="Mínimo 6 caracteres" required minlength="6" autocomplete="new-password" />
-							<button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('reg-password', this)" title="Mostrar/Ocultar contraseña">
-								👁️
+							<button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('reg-password', this)" title="Mostrar/Ocultar contraseña" aria-label="Mostrar/Ocultar contraseña">
+								<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
 							</button>
 						</div>
 					</div>
@@ -877,29 +896,33 @@
 				<div class="form-group">
 					<label for="reg-confirm-password" class="form-label">Confirmar Contraseña</label>
 					<div class="input-wrapper">
-						<span class="input-icon-left">🔒</span>
+						<span class="input-icon-left">
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+						</span>
 						<input type="password" id="reg-confirm-password" name="confirm_password" class="form-input" placeholder="Repite tu contraseña" required minlength="6" autocomplete="new-password" />
-						<button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('reg-confirm-password', this)" title="Mostrar/Ocultar contraseña">
-							👁️
+						<button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('reg-confirm-password', this)" title="Mostrar/Ocultar contraseña" aria-label="Mostrar/Ocultar contraseña">
+							<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
 						</button>
 					</div>
 				</div>
 
 				<div style="background: var(--pink-light); border: 1px dashed var(--pink-border); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 18px; font-size: 0.82rem; color: var(--pink-vivid); font-weight: 600; display: flex; align-items: center; gap: 8px;">
-					<span>🎁</span>
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
 					<span>¡Obtienes <strong>15% de descuento VIP</strong> automático para tu primera cita!</span>
 				</div>
 
 				<button type="submit" id="btn-reg-submit" class="btn-submit-action">
 					<span class="spinner" id="spinner-reg"></span>
 					<span id="btn-reg-text">CREAR MI CUENTA VIP</span>
-					<span style="font-size: 1.1rem;">✨</span>
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
 				</button>
 			</form>
 
 			<!-- Contenedor de Sesión Activa (si ya inició sesión) -->
 			<div id="already-logged-in-box" style="display: none; padding: 24px 16px; text-align: center;">
-				<div style="font-size: 3rem; margin-bottom: 12px;">👑</div>
+				<div style="display: flex; justify-content: center; margin-bottom: 14px;">
+					<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--pink-vivid)" stroke-width="2"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14v2H5v-2z"/></svg>
+				</div>
 				<h3 id="logged-user-greeting" style="font-family: var(--font-title); font-size: 1.6rem; color: var(--pink-vivid); margin-bottom: 8px;">¡Ya has iniciado sesión!</h3>
 				<p id="logged-user-info" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px;">Tienes una sesión activa en NailArtist Studio.</p>
 				<div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
@@ -988,7 +1011,7 @@
 					const isAdm = u.rol_id === 1 || (u.rol && u.rol.toLowerCase() === 'administrador');
 					if (btnDest) {
 						btnDest.href = isAdm ? '/admin/index.html' : '/cliente.html';
-						btnDest.innerText = isAdm ? 'Ir al Panel Administrador 👑' : 'Ir a Mi Panel de Cliente ✨';
+						btnDest.innerText = isAdm ? 'Ir al Panel Administrador →' : 'Ir a Mi Panel de Cliente →';
 					}
 				}
 			} catch (err) {
@@ -1034,10 +1057,10 @@
 			if (!input) return;
 			if (input.type === 'password') {
 				input.type = 'text';
-				btn.innerText = '🙈';
+				btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
 			} else {
 				input.type = 'password';
-				btn.innerText = '👁️';
+				btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
 			}
 		}
 
@@ -1046,7 +1069,10 @@
 			const box = document.getElementById('alert-box');
 			if (!box) return;
 			box.className = `alert-box alert-${type}`;
-			box.innerHTML = `${type === 'error' ? '⚠️' : '✨'} ${message}`;
+			const icon = type === 'error'
+				? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: text-bottom; margin-right: 6px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
+				: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: text-bottom; margin-right: 6px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+			box.innerHTML = `${icon} ${message}`;
 			box.style.display = 'block';
 		}
 
@@ -1110,13 +1136,26 @@
 
 					setTimeout(() => {
 						const urlParams = new URLSearchParams(window.location.search);
-						const redirectTarget = urlParams.get('redirect');
+						let redirectTarget = urlParams.get('redirect');
+						const maniId = urlParams.get('manicurista_id') || localStorage.getItem('selected_manicurista_id');
+						const nuevaReserva = urlParams.get('nueva_reserva');
+
 						if (redirectTarget) {
+							if (maniId && !redirectTarget.includes('manicurista_id')) {
+								redirectTarget += (redirectTarget.includes('?') ? '&' : '?') + 'manicurista_id=' + encodeURIComponent(maniId);
+							}
+							if (nuevaReserva && !redirectTarget.includes('nueva_reserva')) {
+								redirectTarget += (redirectTarget.includes('?') ? '&' : '?') + 'nueva_reserva=1';
+							}
 							window.location.href = redirectTarget;
 						} else if (user && (user.rol_id === 1 || (user.rol && user.rol.toLowerCase() === 'administrador') || (user.rol && user.rol.toLowerCase() === 'admin'))) {
 							window.location.href = '/admin/index.html';
+						} else if (user && user.rol_id === 3) {
+							window.location.href = '/manicurista/index.html';
 						} else {
-							window.location.href = '/cliente.html';
+							let dest = '/cliente.html';
+							if (maniId) dest += '?manicurista_id=' + encodeURIComponent(maniId) + '&nueva_reserva=1';
+							window.location.href = dest;
 						}
 					}, 700);
 				} else {
@@ -1199,8 +1238,23 @@
 
 					setTimeout(() => {
 						const urlParams = new URLSearchParams(window.location.search);
-						const redirectTarget = urlParams.get('redirect');
-						window.location.href = redirectTarget ? redirectTarget : '/cliente.html';
+						let redirectTarget = urlParams.get('redirect');
+						const maniId = urlParams.get('manicurista_id') || localStorage.getItem('selected_manicurista_id');
+						const nuevaReserva = urlParams.get('nueva_reserva');
+
+						if (redirectTarget) {
+							if (maniId && !redirectTarget.includes('manicurista_id')) {
+								redirectTarget += (redirectTarget.includes('?') ? '&' : '?') + 'manicurista_id=' + encodeURIComponent(maniId);
+							}
+							if (nuevaReserva && !redirectTarget.includes('nueva_reserva')) {
+								redirectTarget += (redirectTarget.includes('?') ? '&' : '?') + 'nueva_reserva=1';
+							}
+							window.location.href = redirectTarget;
+						} else {
+							let dest = '/cliente.html';
+							if (maniId) dest += '?manicurista_id=' + encodeURIComponent(maniId) + '&nueva_reserva=1';
+							window.location.href = dest;
+						}
 					}, 900);
 				} else {
 					showAlert(data.message || 'Error al registrar tu cuenta.', 'error');
@@ -1231,7 +1285,7 @@
 			e.preventDefault();
 			const email = document.getElementById('login-email').value.trim();
 			const targetEmail = email ? email : 'tu correo registrado';
-			alert(`💌 Para restablecer tu contraseña:\n\nPor favor envía un mensaje a nuestro WhatsApp oficial (+591 60737902) con ${targetEmail} y te enviaremos tu enlace de recuperación.`);
+			alert(`Para restablecer tu contraseña:\n\nPor favor envía un mensaje a nuestro WhatsApp oficial (+591 60737902) con ${targetEmail} y te enviaremos tu enlace de recuperación.`);
 		}
 	</script>
 

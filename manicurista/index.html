@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Manicurista — NailArtist Studio</title>
+    <meta name="description" content="Panel exclusivo para manicuristas profesionales de NailArtist Studio. Gestión de citas, agenda, notificaciones y clientes.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/manicurista.css">
+</head>
+<body>
+
+    <!-- Canvas de Fondo: Partículas de Luz Sutiles -->
+    <canvas id="particlesCanvas" class="particles-bg-canvas"></canvas>
+
+    <!-- Overlay para móvil -->
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <div class="manic-container">
+        
+        <!-- SIDEBAR -->
+        <aside id="manicSidebar" class="manic-sidebar">
+            <div class="sidebar-header">
+                <a href="../index.html" class="sidebar-logo">
+                    <svg class="logo-spiral-icon" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="6">
+                        <path d="M50,15 C70,15 85,30 85,50 C85,70 70,85 50,85 C30,85 15,70 15,50 C15,35 25,25 40,25 C55,25 65,35 65,50 C65,60 58,68 50,68 C42,68 35,62 35,50 C35,42 42,35 50,35 C55,35 58,40 58,50" />
+                    </svg>
+                    <div class="auth-brand-text">
+                        <span class="brand-top">NAILARTIST</span>
+                        <span class="brand-bottom">STUDIO</span>
+                    </div>
+                </a>
+                <div class="sidebar-badge">
+                    <span class="sidebar-badge-dot"></span>
+                    <span>PANEL PROFESIONAL</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <span class="nav-section-title">Principal</span>
+                <ul class="nav-list">
+                    <li>
+                        <button class="nav-btn active" data-view="inicio">
+                            <svg class="nav-svg-icon" viewBox="0 0 24 24">
+                                <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                                <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                                <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                                <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                            </svg>
+                            <span class="nav-text">Dashboard</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-btn" data-view="citas">
+                            <svg class="nav-svg-icon" viewBox="0 0 24 24">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="16" y1="13" x2="8" y2="13" />
+                                <line x1="16" y1="17" x2="8" y2="17" />
+                                <polyline points="10 9 9 9 8 9" />
+                            </svg>
+                            <span class="nav-text">Mis Citas</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-btn" data-view="agenda">
+                            <svg class="nav-svg-icon" viewBox="0 0 24 24">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                <line x1="16" y1="2" x2="16" y2="6" />
+                                <line x1="8" y1="2" x2="8" y2="6" />
+                                <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg>
+                            <span class="nav-text">Mi Agenda</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-btn" data-view="notificaciones">
+                            <svg class="nav-svg-icon" viewBox="0 0 24 24">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                            </svg>
+                            <span class="nav-text">Notificaciones</span>
+                            <span id="navNotifBadge" class="nav-badge" style="display: none;">0</span>
+                        </button>
+                    </li>
+                </ul>
+
+                <span class="nav-section-title">Cuenta</span>
+                <ul class="nav-list">
+                    <li>
+                        <button class="nav-btn" data-view="perfil">
+                            <svg class="nav-svg-icon" viewBox="0 0 24 24">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                            <span class="nav-text">Mi Perfil</span>
+                        </button>
+                    </li>
+                    <li>
+                        <a href="../index.html" class="nav-btn" target="_blank">
+                            <svg class="nav-svg-icon" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="2" y1="12" x2="22" y2="12" />
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                            </svg>
+                            <span class="nav-text">Ver Sitio Web</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile-summary">
+                    <div class="user-avatar-circle user-avatar-display">M</div>
+                    <div class="user-details-mini">
+                        <strong class="user-name-display">Manicurista</strong>
+                        <span class="user-role-display">Especialista</span>
+                    </div>
+                </div>
+                <button id="logoutBtn" class="btn-logout-icon" title="Cerrar Sesión" aria-label="Cerrar Sesión">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN VIEW WRAPPER -->
+        <main class="manic-main">
+            
+            <!-- HEADER SUPERIOR -->
+            <header class="manic-header">
+                <div class="header-left">
+                    <button id="mobileMenuToggle" class="mobile-toggle-btn" aria-label="Abrir menú">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" y1="12" x2="21" y2="12" />
+                            <line x1="3" y1="6" x2="21" y2="6" />
+                            <line x1="3" y1="18" x2="21" y2="18" />
+                        </svg>
+                    </button>
+                    <div class="page-title-wrap">
+                        <h1 id="pageTitle">Hola, Manicurista</h1>
+                        <p id="pageSubtitle">Gestiona tus citas y mantén tu agenda al día.</p>
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <button class="header-notif-btn" onclick="window.ManicuristaPanel.switchView('notificaciones')" title="Ver Notificaciones">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                        </svg>
+                        <span id="headerNotifBadge" class="header-notif-badge" style="display: none;">0</span>
+                    </button>
+
+                    <div class="user-profile-badge" onclick="window.ManicuristaPanel.switchView('perfil')">
+                        <div class="user-avatar-circle user-avatar-display" style="width: 30px; height: 30px; font-size: 0.8rem;">M</div>
+                        <div class="user-badge-text">
+                            <strong class="user-name-display">Manicurista</strong>
+                            <span class="badge-role">Staff Profesional</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- SECTIONS -->
+
+            <!-- 1. DASHBOARD / INICIO -->
+            <section id="view-inicio" class="manic-view-section active">
+                <div class="manic-content-area">
+                    
+                    <!-- KPI Stats Grid -->
+                    <div class="manic-stats-grid">
+                        <div class="stat-card stat-rose">
+                            <div class="stat-icon-wrap pink">
+                                <svg class="stat-svg" viewBox="0 0 24 24">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                    <line x1="16" y1="2" x2="16" y2="6" />
+                                    <line x1="8" y1="2" x2="8" y2="6" />
+                                    <line x1="3" y1="10" x2="21" y2="10" />
+                                </svg>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Citas de Hoy</span>
+                                <h3 id="statCitasHoy" class="stat-val">0</h3>
+                            </div>
+                        </div>
+
+                        <div class="stat-card stat-gold">
+                            <div class="stat-icon-wrap gold">
+                                <svg class="stat-svg" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <polyline points="12 6 12 12 16 14" />
+                                </svg>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Pendientes</span>
+                                <h3 id="statCitasPendientes" class="stat-val">0</h3>
+                            </div>
+                        </div>
+
+                        <div class="stat-card stat-purple">
+                            <div class="stat-icon-wrap purple">
+                                <svg class="stat-svg" viewBox="0 0 24 24">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                    <polyline points="22 4 12 14.01 9 11.01" />
+                                </svg>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Confirmadas</span>
+                                <h3 id="statCitasConfirmadas" class="stat-val">0</h3>
+                            </div>
+                        </div>
+
+                        <div class="stat-card stat-blue">
+                            <div class="stat-icon-wrap blue">
+                                <svg class="stat-svg" viewBox="0 0 24 24">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                    <circle cx="9" cy="7" r="4" />
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                </svg>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Total Atendidas</span>
+                                <h3 id="statTotalClientes" class="stat-val">0</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hoy Section -->
+                    <div class="content-block">
+                        <div class="block-header">
+                            <div>
+                                <h2 class="block-title">
+                                    <span>Citas Programadas para Hoy</span>
+                                </h2>
+                                <p class="block-subtitle">Atención prioritaria y seguimiento de la jornada</p>
+                            </div>
+                            <button class="btn-refresh-sm" onclick="window.ManicuristaPanel.refresh()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="23 4 23 10 17 10" />
+                                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+                                </svg>
+                                <span>Actualizar</span>
+                            </button>
+                        </div>
+
+                        <div id="todayCitasContainer" class="today-citas-list">
+                            <div class="empty-state-card">
+                                <p>Cargando citas de hoy...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- 2. MIS CITAS -->
+            <section id="view-citas" class="manic-view-section" style="display: none;">
+                <div class="manic-content-area">
+                    
+                    <!-- Controls Bar -->
+                    <div class="citas-controls-bar">
+                        <div class="search-box">
+                            <svg class="search-icon" viewBox="0 0 24 24">
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg>
+                            <input type="text" id="citasSearchInput" placeholder="Buscar por cliente, teléfono o servicio..." />
+                        </div>
+
+                        <div class="filter-pills-row">
+                            <button class="filter-pill active" data-status="todas">Todas</button>
+                            <button class="filter-pill" data-status="Pendiente">Pendientes</button>
+                            <button class="filter-pill" data-status="Confirmada">Confirmadas</button>
+                            <button class="filter-pill" data-status="Completada">Completadas</button>
+                            <button class="filter-pill" data-status="Cancelada">Canceladas</button>
+                        </div>
+                    </div>
+
+                    <!-- Appointments Table (Desktop & Tablets) -->
+                    <div class="table-responsive-wrapper">
+                        <table class="manic-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cliente</th>
+                                    <th>Servicios Solicitados</th>
+                                    <th>Fecha y Hora</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allCitasTableBody">
+                                <tr>
+                                    <td colspan="7" class="text-center py-4">Cargando citas...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Mobile Cards List (Phones) -->
+                    <div id="citasCardsContainer" class="mobile-citas-grid">
+                        <!-- Injected dynamically for mobile -->
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- 3. AGENDA -->
+            <section id="view-agenda" class="manic-view-section" style="display: none;">
+                <div class="manic-content-area">
+                    <div class="block-header" style="margin-bottom: 20px;">
+                        <div>
+                            <h2 class="block-title">Cronograma de Citas</h2>
+                            <p class="block-subtitle">Vista organizada de tus reservas por día y hora</p>
+                        </div>
+                    </div>
+
+                    <div id="agendaDaysContainer" class="agenda-days-grid">
+                        <div class="empty-state-card">
+                            <p>Cargando agenda...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. NOTIFICACIONES -->
+            <section id="view-notificaciones" class="manic-view-section" style="display: none;">
+                <div class="manic-content-area">
+                    <div class="block-header" style="margin-bottom: 20px;">
+                        <div>
+                            <h2 class="block-title">Centro de Notificaciones</h2>
+                            <p class="block-subtitle">Avisos de citas asignadas y actualizaciones del estudio</p>
+                        </div>
+                    </div>
+
+                    <div id="notifListContainer" class="notif-cards-list">
+                        <!-- Injected dynamically -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. PERFIL -->
+            <section id="view-perfil" class="manic-view-section" style="display: none;">
+                <div class="manic-content-area">
+                    <div class="profile-layout-grid">
+                        
+                        <!-- Left Info Card -->
+                        <div class="profile-card-left">
+                            <div class="profile-avatar-large user-avatar-display">M</div>
+                            <h2 class="user-name-display">Manicurista</h2>
+                            <span class="user-role-badge">Manicurista Oficial NailArtist</span>
+                            
+                            <div class="profile-meta-list">
+                                <div class="meta-item">
+                                    <span class="meta-label">Email:</span>
+                                    <span id="profileEmailDisplay" class="meta-val">-</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Estado:</span>
+                                    <span class="badge-active-pill">Activa en Plataforma</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Details -->
+                        <div class="profile-card-right">
+                            <h3 class="section-title-sm">Especialidades & Destrezas</h3>
+                            <div id="perfilSpecialtiesContainer" class="specialties-chips-wrap">
+                                <span class="specialty-badge">Esmaltado Semipermanente</span>
+                                <span class="specialty-badge">Uñas Acrílicas</span>
+                                <span class="specialty-badge">Soft Gel Revolution</span>
+                            </div>
+
+                            <hr class="divider-pink">
+
+                            <h3 class="section-title-sm">Información Profesional</h3>
+                            <form id="perfilForm" onsubmit="event.preventDefault();">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Nombre Completo</label>
+                                        <input type="text" id="perfilNombreInput" class="form-control" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Correo Electrónico</label>
+                                        <input type="email" id="perfilEmailInput" class="form-control" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Teléfono de Contacto</label>
+                                        <input type="text" id="perfilTelefonoInput" class="form-control" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Biografía / Presentación</label>
+                                        <input type="text" id="perfilBioInput" class="form-control" readonly>
+                                    </div>
+                                </div>
+                                <p class="help-text">Para actualizar tu información personal o agregar nuevas especialidades a tu perfil, contacta a la administración de NailArtist.</p>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODAL DETALLE DE CITA -->
+    <div id="citaDetailModal" class="manic-modal-backdrop">
+        <div class="manic-modal-box">
+            <div class="modal-header">
+                <h3 class="modal-title">Detalle de la Cita</h3>
+                <button class="modal-close-trigger btn-close-modal" aria-label="Cerrar modal">&times;</button>
+            </div>
+            <div id="citaModalBody" class="modal-body">
+                <!-- Injected via JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="modal-close-trigger btn-secondary">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toastContainer" class="manic-toast-container"></div>
+
+    <!-- SCRIPTS -->
+    <script src="assets/js/manicurista.js"></script>
+</body>
+</html>

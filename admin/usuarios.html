@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Usuarios & Roles — NailArtist Studio Panel Admin</title>
+    <title>Gestión de Usuarios & Manicuristas — NailArtist Studio Panel Admin</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,6 +12,104 @@
     
     <!-- Estilos del Administrador -->
     <link rel="stylesheet" href="assets/css/admin.css">
+    <style>
+        .user-table-avatar-wrap {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: var(--bg-surface-soft);
+            border: 1.5px solid var(--border-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .user-table-avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .user-table-avatar-placeholder {
+            width: 22px;
+            height: 22px;
+            color: var(--text-muted);
+        }
+        .photo-preview-box {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            overflow: hidden;
+            border: 3px solid var(--bg-surface);
+            box-shadow: 0 4px 18px rgba(36, 14, 27, 0.12);
+            background: var(--bg-surface-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .photo-preview-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .upload-dropzone {
+            border: 2px dashed var(--border-soft);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            background: var(--bg-surface-soft);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .upload-dropzone:hover, .upload-dropzone.dragover {
+            border-color: var(--pink-vivid);
+            background: #fff0f5;
+        }
+        .filter-tab-pill {
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--border-light);
+            background: var(--bg-surface);
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .filter-tab-pill:hover, .filter-tab-pill.active {
+            background: var(--gradient-btn);
+            color: #ffffff;
+            border-color: transparent;
+        }
+        .btn-photo-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border: 1px solid var(--border-light);
+            background: var(--bg-surface);
+            color: var(--text-main);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-photo-action:hover {
+            border-color: var(--pink-vivid);
+            color: var(--pink-vivid);
+            background: #fff5f8;
+        }
+        .btn-photo-action.delete-photo:hover {
+            border-color: #f43f5e;
+            color: #e11d48;
+            background: #fff1f2;
+        }
+    </style>
 </head>
 <body>
 
@@ -32,7 +130,7 @@
                     <span class="brand-bottom">ARTIST</span>
                 </div>
             </a>
-            <span class="sidebar-badge">👑 PANEL ADMIN</span>
+            <span class="sidebar-badge">PANEL ADMINISTRADOR</span>
         </div>
 
         <nav class="sidebar-nav">
@@ -40,7 +138,9 @@
             <ul class="nav-list">
                 <li>
                     <a href="index.html" class="nav-link">
-                        <span class="nav-icon">📊</span>
+                        <span class="nav-icon">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+                        </span>
                         <span>Dashboard</span>
                     </a>
                 </li>
@@ -50,20 +150,26 @@
             <ul class="nav-list">
                 <li>
                     <a href="citas.html" class="nav-link">
-                        <span class="nav-icon">📅</span>
+                        <span class="nav-icon">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/></svg>
+                        </span>
                         <span>Citas & Reservas</span>
                     </a>
                 </li>
                 <li>
                     <a href="servicios.html" class="nav-link">
-                        <span class="nav-icon">💅</span>
+                        <span class="nav-icon">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                        </span>
                         <span>Servicios & Precios</span>
                     </a>
                 </li>
                 <li>
                     <a href="usuarios.html" class="nav-link active">
-                        <span class="nav-icon">👥</span>
-                        <span>Usuarios & Roles</span>
+                        <span class="nav-icon">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                        </span>
+                        <span>Usuarios & Manicuristas</span>
                     </a>
                 </li>
             </ul>
@@ -72,13 +178,17 @@
             <ul class="nav-list">
                 <li>
                     <a href="resenas.html" class="nav-link">
-                        <span class="nav-icon">⭐</span>
+                        <span class="nav-icon">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                        </span>
                         <span>Reseñas & Opiniones</span>
                     </a>
                 </li>
                 <li>
                     <a href="mensajes.html" class="nav-link">
-                        <span class="nav-icon">✉️</span>
+                        <span class="nav-icon">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                        </span>
                         <span>Mensajes de Contacto</span>
                     </a>
                 </li>
@@ -88,13 +198,17 @@
             <ul class="nav-list">
                 <li>
                     <a href="/index.html" target="_blank" class="nav-link">
-                        <span class="nav-icon">🌐</span>
+                        <span class="nav-icon">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.4z"/></svg>
+                        </span>
                         <span>Ver Sitio Web</span>
                     </a>
                 </li>
                 <li>
                     <a href="javascript:void(0)" onclick="cerrarSesionAdmin()" class="nav-link" style="color: #ff4d79;">
-                        <span class="nav-icon">🚪</span>
+                        <span class="nav-icon">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+                        </span>
                         <span>Cerrar Sesión</span>
                     </a>
                 </li>
@@ -108,10 +222,12 @@
         <!-- Header Superior -->
         <header class="admin-header">
             <div class="header-left">
-                <button id="mobile-sidebar-toggle" class="mobile-toggle-btn" aria-label="Abrir Menú">☰</button>
+                <button id="mobile-sidebar-toggle" class="mobile-toggle-btn" aria-label="Abrir Menú">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
                 <div class="page-title-wrap">
-                    <h1 class="page-heading">Gestión de Usuarios & Roles</h1>
-                    <span class="breadcrumb">Administración de clientes, manicuristas y administradores</span>
+                    <h1 class="page-heading">Gestión de Usuarios & Manicuristas</h1>
+                    <span class="breadcrumb">Administración centralizada de staff, clientes, roles y fotografías oficiales</span>
                 </div>
             </div>
             
@@ -120,9 +236,11 @@
                     <div class="user-avatar" id="admin-user-avatar">A</div>
                     <div class="user-info">
                         <span class="user-name" id="admin-user-name">Administrador</span>
-                        <span class="user-role" id="admin-user-email">admin@gmail.com</span>
+                        <span class="user-role" id="admin-user-email">admin@nailartist.com</span>
                     </div>
-                    <button class="logout-btn" onclick="cerrarSesionAdmin()" title="Cerrar Sesión">✕</button>
+                    <button class="logout-btn" onclick="cerrarSesionAdmin()" title="Cerrar Sesión">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
                 </div>
             </div>
         </header>
@@ -130,25 +248,39 @@
         <!-- Tarjeta Principal de Usuarios -->
         <div class="admin-card">
             <div class="card-header">
-                <h3 class="card-title"> Listado General de Usuarios</h3>
+                <div>
+                    <h3 class="card-title">Listado de Usuarios & Manicuristas</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
+                        Gestiona roles, información de contacto, descuentos personalizados y fotografías de manicuristas.
+                    </p>
+                </div>
                 <div class="card-actions">
                     <button class="btn-primary btn-sm" onclick="abrirModalCrearUsuario()">
-                        <span>➕ Nuevo Usuario</span>
+                        <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" style="margin-right: 4px;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                        <span>Nuevo Usuario</span>
                     </button>
                 </div>
             </div>
             
             <div class="card-body">
                 
+                <!-- Pestañas de Filtro Rápido -->
+                <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;" id="tab-pills-container">
+                    <button type="button" class="filter-tab-pill active" onclick="filtrarPorPestaña('', this)">Todos (<span id="count-todos">0</span>)</button>
+                    <button type="button" class="filter-tab-pill" onclick="filtrarPorPestaña('Manicurista', this)">Manicuristas (<span id="count-manicuristas">0</span>)</button>
+                    <button type="button" class="filter-tab-pill" onclick="filtrarPorPestaña('Cliente', this)">Clientes (<span id="count-clientes">0</span>)</button>
+                    <button type="button" class="filter-tab-pill" onclick="filtrarPorPestaña('Administrador', this)">Administradores (<span id="count-admins">0</span>)</button>
+                </div>
+
                 <!-- Barra de Búsqueda y Filtros -->
                 <div class="filter-bar">
-                    <input type="text" class="search-input" data-table-search="tabla-usuarios" placeholder=" Buscar por nombre, correo, teléfono o rol...">
+                    <input type="text" class="search-input" data-table-search="tabla-usuarios" placeholder="Buscar por nombre, correo, teléfono o especialidad...">
                     
                     <select class="filter-select" id="filtro-rol" onchange="filtrarUsuarios()">
                         <option value="">Todos los Roles</option>
-                        <option value="Administrador">👑 Administradores</option>
-                        <option value="Manicurista">💅 Manicuristas</option>
-                        <option value="Cliente">💖 Clientes VIP</option>
+                        <option value="Administrador">Administradores</option>
+                        <option value="Manicurista">Manicuristas</option>
+                        <option value="Cliente">Clientes</option>
                     </select>
 
                     <select class="filter-select" id="filtro-estado" onchange="filtrarUsuarios()">
@@ -164,18 +296,17 @@
                     <table class="admin-table" id="tabla-usuarios">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Usuario</th>
-                                <th>Contacto</th>
+                                <th style="width: 56px;">Foto</th>
+                                <th>Usuario & Contacto</th>
                                 <th>Rol</th>
-                                <th>Descuento VIP</th>
+                                <th>Especialidad / Beneficio</th>
                                 <th>Estado</th>
                                 <th>Registro</th>
-                                <th>Acciones</th>
+                                <th style="text-align: right;">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-usuarios">
-                            <tr><td colspan="8" style="text-align: center; padding: 30px;">Cargando usuarios desde SQLite...</td></tr>
+                            <tr><td colspan="7" style="text-align: center; padding: 30px;">Cargando usuarios desde SQLite...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -187,17 +318,56 @@
 </div>
 
 <!-- ========================================================================= -->
+<!-- MODAL: GESTIÓN DE FOTOGRAFÍA DE MANICURISTA                               -->
+<!-- ========================================================================= -->
+<div id="modal-foto-usuario" class="modal-overlay">
+    <div class="modal-card" style="max-width: 480px;">
+        <div class="modal-header">
+            <h3 class="modal-title">Fotografía de Manicurista</h3>
+            <button class="modal-close" onclick="closeAdminModal('modal-foto-usuario')">✕</button>
+        </div>
+        <div class="modal-body" style="text-align: center;">
+            <input type="hidden" id="foto-user-id">
+            
+            <div class="photo-preview-box" id="modal-foto-preview-box">
+                <svg class="user-table-avatar-placeholder" style="width: 48px; height: 48px;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </div>
+
+            <h4 id="foto-user-nombre" style="font-size: 1.15rem; color: var(--text-main); margin-bottom: 2px;">-</h4>
+            <p id="foto-user-cargo" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Manicurista Profesional</p>
+
+            <div class="upload-dropzone" id="foto-dropzone" onclick="document.getElementById('foto-file-input').click()">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="var(--pink-vivid)" style="margin-bottom: 6px;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-main);">Haz clic o arrastra una fotografía aquí</div>
+                <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;">Formatos permitidos: JPG, JPEG, PNG, WEBP (Máx 5MB)</div>
+            </div>
+            <input type="file" id="foto-file-input" accept="image/jpeg,image/png,image/webp,image/jpg" style="display: none;" onchange="procesarArchivoFoto(event)">
+
+            <div id="foto-alert-msg" style="display: none; margin-top: 12px; padding: 10px; border-radius: 8px; font-size: 0.84rem;"></div>
+        </div>
+        <div class="modal-footer" style="display: flex; justify-content: space-between; gap: 8px;">
+            <button type="button" id="btn-eliminar-foto-modal" class="btn-action" onclick="ejecutarEliminarFotoDesdeModal()" style="color: #e11d48; border-color: #fecdd3; background: #fff1f2;">
+                Eliminar Fotografía
+            </button>
+            <div style="display: flex; gap: 8px;">
+                <button type="button" class="btn-action" onclick="closeAdminModal('modal-foto-usuario')">Cancelar</button>
+                <button type="button" id="btn-guardar-foto-modal" class="btn-primary btn-sm" onclick="guardarFotografiaManicurista()" disabled>Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
 <!-- MODAL: CREAR USUARIO                                                      -->
 <!-- ========================================================================= -->
 <div id="modal-crear-usuario" class="modal-overlay">
     <div class="modal-card">
         <div class="modal-header">
-            <h3 class="modal-title">➕ Crear Nuevo Usuario</h3>
+            <h3 class="modal-title">Nuevo Usuario</h3>
             <button class="modal-close" data-close-modal>✕</button>
         </div>
         <form id="form-crear-usuario" onsubmit="guardarNuevoUsuario(event)">
             <div class="modal-body">
-                
                 <div class="form-grid-2">
                     <div class="form-group" style="margin-bottom: 16px;">
                         <label class="form-label">Nombre *</label>
@@ -224,9 +394,9 @@
                     <div class="form-group" style="margin-bottom: 16px;">
                         <label class="form-label">Rol del Usuario *</label>
                         <select name="rol_id" id="select-roles-crear" class="form-control" required>
-                            <option value="2" selected>💖 Cliente (Acceso a VIP)</option>
-                            <option value="3">💅 Manicurista (Especialista de uñas)</option>
-                            <option value="1">👑 Administrador (Control total)</option>
+                            <option value="2" selected>Cliente</option>
+                            <option value="3">Manicurista (Especialista)</option>
+                            <option value="1">Administrador</option>
                         </select>
                     </div>
                     <div class="form-group" style="margin-bottom: 16px;">
@@ -245,8 +415,8 @@
                         <input type="password" name="password" class="form-control" placeholder="Mínimo 6 caracteres" required minlength="6">
                     </div>
                     <div class="form-group" style="margin-bottom: 16px;">
-                        <label class="form-label">Descuento VIP (%)</label>
-                        <input type="number" step="0.5" name="descuento_vip" class="form-control" value="15.00" min="0" max="100">
+                        <label class="form-label">Descuento Personalizado (%)</label>
+                        <input type="number" step="0.5" name="descuento_vip" class="form-control" value="0.00" min="0" max="100" placeholder="0 para usar general">
                     </div>
                 </div>
 
@@ -260,12 +430,12 @@
 </div>
 
 <!-- ========================================================================= -->
-<!-- MODAL: EDITAR USUARIO (BOTÓN DE LÁPIZ FUNCIONAL)                         -->
+<!-- MODAL: EDITAR USUARIO                                                     -->
 <!-- ========================================================================= -->
 <div id="modal-editar-usuario" class="modal-overlay">
     <div class="modal-card">
         <div class="modal-header">
-            <h3 class="modal-title">✏️ Editar Usuario & Rol</h3>
+            <h3 class="modal-title">Editar Usuario</h3>
             <button class="modal-close" data-close-modal>✕</button>
         </div>
         <form id="form-editar-usuario" onsubmit="actualizarUsuario(event)">
@@ -296,11 +466,11 @@
 
                 <div class="form-grid-2">
                     <div class="form-group" style="margin-bottom: 16px;">
-                        <label class="form-label">Rol del Usuario * (Cambio de Privilegios)</label>
+                        <label class="form-label">Rol del Usuario *</label>
                         <select name="rol_id" id="edit-user-rol" class="form-control" required>
-                            <option value="1">👑 Administrador</option>
-                            <option value="2">💖 Cliente</option>
-                            <option value="3">💅 Manicurista</option>
+                            <option value="1">Administrador</option>
+                            <option value="2">Cliente</option>
+                            <option value="3">Manicurista</option>
                         </select>
                     </div>
                     <div class="form-group" style="margin-bottom: 16px;">
@@ -319,15 +489,54 @@
                         <input type="password" name="password" id="edit-user-password" class="form-control" placeholder="Dejar en blanco para conservar actual">
                     </div>
                     <div class="form-group" style="margin-bottom: 16px;">
-                        <label class="form-label">Descuento VIP (%)</label>
-                        <input type="number" step="0.5" name="descuento_vip" id="edit-user-descuento" class="form-control" min="0" max="100">
+                        <label class="form-label">Descuento Personalizado (%)</label>
+                        <input type="number" step="0.5" name="descuento_vip" id="edit-user-descuento" class="form-control" min="0" max="100" placeholder="0 para usar general">
                     </div>
                 </div>
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn-action" data-close-modal>Cancelar</button>
-                <button type="submit" class="btn-primary btn-sm"> Actualizar Cambios</button>
+                <button type="submit" class="btn-primary btn-sm">Actualizar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- MODAL: EDITAR DESCUENTO PERSONALIZADO                                     -->
+<!-- ========================================================================= -->
+<div id="modal-descuento-cliente" class="modal-overlay">
+    <div class="modal-card" style="max-width: 460px;">
+        <div class="modal-header">
+            <h3 class="modal-title">Descuento de Cliente</h3>
+            <button class="modal-close" onclick="closeAdminModal('modal-descuento-cliente')">✕</button>
+        </div>
+        <form id="form-descuento-cliente" onsubmit="guardarDescuentoCliente(event)">
+            <input type="hidden" id="desc-cliente-id">
+            <div class="modal-body">
+                <div style="background:var(--bg-surface-soft); border-radius:12px; padding:14px; margin-bottom:16px; border:1px solid var(--border-soft);">
+                    <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:4px;">Cliente:</div>
+                    <h4 id="desc-cliente-nombre" style="font-size:1.1rem; color:var(--text-main); margin:0;">-</h4>
+                    <div id="desc-cliente-email" style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">-</div>
+                </div>
+
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label class="form-label" style="font-weight:700;">Descuento Personalizado (%)</label>
+                    <input type="number" step="0.5" min="0" max="100" id="desc-cliente-porcentaje" class="form-control" placeholder="Ej: 25.0" required style="font-size:1.1rem; font-weight:700; color:var(--pink-vivid);">
+                    <small style="color:var(--text-muted); display:block; margin-top:6px;">
+                        Coloca <strong>0</strong> si deseas que el cliente utilice el <strong>Descuento General</strong> del estudio.
+                    </small>
+                </div>
+            </div>
+            <div class="modal-footer" style="display:flex; justify-content:space-between;">
+                <button type="button" class="btn-action" onclick="quitarDescuentoPersonalizado()" style="color:#e11d48; border-color:#fecdd3; background:#fff1f2;">
+                    Quitar (Usar General)
+                </button>
+                <div style="display:flex; gap:8px;">
+                    <button type="button" class="btn-action" onclick="closeAdminModal('modal-descuento-cliente')">Cancelar</button>
+                    <button type="submit" class="btn-primary btn-sm">Guardar</button>
+                </div>
             </div>
         </form>
     </div>
@@ -336,9 +545,12 @@
 <script src="assets/js/admin.js"></script>
 <script>
 let listaUsuariosGlobal = [];
+let fotoBase64Temporal = null;
+let filtroPestanaActual = '';
 
 document.addEventListener('DOMContentLoaded', () => {
     cargarUsuarios();
+    configurarDragAndDropFoto();
 });
 
 async function cargarUsuarios() {
@@ -347,52 +559,94 @@ async function cargarUsuarios() {
         const res = await apiAdminRequest('/api/admin/usuarios', {}, 'GET');
         if (res.success && res.data) {
             listaUsuariosGlobal = res.data;
+            actualizarContadoresPestanas(listaUsuariosGlobal);
             renderizarTablaUsuarios(listaUsuariosGlobal);
         } else {
-            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">${res.message || 'Error al cargar usuarios'}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">${res.message || 'Error al cargar usuarios'}</td></tr>`;
         }
     } catch (err) {
         console.error('Error al cargar usuarios:', err);
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:red;">Error de conexión con el backend Node.js</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:red;">Error de conexión con el backend Node.js</td></tr>';
     }
+}
+
+function actualizarContadoresPestanas(usuarios) {
+    const todos = usuarios.length;
+    const manis = usuarios.filter(u => u.rol_id === 3).length;
+    const clientes = usuarios.filter(u => u.rol_id === 2).length;
+    const admins = usuarios.filter(u => u.rol_id === 1).length;
+
+    document.getElementById('count-todos').innerText = todos;
+    document.getElementById('count-manicuristas').innerText = manis;
+    document.getElementById('count-clientes').innerText = clientes;
+    document.getElementById('count-admins').innerText = admins;
+}
+
+function filtrarPorPestaña(rolNombre, btn) {
+    filtroPestanaActual = rolNombre.toLowerCase();
+    document.querySelectorAll('#tab-pills-container .filter-tab-pill').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    document.getElementById('filtro-rol').value = rolNombre;
+    filtrarUsuarios();
 }
 
 function renderizarTablaUsuarios(usuarios) {
     const tbody = document.getElementById('tbody-usuarios');
     if (!usuarios || usuarios.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">No hay usuarios registrados en la base de datos SQLite.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">No hay usuarios registrados en la base de datos SQLite.</td></tr>';
         return;
     }
 
     tbody.innerHTML = usuarios.map(u => {
         let rolClass = 'badge-cliente';
-        let rolIcon = '💖';
-        if (u.rol_id === 1) { rolClass = 'badge-admin'; rolIcon = '👑'; }
-        if (u.rol_id === 3) { rolClass = 'badge-manicurista'; rolIcon = '💅'; }
+        let rolLabel = 'Cliente';
+        if (u.rol_id === 1) { rolClass = 'badge-admin'; rolLabel = 'Administrador'; }
+        if (u.rol_id === 3) { rolClass = 'badge-manicurista'; rolLabel = 'Manicurista'; }
 
         let estadoClass = 'badge-activo';
         if (u.estado === 'inactivo') estadoClass = 'badge-inactivo';
         if (u.estado === 'bloqueado') estadoClass = 'badge-bloqueado';
 
         const fechaCorta = u.fecha_registro ? u.fecha_registro.substring(0, 10) : '-';
+        const descVal = parseFloat(u.descuento_vip || 0);
+        const fotoUrl = u.foto_perfil || u.foto;
+
+        let descBadge = '';
+        if (u.rol_id === 3) {
+            descBadge = `<span style="font-size:0.82rem; color:var(--text-muted); font-weight:600;">${escapeHtml(u.cargo_especialidad || 'Especialista en Uñas')}</span>`;
+        } else if (descVal > 0) {
+            descBadge = `<span style="font-weight:800; color:var(--pink-vivid);">${descVal}%</span> <span class="badge" style="background:#fce7f3; color:#be185d; font-size:0.72rem; margin-left:4px;">Personalizado</span>`;
+        } else {
+            descBadge = `<span style="color:var(--text-muted); font-size:0.85rem;">General</span>`;
+        }
+
+        const avatarMarkup = fotoUrl
+            ? `<div class="user-table-avatar-wrap"><img src="${escapeHtml(fotoUrl)}" class="user-table-avatar-img" alt="${escapeHtml(u.nombre)}" onerror="this.onerror=null; this.parentElement.innerHTML='<svg class=\\'user-table-avatar-placeholder\\' viewBox=\\'0 0 24 24\\' fill=\\'currentColor\\'><path d=\\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\\'/></svg>';" /></div>`
+            : `<div class="user-table-avatar-wrap"><svg class="user-table-avatar-placeholder" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>`;
 
         return `
             <tr data-rol="${u.rol_nombre || ''}" data-estado="${u.estado}" id="fila-usuario-${u.id}">
-                <td><strong>#${u.id}</strong></td>
                 <td>
-                    <div style="font-weight: 700; color: var(--text-main);">${u.nombre} ${u.apellido || ''}</div>
-                    <div style="font-size: 0.8rem; color: var(--text-muted);">✉️ ${u.email}</div>
+                    ${avatarMarkup}
                 </td>
                 <td>
-                    <span>${u.telefono || 'Sin registrar'}</span>
+                    <div style="font-weight: 700; color: var(--text-main);">${escapeHtml(u.nombre)} ${escapeHtml(u.apellido || '')}</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">${escapeHtml(u.email)} ${u.telefono ? '· ' + escapeHtml(u.telefono) : ''}</div>
                 </td>
                 <td>
                     <span class="badge ${rolClass}">
-                        ${rolIcon} ${u.rol_nombre || 'Cliente'}
+                        ${rolLabel}
                     </span>
                 </td>
                 <td>
-                    <strong>${Number(u.descuento_vip || 0).toFixed(1)}%</strong>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        ${descBadge}
+                        ${u.rol_id === 2 ? `
+                            <button class="btn-action" onclick="abrirModalDescuentoCliente(${u.id}, '${escapeJs(u.nombre)}', '${escapeJs(u.apellido || '')}', '${escapeJs(u.email)}', ${descVal})" title="Editar Descuento" style="padding:2px 6px; font-size:0.75rem; border-radius:6px; cursor:pointer;">
+                                %
+                            </button>
+                        ` : ''}
+                    </div>
                 </td>
                 <td>
                     <span class="badge ${estadoClass}">
@@ -404,19 +658,265 @@ function renderizarTablaUsuarios(usuarios) {
                         ${fechaCorta}
                     </span>
                 </td>
-                <td>
-                    <div style="display: flex; gap: 6px;">
-                        <button class="btn-action" onclick="abrirModalEditarUsuario(${u.id})" title="Editar Usuario (Lápiz)" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px;">
-                            ✏️ <span>Editar</span>
+                <td style="text-align: right;">
+                    <div style="display: inline-flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; align-items: center;">
+                        ${u.rol_id === 3 ? `
+                            <button class="btn-photo-action" onclick="abrirModalFotoManicurista(${u.id}, '${escapeJs(u.nombre)}', '${escapeJs(u.apellido || '')}', '${escapeJs(u.cargo_especialidad || 'Manicurista')}', '${escapeJs(fotoUrl || '')}')" title="Cambiar Fotografía">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 15c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm7-10h-3.17L14 3H10L8.17 5H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 14H5V7h3.88l1.83-2h4.58l1.83 2H19v12z"/></svg>
+                                <span>${fotoUrl ? 'Cambiar Foto' : 'Subir Foto'}</span>
+                            </button>
+                            ${fotoUrl ? `
+                                <button class="btn-photo-action delete-photo" onclick="eliminarFotoDirecto(${u.id}, '${escapeJs(u.nombre)}')" title="Eliminar Fotografía">
+                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                                </button>
+                            ` : ''}
+                        ` : ''}
+
+                        ${u.rol_id === 2 ? `
+                            <button class="btn-action" onclick="cambiarRolRapido(${u.id}, 'Manicurista')" title="Convertir a Manicurista" style="cursor:pointer; background:#fdf2f8; color:#be185d; border:1px solid #fbcfe8; font-size:0.78rem; font-weight:600; padding:4px 8px;">
+                                <span>Hacer Manicurista</span>
+                            </button>
+                        ` : ''}
+                        ${u.rol_id === 3 ? `
+                            <button class="btn-action" onclick="cambiarRolRapido(${u.id}, 'Cliente')" title="Convertir a Cliente" style="cursor:pointer; background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0; font-size:0.78rem; font-weight:600; padding:4px 8px;">
+                                <span>Hacer Cliente</span>
+                            </button>
+                        ` : ''}
+
+                        <button class="btn-action" onclick="abrirModalEditarUsuario(${u.id})" title="Editar Datos" style="cursor:pointer;">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
                         </button>
-                        <button class="btn-action delete" onclick="eliminarUsuario(${u.id}, '${u.nombre.replace(/'/g, "\\'")}')" title="Eliminar Usuario" style="cursor:pointer;">
-                            🗑️
+                        <button class="btn-action delete" onclick="eliminarUsuario(${u.id}, '${escapeJs(u.nombre)}')" title="Eliminar Usuario" style="cursor:pointer;">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                         </button>
                     </div>
                 </td>
             </tr>
         `;
     }).join('');
+}
+
+// =============================================================================
+// GESTIÓN DE FOTOGRAFÍA (SUBIDA, PREVIEW Y ELIMINACIÓN)
+// =============================================================================
+function abrirModalFotoManicurista(id, nombre, apellido, cargo, fotoActual) {
+    document.getElementById('foto-user-id').value = id;
+    document.getElementById('foto-user-nombre').innerText = `${nombre} ${apellido}`.trim();
+    document.getElementById('foto-user-cargo').innerText = cargo || 'Manicurista Profesional';
+    
+    fotoBase64Temporal = null;
+    document.getElementById('foto-file-input').value = '';
+    document.getElementById('btn-guardar-foto-modal').disabled = true;
+
+    const previewBox = document.getElementById('modal-foto-preview-box');
+    const btnEliminar = document.getElementById('btn-eliminar-foto-modal');
+    const alertMsg = document.getElementById('foto-alert-msg');
+    alertMsg.style.display = 'none';
+
+    if (fotoActual) {
+        previewBox.innerHTML = `<img src="${fotoActual}" alt="${nombre}" onerror="this.onerror=null; this.parentElement.innerHTML='<svg class=\\'user-table-avatar-placeholder\\' style=\\'width: 48px; height: 48px;\\' viewBox=\\'0 0 24 24\\' fill=\\'currentColor\\'><path d=\\'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\\'/></svg>';" />`;
+        btnEliminar.style.display = 'inline-flex';
+    } else {
+        previewBox.innerHTML = `<svg class="user-table-avatar-placeholder" style="width: 48px; height: 48px;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`;
+        btnEliminar.style.display = 'none';
+    }
+
+    openAdminModal('modal-foto-usuario');
+}
+
+function configurarDragAndDropFoto() {
+    const dropzone = document.getElementById('foto-dropzone');
+    if (!dropzone) return;
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropzone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            dropzone.classList.add('dragover');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropzone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+        });
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (files.length > 0) {
+            leerArchivoImagen(files[0]);
+        }
+    });
+}
+
+function procesarArchivoFoto(e) {
+    const file = e.target.files[0];
+    if (file) {
+        leerArchivoImagen(file);
+    }
+}
+
+function leerArchivoImagen(file) {
+    const alertMsg = document.getElementById('foto-alert-msg');
+    alertMsg.style.display = 'none';
+
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!validTypes.includes(file.type.toLowerCase())) {
+        mostrarAlertaFoto('Formato no válido. Utiliza JPG, JPEG, PNG o WEBP.', 'error');
+        return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+        mostrarAlertaFoto('La imagen supera el límite de 5 MB.', 'error');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        fotoBase64Temporal = event.target.result;
+        const previewBox = document.getElementById('modal-foto-preview-box');
+        previewBox.innerHTML = `<img src="${fotoBase64Temporal}" alt="Previsualización" />`;
+        document.getElementById('btn-guardar-foto-modal').disabled = false;
+        mostrarAlertaFoto('Imagen lista para guardar.', 'info');
+    };
+    reader.readAsDataURL(file);
+}
+
+function mostrarAlertaFoto(msg, type) {
+    const alertMsg = document.getElementById('foto-alert-msg');
+    alertMsg.innerText = msg;
+    alertMsg.style.display = 'block';
+    if (type === 'error') {
+        alertMsg.style.background = '#fee2e2';
+        alertMsg.style.color = '#dc2626';
+    } else {
+        alertMsg.style.background = '#e0f2fe';
+        alertMsg.style.color = '#0284c7';
+    }
+}
+
+async function guardarFotografiaManicurista() {
+    const id = document.getElementById('foto-user-id').value;
+    if (!id || !fotoBase64Temporal) {
+        showAdminToast('Selecciona una imagen primero.', 'error');
+        return;
+    }
+
+    const btn = document.getElementById('btn-guardar-foto-modal');
+    btn.disabled = true;
+    btn.innerText = 'Guardando...';
+
+    try {
+        const res = await apiAdminRequest(`/api/admin/usuarios/${id}/foto`, {
+            imagen_base64: fotoBase64Temporal
+        }, 'POST');
+
+        if (res.success) {
+            showAdminToast(res.message || 'Fotografía guardada correctamente.', 'success');
+            closeAdminModal('modal-foto-usuario');
+            cargarUsuarios();
+        } else {
+            mostrarAlertaFoto(res.message || 'Error al guardar fotografía.', 'error');
+        }
+    } catch (err) {
+        mostrarAlertaFoto('Error de conexión con el servidor.', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerText = 'Guardar';
+    }
+}
+
+async function ejecutarEliminarFotoDesdeModal() {
+    const id = document.getElementById('foto-user-id').value;
+    if (!id) return;
+
+    if (!confirm('¿Deseas eliminar la fotografía actual de esta manicurista?')) return;
+
+    try {
+        const res = await apiAdminRequest(`/api/admin/usuarios/${id}/foto`, {}, 'DELETE');
+        if (res.success) {
+            showAdminToast(res.message || 'Fotografía eliminada.', 'success');
+            closeAdminModal('modal-foto-usuario');
+            cargarUsuarios();
+        } else {
+            mostrarAlertaFoto(res.message || 'Error al eliminar fotografía.', 'error');
+        }
+    } catch (err) {
+        mostrarAlertaFoto('Error al eliminar fotografía.', 'error');
+    }
+}
+
+async function eliminarFotoDirecto(id, nombre) {
+    if (!confirm(`¿Deseas eliminar la fotografía de ${nombre}?`)) return;
+
+    try {
+        const res = await apiAdminRequest(`/api/admin/usuarios/${id}/foto`, {}, 'DELETE');
+        if (res.success) {
+            showAdminToast(`Fotografía de ${nombre} eliminada.`, 'success');
+            cargarUsuarios();
+        } else {
+            showAdminToast(res.message || 'Error al eliminar fotografía.', 'error');
+        }
+    } catch (err) {
+        showAdminToast('Error de comunicación con el servidor.', 'error');
+    }
+}
+
+function abrirModalDescuentoCliente(id, nombre, apellido, email, descActual) {
+    document.getElementById('desc-cliente-id').value = id;
+    document.getElementById('desc-cliente-nombre').innerText = `${nombre} ${apellido || ''}`.trim();
+    document.getElementById('desc-cliente-email').innerText = email;
+    document.getElementById('desc-cliente-porcentaje').value = descActual || 0;
+    openAdminModal('modal-descuento-cliente');
+}
+
+async function guardarDescuentoCliente(e) {
+    e.preventDefault();
+    const id = document.getElementById('desc-cliente-id').value;
+    const desc = parseFloat(document.getElementById('desc-cliente-porcentaje').value);
+
+    if (isNaN(desc) || desc < 0 || desc > 100) {
+        showAdminToast('El descuento debe ser un valor numérico entre 0% y 100%.', 'error');
+        return;
+    }
+
+    const res = await apiAdminRequest(`/api/admin/usuarios/${id}/descuento`, { descuento: desc }, 'PUT');
+    if (res.success) {
+        showAdminToast(res.message, 'success');
+        closeAdminModal('modal-descuento-cliente');
+        cargarUsuarios();
+    } else {
+        showAdminToast(res.message || 'Error al actualizar descuento.', 'error');
+    }
+}
+
+async function quitarDescuentoPersonalizado() {
+    const id = document.getElementById('desc-cliente-id').value;
+    const res = await apiAdminRequest(`/api/admin/usuarios/${id}/descuento`, { remover: true }, 'PUT');
+    if (res.success) {
+        showAdminToast(res.message, 'success');
+        closeAdminModal('modal-descuento-cliente');
+        cargarUsuarios();
+    } else {
+        showAdminToast(res.message || 'Error al remover descuento personalizado.', 'error');
+    }
+}
+
+async function cambiarRolRapido(id, nuevoRolNombre) {
+    const rol_id = nuevoRolNombre === 'Manicurista' ? 3 : 2;
+    if (!confirm(`¿Estás seguro de convertir el rol del usuario #${id} a ${nuevoRolNombre}? Toda su información y citas se conservarán intactas.`)) {
+        return;
+    }
+
+    const res = await apiAdminRequest(`/api/admin/usuarios/${id}/rol`, { rol_id }, 'PUT');
+    if (res.success) {
+        showAdminToast(`Usuario actualizado a ${nuevoRolNombre}`, 'success');
+        cargarUsuarios();
+    } else {
+        showAdminToast(res.message || 'Error al cambiar rol', 'error');
+    }
 }
 
 function filtrarUsuarios() {
@@ -428,10 +928,11 @@ function filtrarUsuarios() {
         const rol = (fila.getAttribute('data-rol') || '').toLowerCase();
         const estado = (fila.getAttribute('data-estado') || '').toLowerCase();
 
+        const matchPestana = !filtroPestanaActual || rol.includes(filtroPestanaActual);
         const matchRol = !rolVal || rol.includes(rolVal);
         const matchEstado = !estadoVal || estado === estadoVal;
 
-        fila.style.display = (matchRol && matchEstado) ? '' : 'none';
+        fila.style.display = (matchPestana && matchRol && matchEstado) ? '' : 'none';
     });
 }
 
@@ -455,7 +956,6 @@ async function guardarNuevoUsuario(e) {
     }
 }
 
-// CORRECCIÓN DEL BOTÓN DE LÁPIZ: Carga el usuario por ID desde la API REST
 async function abrirModalEditarUsuario(id) {
     try {
         const res = await apiAdminRequest(`/api/admin/usuarios/${id}`, {}, 'GET');
@@ -481,7 +981,6 @@ async function abrirModalEditarUsuario(id) {
     }
 }
 
-// Actualizar usuario en SQLite
 async function actualizarUsuario(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -511,6 +1010,26 @@ async function eliminarUsuario(id, nombre) {
     } else {
         showAdminToast(res.message, 'error');
     }
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function escapeJs(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/\\/g, '\\\\')
+        .replace(/'/g, "\\'")
+        .replace(/"/g, '\\"')
+        .replace(/\n/g, '\\n')
+        .replace(/\r/g, '\\r');
 }
 </script>
 

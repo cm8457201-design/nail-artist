@@ -122,6 +122,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 	await cargarServiciosCatalogo();
 
 	// ==========================================
+	// 5.1 CARGA DINÁMICA DE MANICURISTAS (SQLITE API)
+	// ==========================================
+	await cargarManicuristasEquipo();
+
+	// ==========================================
 	// 6. CARRITO DE SERVICIOS
 	// ==========================================
 	initCart();
@@ -196,6 +201,8 @@ function actualizarHeaderConUsuario(u) {
 			e.preventDefault();
 			if (isAdm) {
 				window.location.href = '/admin/index.html';
+			} else if (isMani) {
+				window.location.href = '/manicurista/index.html';
 			} else {
 				window.location.href = '/cliente.html';
 			}
@@ -454,7 +461,7 @@ function agregarAlCarrito(nombre, precio) {
 	}
 	saveCart();
 	actualizarCarrito();
-	showToast(`¡${nombre} añadido al carrito! 💅`);
+	showToast(`¡${nombre} añadido al carrito!`);
 	playBeepSound();
 }
 
@@ -489,7 +496,7 @@ function actualizarCarrito() {
 		if (carrito.length === 0) {
 			lista.innerHTML = `
 				<div style="text-align:center; padding: 50px 10px; color:#957088;">
-					<p style="font-size: 3.5rem; margin-bottom: 12px;">💅</p>
+					<svg viewBox="0 0 24 24" style="width:54px;height:54px;fill:#f4b8d4;margin:0 auto 12px;display:block;"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
 					<p style="font-size: 1.15rem; font-weight: 800; margin-bottom:6px; color:#240e1b;">Tu carrito está vacío</p>
 					<p style="font-size: 0.9rem;">Explora nuestro catálogo y selecciona tus diseños de uñas favoritos.</p>
 				</div>
@@ -510,7 +517,7 @@ function actualizarCarrito() {
 							<button class="cart-qty-btn" onclick="cambiarCantidad(${index}, -1)" title="Disminuir">-</button>
 							<span class="cart-qty-num">${item.cantidad}</span>
 							<button class="cart-qty-btn" onclick="cambiarCantidad(${index}, 1)" title="Aumentar">+</button>
-							<button class="cart-remove-btn" onclick="eliminarProducto(${index})" title="Eliminar">🗑️</button>
+							<button class="cart-remove-btn" onclick="eliminarProducto(${index})" title="Eliminar" aria-label="Eliminar"><svg viewBox="0 0 24 24" style="width:17px;height:17px;fill:currentColor;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
 						</div>
 					</div>
 				`;
@@ -811,9 +818,13 @@ async function cargarServiciosCatalogo() {
 							<h3 class="card-title">${num}. ${safeNombre}</h3>
 							<p class="card-desc">${safeDesc}</p>
 							<div class="card-actions-group">
-								<a href="${urlDetalle}" class="btn-card-details">🔍 Ver Detalles</a>
+								<a href="${urlDetalle}" class="btn-card-details">
+									<svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor;"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+									Ver Detalles
+								</a>
 								<button type="button" class="btn-add-cart" onclick="agregarAlCarrito('${safeJsNombre}', ${precio})">
-									🛒 Añadir
+									<svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor;"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+									Añadir al Carrito
 								</button>
 							</div>
 						</div>
@@ -934,6 +945,207 @@ function escapeJs(str) {
 		.replace(/\r/g, '\\r');
 }
 
-// Exponer funciones globalmente para uso en botones o refrescos
+// =============================================================================
+// =============================================================================
+// CARGA Y RENDERIZADO DINÁMICO DE MANICURISTAS (SQLITE API /api/servicios/meta/manicuristas)
+// =============================================================================
+let manicuristasCache = [];
+
+async function cargarManicuristasEquipo() {
+	const container = document.getElementById('contenedor-manicuristas');
+	if (!container) return;
+
+	try {
+		const res = await fetch('/api/servicios/meta/manicuristas');
+		if (!res.ok) return;
+
+		const data = await res.json();
+		if (!data.success || !Array.isArray(data.data)) return;
+
+		manicuristasCache = data.data;
+
+		if (manicuristasCache.length === 0) {
+			container.innerHTML = `
+				<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-muted);">
+					<p>Nuestro equipo se encuentra preparando nuevas colecciones.</p>
+				</div>
+			`;
+			return;
+		}
+
+		container.innerHTML = manicuristasCache.map(m => {
+			const fullName = `${m.nombre} ${m.apellido || ''}`.trim();
+			const initials = (m.nombre || 'M').charAt(0).toUpperCase();
+			const specs = m.especialidades || [];
+			const rating = m.calificacion_estudio ? Number(m.calificacion_estudio).toFixed(1) : '5.0';
+			const citasCount = m.total_citas_completadas || 0;
+			const cargo = m.cargo_especialidad || m.especialidades_texto || 'Manicurista Profesional';
+			const fotoUrl = m.foto_perfil || m.foto;
+
+			const avatarHtml = fotoUrl
+				? `<img src="${escapeHtml(fotoUrl)}" class="manic-card-img" alt="${escapeHtml(fullName)}" loading="lazy" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'manic-card-avatar\\'>${initials}</div>';" />`
+				: `<div class="manic-card-avatar">${initials}</div>`;
+
+			const specsHtml = specs.slice(0, 3).map(s => `
+				<span class="manic-chip">${escapeHtml(s.nombre)}</span>
+			`).join('');
+
+			return `
+				<div class="manicurista-card">
+					<div class="manic-card-avatar-wrap">
+						${avatarHtml}
+					</div>
+					<h3 class="manic-card-name">${escapeHtml(fullName)}</h3>
+					<span class="manic-card-badge">${escapeHtml(cargo)}</span>
+
+					<div class="manic-card-meta">
+						<span class="manic-meta-item">
+							<svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+							${rating}
+						</span>
+						<span>·</span>
+						<span>${citasCount} citas completadas</span>
+					</div>
+
+					<div class="manic-specialties-chips">
+						${specsHtml || '<span class="manic-chip">Técnicas Integrales</span>'}
+					</div>
+
+					<div class="manic-card-footer">
+						<button type="button" class="btn-manic-profile" onclick="verPerfilManicurista(${m.id})">
+							<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+							<span>Ver perfil</span>
+						</button>
+						<button type="button" class="btn-manic-book" onclick="reservarConManicurista(${m.id}, '${escapeJs(fullName)}')">
+							<svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z"/></svg>
+							<span>Reservar con ella</span>
+						</button>
+					</div>
+				</div>
+			`;
+		}).join('');
+
+	} catch (err) {
+		console.warn('Error al cargar manicuristas:', err);
+	}
+}
+
+function verPerfilManicurista(id) {
+	const m = manicuristasCache.find(item => item.id === id);
+	if (!m) return;
+
+	const modal = document.getElementById('modal-perfil-manicurista');
+	const content = document.getElementById('modal-perfil-manicurista-content');
+	if (!modal || !content) return;
+
+	const fullName = `${m.nombre} ${m.apellido || ''}`.trim();
+	const initials = (m.nombre || 'M').charAt(0).toUpperCase();
+	const specs = m.especialidades || [];
+	const rating = m.calificacion_estudio ? Number(m.calificacion_estudio).toFixed(1) : '5.0';
+	const citasCount = m.total_citas_completadas || 0;
+	const cargo = m.cargo_especialidad || m.especialidades_texto || 'Manicurista Profesional';
+	const expAnios = m.experiencia_anios || 3;
+	const descTexto = m.descripcion || 'Especialista en cuidado y arte de uñas con formación profesional continua y enfoque en la salud y estética de tus manos.';
+	const fotoUrl = m.foto_perfil || m.foto;
+
+	const avatarHtml = fotoUrl
+		? `<img src="${escapeHtml(fotoUrl)}" class="manic-card-img" style="margin: 0 auto 16px; width: 110px; height: 110px; border: 3px solid #ffffff; outline: 2.5px solid rgba(225, 29, 72, 0.3); box-shadow: 0 10px 30px rgba(30, 14, 26, 0.15);" alt="${escapeHtml(fullName)}" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'manic-card-avatar\\' style=\\'margin: 0 auto 16px; width: 110px; height: 110px; font-size: 2.4rem;\\'>${initials}</div>';" />`
+		: `<div class="manic-card-avatar" style="margin: 0 auto 16px; width: 110px; height: 110px; font-size: 2.4rem;">${initials}</div>`;
+
+	const waMsg = encodeURIComponent(`✨ ¡Hola NailArtist Studio! Deseo agendar una cita con la especialista ${fullName} 💅`);
+	const waUrl = `https://wa.me/59160737902?text=${waMsg}`;
+
+	content.innerHTML = `
+		<div style="text-align: center; margin-bottom: 20px;">
+			<div style="display: inline-block;">
+				${avatarHtml}
+			</div>
+			<h2 style="font-family: var(--font-title, 'Playfair Display', Georgia, serif); font-size: 1.65rem; font-weight: 800; color: var(--text-dark, #1e0e1a); margin-bottom: 4px;">
+				${escapeHtml(fullName)}
+			</h2>
+			<span class="manic-card-badge">${escapeHtml(cargo)}</span>
+
+			<div style="display: flex; justify-content: center; align-items: center; gap: 14px; font-size: 0.88rem; color: var(--text-muted, #6e5567); margin-top: 10px; flex-wrap: wrap;">
+				<span style="display: inline-flex; align-items: center; gap: 5px;">
+					<svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: #d97706;"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+					<strong>${rating} / 5.0</strong>
+				</span>
+				<span>·</span>
+				<span><strong>${citasCount}</strong> citas atendidas</span>
+				<span>·</span>
+				<span style="color: var(--pink-vivid, #e11d48); font-weight: 700;">⭐ ${expAnios} años de experiencia</span>
+			</div>
+		</div>
+
+		<!-- Descripción del Perfil -->
+		<div style="background: var(--bg-surface-soft, #fcf8fa); border-radius: 14px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border-light, #f1e4ec);">
+			<h4 style="color: var(--text-dark, #1e0e1a); font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+				<svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: var(--pink-vivid, #e11d48);"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+				Sobre la Especialista:
+			</h4>
+			<p style="font-size: 0.9rem; color: var(--text-muted, #6e5567); line-height: 1.55; margin: 0;">
+				${escapeHtml(descTexto)}
+			</p>
+		</div>
+
+		<!-- Servicios que realiza -->
+		<div style="background: #ffffff; border-radius: 14px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border-light, #f1e4ec);">
+			<h4 style="color: var(--pink-vivid, #e11d48); font-size: 0.84rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+				<svg viewBox="0 0 24 24" style="width: 16px; height: 16px; fill: currentColor;"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+				Servicios y Técnicas que realiza:
+			</h4>
+			<ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+				${specs.length > 0 ? specs.map(s => `
+					<li style="display: flex; justify-content: space-between; align-items: center; font-size: 0.92rem; font-family: Arial, Helvetica, sans-serif; padding-bottom: 8px; border-bottom: 1px solid rgba(225, 29, 72, 0.08);">
+						<span style="font-weight: 600; color: #1e0e1a;">${escapeHtml(s.nombre)}</span>
+						<span style="color: var(--pink-vivid, #e11d48); font-weight: 800;">Bs. ${s.precio || 0}</span>
+					</li>
+				`).join('') : '<li style="color: #6e5567; font-size: 0.88rem;">Especialista certificada en aplicaciones completas de acrílico, soft gel y nail art.</li>'}
+			</ul>
+		</div>
+
+		<div style="background: #ffffff; border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; border: 1px dashed var(--border-light, #f1e4ec); font-size: 0.82rem; color: var(--text-muted, #6e5567); display: flex; align-items: center; gap: 10px;">
+			<svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: #059669; flex-shrink: 0;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+			<span>Protocolo de bioseguridad estricto, instrumental sellado y atención 100% personalizada.</span>
+		</div>
+
+		<div style="display: flex; flex-direction: column; gap: 10px;">
+			<button type="button" class="btn-manic-book" style="width: 100%;" onclick="cerrarModalPerfilManicurista(); reservarConManicurista(${m.id}, '${escapeJs(fullName)}')">
+				<svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z"/></svg>
+				<span>Agendar Cita con ${escapeHtml(m.nombre)}</span>
+			</button>
+			<a href="${waUrl}" target="_blank" class="btn-manic-profile" style="text-decoration: none; justify-content: center; background: #faf6f9;">
+				<svg viewBox="0 0 24 24" style="fill: #25D366;"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
+				<span>Consultar por WhatsApp</span>
+			</a>
+		</div>
+	`;
+
+	modal.classList.add('active');
+}
+
+function cerrarModalPerfilManicurista() {
+	const modal = document.getElementById('modal-perfil-manicurista');
+	if (modal) modal.classList.remove('active');
+}
+
+function reservarConManicurista(id, nombre) {
+	localStorage.setItem('selected_manicurista_id', id);
+	localStorage.setItem('selected_manicurista_nombre', nombre);
+	
+	if (usuarioActual) {
+		window.location.href = '/cliente.html?manicurista_id=' + id + '&nueva_reserva=1';
+	} else {
+		window.location.href = '/login.html?redirect=cliente.html&manicurista_id=' + id + '&nueva_reserva=1';
+	}
+}
+
+// Exponer funciones globalmente
 window.cargarServiciosCatalogo = cargarServiciosCatalogo;
+window.cargarManicuristasEquipo = cargarManicuristasEquipo;
+window.verPerfilManicurista = verPerfilManicurista;
+window.cerrarModalPerfilManicurista = cerrarModalPerfilManicurista;
+window.reservarConManicurista = reservarConManicurista;
 window.agregarAlCarrito = agregarAlCarrito;
+
+

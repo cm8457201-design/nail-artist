@@ -4,6 +4,9 @@
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // 0. Init Background Particles Canvas
+    initParticlesBackground();
+
     // 1. Mobile Sidebar Toggle
     const mobileBtn = document.getElementById('mobile-sidebar-toggle');
     const sidebar = document.getElementById('admin-sidebar');
@@ -20,6 +23,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         sidebarOverlay.addEventListener('click', () => {
             if (sidebar) sidebar.classList.remove('sidebar-open');
             sidebarOverlay.classList.remove('active');
+        });
+    }
+
+    if (sidebar) {
+        sidebar.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 992) {
+                    sidebar.classList.remove('sidebar-open');
+                    if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+                }
+            });
         });
     }
 
@@ -53,6 +67,75 @@ document.addEventListener('DOMContentLoaded', async () => {
     await verificarSesionAdmin();
 });
 
+// Particles Light Engine
+function initParticlesBackground() {
+    let canvas = document.getElementById('particlesCanvas');
+    if (!canvas) {
+        canvas = document.createElement('canvas');
+        canvas.id = 'particlesCanvas';
+        canvas.className = 'particles-bg-canvas';
+        document.body.insertBefore(canvas, document.body.firstChild);
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        canvas.style.display = 'none';
+        return;
+    }
+
+    let width = 0, height = 0;
+    function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    const particles = [];
+    const count = Math.min(Math.floor(window.innerWidth / 35), 45);
+    const colors = [
+        'rgba(225, 29, 72, 0.22)',
+        'rgba(217, 119, 6, 0.22)',
+        'rgba(2, 132, 199, 0.20)',
+        'rgba(255, 255, 255, 0.55)'
+    ];
+
+    for (let i = 0; i < count; i++) {
+        particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: Math.random() * 2.2 + 0.8,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            vx: (Math.random() - 0.5) * 0.35,
+            vy: (Math.random() - 0.5) * 0.35
+        });
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, width, height);
+        particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.x < 0) p.x = width;
+            if (p.x > width) p.x = 0;
+            if (p.y < 0) p.y = height;
+            if (p.y > height) p.y = 0;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = p.color;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        });
+        requestAnimationFrame(animate);
+    }
+    animate();
+}
+
 // Helper: Abrir modal por ID
 function openAdminModal(modalId) {
     const modal = document.getElementById(modalId);
@@ -81,8 +164,12 @@ function showAdminToast(message, type = 'success') {
 
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
-    const icon = type === 'success' ? '✨' : (type === 'info' ? 'ℹ️' : '⚠️');
-    toast.innerHTML = `<span style="font-size:1.2rem;">${icon}</span> <span>${message}</span>`;
+    const iconSvg = type === 'success' 
+        ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>'
+        : (type === 'info' 
+            ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+            : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>');
+    toast.innerHTML = `<span style="display:inline-flex; align-items:center;">${iconSvg}</span> <span>${message}</span>`;
 
     container.appendChild(toast);
 
@@ -150,7 +237,7 @@ async function verificarSesionAdmin() {
             if (topbarName) topbarName.innerText = `${u.nombre} ${u.apellido || ''}`.trim();
             if (topbarEmail) topbarEmail.innerText = u.email;
             if (topbarAvatar) topbarAvatar.innerText = (u.nombre ? u.nombre.charAt(0).toUpperCase() : 'A');
-            if (welcomeText) welcomeText.innerText = `Bienvenido, ${u.nombre} 👑`;
+            if (welcomeText) welcomeText.innerText = `Bienvenido, ${u.nombre}`;
         } else {
             // No autenticado
             window.location.href = '/login.html?redirect=/admin/index.html';

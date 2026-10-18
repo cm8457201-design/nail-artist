@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manicuristas & Perfiles — NailArtist Studio Panel Admin</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Estilos del Administrador -->
+    <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+
+<div class="admin-container">
+
+    <!-- Overlay para móvil -->
+    <div id="sidebar-overlay" class="modal-overlay"></div>
+
+    <!-- Barra Lateral (Sidebar) -->
+    <aside id="admin-sidebar" class="admin-sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-logo">
+                <svg class="logo-spiral-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M50 8 C26.8 8 8 26.8 8 50 C8 73.2 26.8 92 50 92 C73.2 92 92 73.2 92 50 C92 31.5 80 16 62.5 11.5 C41.5 6.1 20.8 18.2 15.4 39.2 C10 60.2 22.1 80.9 43.1 86.3 C64.1 91.7 84.8 79.6 90.2 58.6 C94.5 41.8 84.5 24.5 67.7 20.2 C52.5 16.3 36.8 24.8 32.9 40 C29 55.2 37.5 70.9 52.7 74.8 C66.5 78.3 80.5 70 83.2 56 C85.5 44 77.5 32.5 65.5 30.2 C54.5 28.1 44 35.5 41.9 46.5 C40 56.5 47 65.5 57 67.4 C65.5 69 73 63 74.5 54.5" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+                </svg>
+                <div class="auth-brand-text">
+                    <span class="brand-top">NAILS</span>
+                    <span class="brand-bottom">ARTIST</span>
+                </div>
+            </a>
+            <span class="sidebar-badge">PANEL ADMIN</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Principal</div>
+            <ul class="nav-list">
+                <li>
+                    <a href="index.html" class="nav-link">
+                        <span class="nav-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                        </span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="nav-section-title">Gestión de Negocio</div>
+            <ul class="nav-list">
+                <li>
+                    <a href="citas.html" class="nav-link">
+                        <span class="nav-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        </span>
+                        <span>Citas & Reservas</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="manicuristas.html" class="nav-link active">
+                        <span class="nav-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </span>
+                        <span>Manicuristas & Fotos</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="servicios.html" class="nav-link">
+                        <span class="nav-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </span>
+                        <span>Servicios & Precios</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="usuarios.html" class="nav-link">
+                        <span class="nav-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        </span>
+                        <span>Usuarios & Roles</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="nav-section-title">Interacción & Feedback</div>
+            <ul class="nav-list">
+                <li>
+                    <a href="resenas.html" class="nav-link">
+                        <span class="nav-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        </span>
+                        <span>Reseñas & Opiniones</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="mensajes.html" class="nav-link">
+                        <span class="nav-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        </span>
+                        <span>Mensajes de Contacto</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="nav-section-title">Enlaces Directos</div>
+            <ul class="nav-list">
+                <li>
+                    <a href="/index.html#manicuristas" target="_blank" class="nav-link">
+                        <span class="nav-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        </span>
+                        <span>Ver Sección en Web</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" onclick="cerrarSesionAdmin()" class="nav-link" style="color: #ff4d79;">
+                        <span class="nav-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        </span>
+                        <span>Cerrar Sesión</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        
+        <!-- Header Superior -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button id="mobile-sidebar-toggle" class="mobile-toggle-btn" aria-label="Abrir Menú">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <div class="page-title-wrap">
+                    <h1 class="page-heading">Staff de Manicuristas & Fotografías</h1>
+                    <span class="breadcrumb">Administración de perfiles profesionales, fotos, especialidades y servicios</span>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <div class="user-profile">
+                    <div class="user-avatar" id="admin-user-avatar">A</div>
+                    <div class="user-info">
+                        <span class="user-name" id="admin-user-name">Administrador</span>
+                        <span class="user-role" id="admin-user-email">admin@gmail.com</span>
+                    </div>
+                    <button class="logout-btn" onclick="cerrarSesionAdmin()" title="Cerrar Sesión">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tarjeta Principal de Manicuristas -->
+        <div class="admin-card">
+            <div class="card-header">
+                <div>
+                    <h3 class="card-title">Equipo Profesional de Manicuristas</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
+                        Las fotografías y datos configurados aquí se sincronizan automáticamente en la sección pública y en el selector de citas.
+                    </p>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-primary btn-sm" onclick="abrirModalCrearManicurista()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        <span>Nueva Manicurista</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card-body">
+                
+                <!-- Barra de Búsqueda y Filtros -->
+                <div class="filter-bar">
+                    <input type="text" class="search-input" data-table-search="tabla-manicuristas" placeholder="Buscar por nombre, especialidad, correo o teléfono...">
+                    
+                    <select class="filter-select" id="filtro-estado" onchange="filtrarManicuristas()">
+                        <option value="">Todos los Estados</option>
+                        <option value="activo">Solo Activas</option>
+                        <option value="inactivo">Solo Inactivas</option>
+                    </select>
+                </div>
+
+                <!-- Tabla de Manicuristas -->
+                <div class="table-responsive">
+                    <table class="admin-table" id="tabla-manicuristas">
+                        <thead>
+                            <tr>
+                                <th style="width: 70px;">Foto</th>
+                                <th>Manicurista</th>
+                                <th>Especialidad / Cargo</th>
+                                <th>Servicios Asignados</th>
+                                <th>Citas</th>
+                                <th>Estado</th>
+                                <th style="text-align: right;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-manicuristas">
+                            <tr><td colspan="7" style="text-align: center; padding: 30px;">Cargando manicuristas desde SQLite...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- ========================================================================= -->
+<!-- MODAL: CREAR NUEVA MANICURISTA                                            -->
+<!-- ========================================================================= -->
+<div id="modal-crear-manicurista" class="modal-overlay">
+    <div class="modal-card" style="max-width: 650px;">
+        <div class="modal-header">
+            <h3 class="modal-title">Nueva Manicurista Profesional</h3>
+            <button class="modal-close" data-close-modal>✕</button>
+        </div>
+        <form id="form-crear-manicurista" onsubmit="guardarNuevaManicurista(event)">
+            <div class="modal-body">
+                
+                <!-- Carga de Fotografía -->
+                <div class="admin-mani-photo-preview-wrap">
+                    <div id="crear-foto-preview-container">
+                        <div class="admin-mani-preview-circle" id="crear-foto-preview">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
+                    </div>
+                    <div class="admin-mani-photo-controls">
+                        <label class="form-label" style="font-weight: 700; margin-bottom: 2px;">Fotografía de Perfil Profesional</label>
+                        <span style="font-size: 0.78rem; color: var(--text-muted);">Formato circular 1:1. JPG, PNG o WebP (máx 5MB).</span>
+                        <div style="display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap;">
+                            <input type="file" id="crear-foto-file" accept="image/png, image/jpeg, image/webp" style="display: none;" onchange="manejarArchivoFoto(event, 'crear')">
+                            <button type="button" class="btn-action" onclick="document.getElementById('crear-foto-file').click()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                <span>Subir Fotografía</span>
+                            </button>
+                            <button type="button" class="btn-action" onclick="limpiarFoto('crear')" style="color: #e11d48;">
+                                ✕ Quitar
+                            </button>
+                        </div>
+                        <input type="hidden" name="foto_perfil" id="crear-foto-url">
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label class="form-label">Nombre *</label>
+                        <input type="text" name="nombre" id="crear-nombre" class="form-control" placeholder="Ej: Valeria" required oninput="actualizarFallbackIniciales('crear')">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label class="form-label">Apellido</label>
+                        <input type="text" name="apellido" id="crear-apellido" class="form-control" placeholder="Ej: Rios">
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label class="form-label">Correo Electrónico *</label>
+                        <input type="email" name="email" class="form-control" placeholder="valeria@nailartist.com" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label class="form-label">Teléfono / WhatsApp</label>
+                        <input type="text" name="telefono" class="form-control" placeholder="+591 70000000">
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label class="form-label">Contraseña de Acceso *</label>
+                        <input type="password" name="password" class="form-control" placeholder="Mínimo 6 caracteres" required minlength="6">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label class="form-label">Años de Experiencia</label>
+                        <input type="number" name="experiencia_anios" class="form-control" value="3" min="0" max="40">
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label class="form-label">Especialidad / Cargo</label>
+                        <input type="text" name="cargo_especialidad" class="form-control" placeholder="Ej: Especialista en Soft Gel & Estructuras">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label class="form-label">Estado</label>
+                        <select name="estado" class="form-control">
+                            <option value="activo" selected>Activo (Visible al público)</option>
+                            <option value="inactivo">Inactivo (Oculto)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label class="form-label">Descripción Profesional (Perfil individual)</label>
+                    <textarea name="descripcion" class="form-control" rows="2" placeholder="Breve reseña sobre su experiencia, técnicas y enfoque en la atención..."></textarea>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 8px;">
+                    <label class="form-label">Servicios que realiza (Selecciona los correspondientes):</label>
+                    <div class="services-checkbox-grid" id="crear-servicios-grid">
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Cargando catálogo de servicios...</div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-action" data-close-modal>Cancelar</button>
+                <button type="submit" class="btn-primary btn-sm">Guardar Manicurista</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- MODAL: EDITAR MANICURISTA                                                 -->
+<!-- ========================================================================= -->
+<div id="modal-editar-manicurista" class="modal-overlay">
+    <div class="modal-card" style="max-width: 650px;">
+        <div class="modal-header">
+            <h3 class="modal-title">Editar Perfil de Manicurista</h3>
+            <button class="modal-close" data-close-modal>✕</button>
+        </div>
+        <form id="form-editar-manicurista" onsubmit="actualizarManicurista(event)">
+            <input type="hidden" name="id" id="edit-mani-id">
+            
+            <div class="modal-body">
+                
+                <!-- Carga de Fotografía -->
+                <div class="admin-mani-photo-preview-wrap">
+                    <div id="edit-foto-preview-container">
+                        <div class="admin-mani-preview-circle" id="edit-foto-preview">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
+                    </div>
+                    <div class="admin-mani-photo-controls">
+                        <label class="form-label" style="font-weight: 700; margin-bottom: 2px;">Fotografía de Perfil Profesional</label>
+                        <span style="font-size: 0.78rem; color: var(--text-muted);">Se visualiza en círculo 1:1 en web y citas.</span>
+                        <div style="display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap;">
+                            <input type="file" id="edit-foto-file" accept="image/png, image/jpeg, image/webp" style="display: none;" onchange="manejarArchivoFoto(event, 'edit')">
+                            <button type="button" class="btn-action" onclick="document.getElementById('edit-foto-file').click()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                <span>Cambiar Fotografía</span>
+                            </button>
+                            <button type="button" class="btn-action" onclick="limpiarFoto('edit')" style="color: #e11d48;">
+                                ✕ Quitar Foto
+                            </button>
+                        </div>
+                        <input type="hidden" name="foto_perfil" id="edit-foto-url">
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label class="form-label">Nombre *</label>
+                        <input type="text" name="nombre" id="edit-mani-nombre" class="form-control" required oninput="actualizarFallbackIniciales('edit')">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label class="form-label">Apellido</label>
+                        <input type="text" name="apellido" id="edit-mani-apellido" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label class="form-label">Correo Electrónico *</label>
+                        <input type="email" name="email" id="edit-mani-email" class="form-control" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label class="form-label">Teléfono / WhatsApp</label>
+                        <input type="text" name="telefono" id="edit-mani-telefono" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label class="form-label">Cambiar Contraseña (opcional)</label>
+                        <input type="password" name="password" id="edit-mani-password" class="form-control" placeholder="Dejar en blanco para conservar actual">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label class="form-label">Años de Experiencia</label>
+                        <input type="number" name="experiencia_anios" id="edit-mani-experiencia" class="form-control" min="0" max="40">
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label class="form-label">Especialidad / Cargo</label>
+                        <input type="text" name="cargo_especialidad" id="edit-mani-cargo" class="form-control" placeholder="Ej: Master en Uñas Acrílicas">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <label class="form-label">Estado de Cuenta</label>
+                        <select name="estado" id="edit-mani-estado" class="form-control">
+                            <option value="activo">Activo (Visible)</option>
+                            <option value="inactivo">Inactivo (Oculto)</option>
+                            <option value="bloqueado">Bloqueado</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label class="form-label">Descripción Profesional</label>
+                    <textarea name="descripcion" id="edit-mani-descripcion" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 8px;">
+                    <label class="form-label">Servicios que realiza:</label>
+                    <div class="services-checkbox-grid" id="edit-servicios-grid">
+                        <!-- Inyectado dinámicamente -->
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-action" data-close-modal>Cancelar</button>
+                <button type="submit" class="btn-primary btn-sm">Actualizar Manicurista</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="assets/js/admin.js"></script>
+<script>
+let listaManicuristasGlobal = [];
+let catalogoServiciosGlobal = [];
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await cargarCatalogoServicios();
+    await cargarManicuristas();
+});
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+async function cargarCatalogoServicios() {
+    try {
+        const res = await apiAdminRequest('/api/admin/servicios', {}, 'GET');
+        if (res.success && res.data) {
+            catalogoServiciosGlobal = res.data;
+            renderizarServiciosCheckboxes('crear', []);
+        }
+    } catch(e) {
+        console.warn('Error al cargar catálogo de servicios:', e);
+    }
+}
+
+function renderizarServiciosCheckboxes(prefix, seleccionadosIds = []) {
+    const grid = document.getElementById(`${prefix}-servicios-grid`);
+    if (!grid) return;
+
+    if (catalogoServiciosGlobal.length === 0) {
+        grid.innerHTML = '<div style="color: var(--text-muted); font-size: 0.85rem;">No hay servicios registrados.</div>';
+        return;
+    }
+
+    grid.innerHTML = catalogoServiciosGlobal.map(s => {
+        const isChecked = seleccionadosIds.includes(s.id);
+        return `
+            <label class="service-checkbox-label">
+                <input type="checkbox" name="servicios_ids" value="${s.id}" ${isChecked ? 'checked' : ''}>
+                <span>${escapeHtml(s.nombre)} (Bs. ${s.precio})</span>
+            </label>
+        `;
+    }).join('');
+}
+
+async function cargarManicuristas() {
+    const tbody = document.getElementById('tbody-manicuristas');
+    try {
+        const res = await apiAdminRequest('/api/admin/manicuristas', {}, 'GET');
+        if (res.success && res.data) {
+            listaManicuristasGlobal = res.data;
+            renderizarTablaManicuristas(listaManicuristasGlobal);
+        } else {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">${res.message || 'Error al cargar manicuristas'}</td></tr>`;
+        }
+    } catch (err) {
+        console.error('Error al cargar manicuristas:', err);
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:red;">Error de conexión con el backend SQLite.</td></tr>';
+    }
+}
+
+function renderizarTablaManicuristas(manicuristas) {
+    const tbody = document.getElementById('tbody-manicuristas');
+    if (!manicuristas || manicuristas.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">No hay manicuristas registradas en la base de datos SQLite.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = manicuristas.map(m => {
+        const fullName = `${m.nombre} ${m.apellido || ''}`.trim();
+        const initials = (m.nombre || 'M').charAt(0).toUpperCase();
+        const fotoUrl = m.foto_perfil || m.foto;
+        const cargo = m.cargo_especialidad || m.especialidades_texto || 'Manicurista Profesional';
+        const expAnios = m.experiencia_anios || 3;
+        const specs = m.especialidades || [];
+        const citasTotal = m.total_citas_asignadas || 0;
+        const citasComp = m.total_citas_completadas || 0;
+
+        let estadoBadge = m.estado === 'activo'
+            ? '<span class="badge badge-activo">Activa</span>'
+            : '<span class="badge badge-inactivo">Inactiva</span>';
+
+        const fotoMarkup = fotoUrl
+            ? `<img src="${escapeHtml(fotoUrl)}" class="table-mani-avatar" alt="${escapeHtml(fullName)}" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'table-mani-avatar-fallback\\'>${initials}</div>';" />`
+            : `<div class="table-mani-avatar-fallback">${initials}</div>`;
+
+        const specsMarkup = specs.length > 0
+            ? specs.slice(0, 3).map(s => `<span class="badge" style="background:#fce7f3; color:#be185d; font-size:0.7rem; margin:1px;">${escapeHtml(s.nombre)}</span>`).join('') + (specs.length > 3 ? ` <span style="font-size:0.75rem; color:var(--text-muted);">+${specs.length - 3}</span>` : '')
+            : '<span style="color:var(--text-muted); font-size:0.8rem;">Sin servicios asignados</span>';
+
+        return `
+            <tr data-estado="${m.estado}" id="fila-manicurista-${m.id}">
+                <td>
+                    <div style="display:flex; justify-content:center; align-items:center;">
+                        ${fotoMarkup}
+                    </div>
+                </td>
+                <td>
+                    <div style="font-weight: 700; color: var(--text-main); font-size: 0.95rem;">${escapeHtml(fullName)}</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">${escapeHtml(m.email)}</div>
+                    ${m.telefono ? `<div style="font-size: 0.78rem; color: var(--text-muted);">${escapeHtml(m.telefono)}</div>` : ''}
+                </td>
+                <td>
+                    <div style="font-weight: 600; color: var(--pink-vivid); font-size: 0.88rem;">${escapeHtml(cargo)}</div>
+                    <div style="font-size: 0.78rem; color: var(--text-muted);">${expAnios} años exp.</div>
+                </td>
+                <td>
+                    <div style="max-width: 250px; line-height: 1.4;">
+                        ${specsMarkup}
+                    </div>
+                </td>
+                <td>
+                    <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">${citasComp} completadas</div>
+                    <div style="font-size: 0.78rem; color: var(--text-muted);">${citasTotal} total</div>
+                </td>
+                <td>
+                    ${estadoBadge}
+                </td>
+                <td style="text-align: right;">
+                    <div style="display: inline-flex; gap: 6px; justify-content: flex-end;">
+                        <button class="btn-action" onclick="toggleEstadoManicurista(${m.id}, '${m.estado}')" title="${m.estado === 'activo' ? 'Desactivar' : 'Activar'}" style="cursor:pointer;">
+                            ${m.estado === 'activo' 
+                                ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>' 
+                                : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>'}
+                        </button>
+                        <button class="btn-primary btn-sm" onclick="abrirModalEditarManicurista(${m.id})" title="Editar perfil completo" style="padding: 5px 12px; font-size: 0.82rem; cursor:pointer;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                            <span>Editar</span>
+                        </button>
+                        <button class="btn-action delete" onclick="eliminarManicurista(${m.id}, '${fullName.replace(/'/g, "\\'")}')" title="Eliminar manicurista" style="cursor:pointer;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function filtrarManicuristas() {
+    const estado = document.getElementById('filtro-estado').value;
+    const filas = document.querySelectorAll('#tbody-manicuristas tr[id^="fila-manicurista-"]');
+
+    filas.forEach(f => {
+        const est = f.getAttribute('data-estado');
+        const matchEstado = !estado || est === estado;
+        f.style.display = matchEstado ? '' : 'none';
+    });
+}
+
+function actualizarFallbackIniciales(prefix) {
+    const fotoUrl = document.getElementById(`${prefix}-foto-url`).value;
+    if (fotoUrl) return;
+    const nombre = document.getElementById(`${prefix}-${prefix === 'crear' ? 'nombre' : 'mani-nombre'}`).value;
+    const initial = (nombre || 'M').trim().charAt(0).toUpperCase() || 'M';
+    const preview = document.getElementById(`${prefix}-foto-preview`);
+    if (preview && preview.tagName.toLowerCase() === 'div') {
+        preview.innerText = initial;
+    }
+}
+
+function manejarArchivoFoto(event, prefix) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!file.type.match('image.*')) {
+        showAdminToast('Por favor selecciona un archivo de imagen válido (JPEG, PNG, WEBP).', 'error');
+        return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+        showAdminToast('La imagen supera el límite permitido de 5MB.', 'error');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        const base64Data = e.target.result;
+        
+        // Actualizar preview visual instantáneamente
+        const container = document.getElementById(`${prefix}-foto-preview-container`);
+        container.innerHTML = `<img src="${base64Data}" class="admin-mani-preview-circle" id="${prefix}-foto-preview" alt="Preview" />`;
+
+        // Subir al servidor backend
+        try {
+            showAdminToast('Subiendo fotografía...', 'info');
+            const nombreManic = document.getElementById(`${prefix}-${prefix === 'crear' ? 'nombre' : 'mani-nombre'}`).value || 'manicurista';
+            const res = await apiAdminRequest('/api/admin/manicuristas/upload-foto', {
+                imagen_base64: base64Data,
+                nombre_manicurista: nombreManic
+            }, 'POST');
+
+            if (res.success && res.foto_url) {
+                document.getElementById(`${prefix}-foto-url`).value = res.foto_url;
+                showAdminToast('Fotografía cargada correctamente.', 'success');
+            } else {
+                showAdminToast(res.message || 'Error al guardar la fotografía en el servidor.', 'error');
+            }
+        } catch(uploadErr) {
+            console.error('Error al subir foto:', uploadErr);
+            showAdminToast('Error al subir la fotografía al servidor.', 'error');
+        }
+    };
+    reader.readAsDataURL(file);
+}
+
+function limpiarFoto(prefix) {
+    document.getElementById(`${prefix}-foto-url`).value = '';
+    const fileInput = document.getElementById(`${prefix}-foto-file`);
+    if (fileInput) fileInput.value = '';
+    
+    const nombre = document.getElementById(`${prefix}-${prefix === 'crear' ? 'nombre' : 'mani-nombre'}`)?.value || 'M';
+    const initial = nombre.trim().charAt(0).toUpperCase() || 'M';
+
+    const container = document.getElementById(`${prefix}-foto-preview-container`);
+    container.innerHTML = `<div class="admin-mani-preview-circle" id="${prefix}-foto-preview">${initial}</div>`;
+    showAdminToast('Fotografía removida.', 'info');
+}
+
+function abrirModalCrearManicurista() {
+    document.getElementById('form-crear-manicurista').reset();
+    document.getElementById('crear-foto-url').value = '';
+    document.getElementById('crear-foto-preview-container').innerHTML = `<div class="admin-mani-preview-circle" id="crear-foto-preview"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>`;
+    renderizarServiciosCheckboxes('crear', []);
+    openAdminModal('modal-crear-manicurista');
+}
+
+async function guardarNuevaManicurista(e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+
+    const servicios_ids = [];
+    form.querySelectorAll('input[name="servicios_ids"]:checked').forEach(cb => {
+        servicios_ids.push(parseInt(cb.value, 10));
+    });
+
+    const payload = {
+        nombre: formData.get('nombre'),
+        apellido: formData.get('apellido'),
+        email: formData.get('email'),
+        telefono: formData.get('telefono'),
+        password: formData.get('password'),
+        cargo_especialidad: formData.get('cargo_especialidad'),
+        experiencia_anios: parseInt(formData.get('experiencia_anios'), 10) || 3,
+        descripcion: formData.get('descripcion'),
+        estado: formData.get('estado') || 'activo',
+        foto_perfil: formData.get('foto_perfil') || null,
+        servicios_ids
+    };
+
+    try {
+        const res = await apiAdminRequest('/api/admin/manicuristas', payload, 'POST');
+        if (res.success) {
+            showAdminToast('Manicurista registrada exitosamente.', 'success');
+            closeAdminModal('modal-crear-manicurista');
+            cargarManicuristas();
+        } else {
+            showAdminToast(res.message || 'Error al crear manicurista.', 'error');
+        }
+    } catch(err) {
+        showAdminToast('Error al conectar con el servidor.', 'error');
+    }
+}
+
+async function abrirModalEditarManicurista(id) {
+    try {
+        const res = await apiAdminRequest(`/api/admin/manicuristas/${id}`, {}, 'GET');
+        if (!res.success || !res.data) {
+            showAdminToast('No se pudo cargar la información de la manicurista.', 'error');
+            return;
+        }
+
+        const m = res.data;
+        document.getElementById('edit-mani-id').value = m.id;
+        document.getElementById('edit-mani-nombre').value = m.nombre || '';
+        document.getElementById('edit-mani-apellido').value = m.apellido || '';
+        document.getElementById('edit-mani-email').value = m.email || '';
+        document.getElementById('edit-mani-telefono').value = m.telefono || '';
+        document.getElementById('edit-mani-password').value = '';
+        document.getElementById('edit-mani-cargo').value = m.cargo_especialidad || m.especialidades_texto || '';
+        document.getElementById('edit-mani-experiencia').value = m.experiencia_anios || 3;
+        document.getElementById('edit-mani-estado').value = m.estado || 'activo';
+        document.getElementById('edit-mani-descripcion').value = m.descripcion || '';
+        document.getElementById('edit-foto-url').value = m.foto_perfil || m.foto || '';
+
+        const initials = (m.nombre || 'M').charAt(0).toUpperCase();
+        const fotoUrl = m.foto_perfil || m.foto;
+        const container = document.getElementById('edit-foto-preview-container');
+
+        if (fotoUrl) {
+            container.innerHTML = `<img src="${escapeHtml(fotoUrl)}" class="admin-mani-preview-circle" id="edit-foto-preview" alt="Foto Actual" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'admin-mani-preview-circle\\' id=\\'edit-foto-preview\\'>${initials}</div>';" />`;
+        } else {
+            container.innerHTML = `<div class="admin-mani-preview-circle" id="edit-foto-preview">${initials}</div>`;
+        }
+
+        renderizarServiciosCheckboxes('edit', m.servicios_ids || []);
+        openAdminModal('modal-editar-manicurista');
+    } catch(err) {
+        console.error('Error al abrir modal de edición:', err);
+        showAdminToast('Error al consultar datos de la manicurista.', 'error');
+    }
+}
+
+async function actualizarManicurista(e) {
+    e.preventDefault();
+    const form = e.target;
+    const id = document.getElementById('edit-mani-id').value;
+    const formData = new FormData(form);
+
+    const servicios_ids = [];
+    form.querySelectorAll('input[name="servicios_ids"]:checked').forEach(cb => {
+        servicios_ids.push(parseInt(cb.value, 10));
+    });
+
+    const payload = {
+        nombre: formData.get('nombre'),
+        apellido: formData.get('apellido'),
+        email: formData.get('email'),
+        telefono: formData.get('telefono'),
+        password: formData.get('password') || undefined,
+        cargo_especialidad: formData.get('cargo_especialidad'),
+        experiencia_anios: parseInt(formData.get('experiencia_anios'), 10) || 3,
+        descripcion: formData.get('descripcion'),
+        estado: formData.get('estado'),
+        foto_perfil: formData.get('foto_perfil') || null,
+        servicios_ids
+    };
+
+    try {
+        const res = await apiAdminRequest(`/api/admin/manicuristas/${id}`, payload, 'PUT');
+        if (res.success) {
+            showAdminToast('Perfil de manicurista actualizado exitosamente.', 'success');
+            closeAdminModal('modal-editar-manicurista');
+            cargarManicuristas();
+        } else {
+            showAdminToast(res.message || 'Error al actualizar manicurista.', 'error');
+        }
+    } catch(err) {
+        showAdminToast('Error al actualizar datos en el servidor.', 'error');
+    }
+}
+
+async function toggleEstadoManicurista(id, estadoActual) {
+    const nuevoEstado = estadoActual === 'activo' ? 'inactivo' : 'activo';
+    try {
+        const res = await apiAdminRequest(`/api/admin/manicuristas/${id}/estado`, { estado: nuevoEstado }, 'PUT');
+        if (res.success) {
+            showAdminToast(`Manicurista ${nuevoEstado === 'activo' ? 'activada' : 'desactivada'} correctamente.`, 'success');
+            cargarManicuristas();
+        } else {
+            showAdminToast(res.message || 'Error al cambiar estado.', 'error');
+        }
+    } catch(err) {
+        showAdminToast('Error al actualizar estado.', 'error');
+    }
+}
+
+async function eliminarManicurista(id, nombre) {
+    if (!confirm(`¿Estás seguro de que deseas eliminar o desactivar a "${nombre}"?`)) return;
+
+    try {
+        const res = await apiAdminRequest(`/api/admin/manicuristas/${id}`, {}, 'DELETE');
+        if (res.success) {
+            showAdminToast(res.message || 'Manicurista procesada correctamente.', 'success');
+            cargarManicuristas();
+        } else {
+            showAdminToast(res.message || 'Error al procesar eliminación.', 'error');
+        }
+    } catch(err) {
+        showAdminToast('Error de conexión al eliminar.', 'error');
+    }
+}
+</script>
+
+</body>
+</html>
